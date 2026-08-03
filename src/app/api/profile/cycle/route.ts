@@ -8,7 +8,7 @@ export async function PUT(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  let body: { cycleDay?: number | null; visible?: boolean; dayStates?: Record<string, string> };
+  let body: { cycleDay?: number | null; visible?: boolean; dayStates?: Record<string, string>; expectedCycleDay?: number | null };
   try {
     body = await req.json();
   } catch {
@@ -18,6 +18,12 @@ export async function PUT(req: Request) {
   const cycleDay = body.cycleDay ?? null;
   if (cycleDay !== null && (!Number.isInteger(cycleDay) || cycleDay < 1 || cycleDay > 45)) {
     return NextResponse.json({ error: "invalid cycleDay" }, { status: 400 });
+  }
+
+  // ожидаемый день старта (число) — для «штормового предупреждения» партнёру
+  const expectedCycleDay = body.expectedCycleDay ?? null;
+  if (expectedCycleDay !== null && (!Number.isInteger(expectedCycleDay) || expectedCycleDay < 1 || expectedCycleDay > 45)) {
+    return NextResponse.json({ error: "invalid expectedCycleDay" }, { status: 400 });
   }
 
   // самочувствие по дням: { "1": "red"|"yellow"|"green" }
@@ -40,6 +46,7 @@ export async function PUT(req: Request) {
     where: { id: session.user.id },
     data: {
       cycleDay,
+      expectedCycleDay,
       cycleDayVisible: Boolean(body.visible),
       ...(dayStates ? { dayStates: dayStates as unknown as object } : {}),
     },

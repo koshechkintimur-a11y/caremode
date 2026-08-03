@@ -32,6 +32,7 @@ export async function GET() {
     cycleVisible: owner?.cycleDayVisible ?? false,
     ownerMood: owner?.mood ?? null,
     ownerNeedsSpace: owner?.needsSpace ?? false,
+    ownerNeed: owner?.needNow ?? null,
     cycleDayStates: owner?.cycleDayVisible
       ? ((owner?.dayStates as Record<string, string> | null) ?? {})
       : {},

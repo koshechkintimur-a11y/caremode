@@ -2,6 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { prisma } from "@/lib/prisma";
+import { CARE_GROUPS } from "@/lib/careOptions";
 
 // GET /api/push/tick — внутренний «тик» (вызывается cron'ом каждый час):
 // рассылает карточку дня партнёрам по их promptTime, если ещё не слали сегодня.
@@ -44,6 +45,53 @@ export async function GET() {
 
     const targetHour = HOUR_BY_TIME[partner.promptTime ?? ""];
     if (targetHour === undefined || hour !== targetHour) continue;
+
+    // ==== Штормовое предупреждение: за 2 дня до ожидаемого старта ====
+    // (приходит утром ВМЕСТО карточки дня — важнее, антидубль на день)
+    if (
+      owner.expectedCycleDay &&
+      owner.cycleDay !== null &&
+      owner.cycleDay === owner.expectedCycleDay - 2 &&
+      partner.lastStormDate !== today
+    ) {
+      const care = (owner.careProfile ?? {}) as { food?: string[] };
+      const foodId = care.food?.[0];
+      const foodLabel = foodId
+        ? CARE_GROUPS[0].options.find((o) => o.id === foodId)?.label
+        : null;
+      const body = foodLabel
+        ? `Через 2 дня ей может быть тяжело. Не спорь по мелочам, предложи помощь и принеси: ${foodLabel.toLowerCase()}.`
+        : "Через 2 дня ей может быть тяжело. Не спорь по мелочам, предложи помощь по дому.";
+      const payload = JSON.stringify({
+        title: "⚠️ Штормовое предупреждение",
+        body,
+        url: "/today",
+      });
+
+      let stormFailed: string[] = [];
+      for (const sub of subs) {
+        try {
+          await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+          sent++;
+        } catch {
+          stormFailed = [...stormFailed, sub.endpoint];
+        }
+      }
+      if (stormFailed.length > 0) {
+        const alive = subs.filter((s) => !stormFailed.includes(s.endpoint));
+        await prisma.user.update({
+          where: { id: partner.id },
+          data: { pushSubs: alive as unknown as object, lastStormDate: today },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: partner.id },
+          data: { lastStormDate: today },
+        });
+      }
+      continue;
+    }
+
     if (partner.lastPushDate === today) continue;
 
     // карточка дня

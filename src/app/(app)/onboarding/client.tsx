@@ -11,6 +11,7 @@ import { MoodPicker } from "@/components/MoodPicker";
 import { useApp } from "@/store/useApp";
 import { useHydrated } from "@/lib/useHydrated";
 import { phaseFromStartDate } from "@/lib/phase";
+import { computeCycleStats } from "@/lib/cycle";
 import { cn } from "@/lib/utils";
 
 const STEPS = ["Ты", "Бесит", "Цикл", "Штрихи"];
@@ -57,11 +58,18 @@ export default function OnboardingPage() {
       body: JSON.stringify({ phase, mood: store.mood }),
     });
 
-    // Навигатор цикла: день (число, без дат) + согласие
+    // Навигатор цикла: день (число, без дат) + согласие + ожидаемый старт (число)
+    const stats = store.lastPeriodStart
+      ? computeCycleStats(store.cycleHistory, store.lastPeriodStart)
+      : null;
+    const expectedCycleDay =
+      store.cycleDay && stats?.daysUntilNext !== null && stats!.daysUntilNext >= 0
+        ? store.cycleDay + stats!.daysUntilNext
+        : null;
     await fetch("/api/profile/cycle", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible }),
+      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible, expectedCycleDay }),
     });
 
     const res = await fetch("/api/pair", { method: "POST" });

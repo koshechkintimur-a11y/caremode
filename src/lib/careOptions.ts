@@ -81,3 +81,18 @@ export const MOODS: { id: "TERRIBLE" | "MEH" | "GREAT"; label: string; icon: str
   { id: "MEH", label: "Так себе", icon: "Cloud" },
   { id: "GREAT", label: "Отлично", icon: "Sunrise" },
 ];
+
+// «Что ей нужно сейчас» — мини-опрос: убирает угадывание у партнёра
+export const NEEDS: { id: "hug" | "food" | "talk" | "alone" | "movie"; label: string; emoji: string }[] = [
+  { id: "hug", label: "Обнять", emoji: "🤗" },
+  { id: "food", label: "Еду", emoji: "🍫" },
+  { id: "talk", label: "Поговорить", emoji: "💬" },
+  { id: "alone", label: "Побыть одной", emoji: "🚪" },
+  { id: "movie", label: "Фильм вместе", emoji: "🎬" },
+];
+
+export function needLabel(id: string | null | undefined): string | null {
+  if (!id) return null;
+  const n = NEEDS.find((x) => x.id === id);
+  return n ? `${n.label} ${n.emoji}` : null;
+}

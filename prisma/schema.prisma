@@ -21,6 +21,9 @@ model User {
   moodUpdatedAt DateTime?
   pausePartner  Boolean       @default(false) // режим инкогнито
   cycleDay      Int? // день цикла (1..40) — БЕЗ дат, только число, с согласия
+  expectedCycleDay Int? // ожидаемый день старта (число) — «штормовое предупреждение»
+  needNow       String? // «что ей нужно сейчас»: hug|food|talk|alone|movie
+  lastStormDate String? // антидубль штормового пуша (YYYY-MM-DD)
   cycleDayVisible Boolean    @default(false) // показывать партнёру навигатор цикла
   coupleId      String?
   couple        CoupleProfile? @relation("CoupleMembers", fields: [coupleId], references: [id], onDelete: SetNull)

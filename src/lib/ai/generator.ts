@@ -12,6 +12,7 @@ export interface PromptContext {
   dayTogether: number;
   recentFeedback: { feedback: string; text: string }[]; // GOOD | BAD | MISSED + текст карточки
   partnerContext?: string; // стиль партнёра из микро-опроса
+  needNow?: string | null; // «что ей нужно сейчас»: hug|food|talk|alone|movie
 }
 
 export interface PromptResult {

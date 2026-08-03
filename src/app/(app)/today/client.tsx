@@ -12,7 +12,7 @@ import { CoachTips } from "@/components/CoachTips";
 import { DayCarousel } from "@/components/DayCarousel";
 import { shareCard } from "@/components/ShareCard";
 import { StreakRing } from "@/components/StreakRing";
-import { MOODS } from "@/lib/careOptions";
+import { MOODS, NEEDS, needLabel } from "@/lib/careOptions";
 import { computeCycleStats } from "@/lib/cycle";
 import { useApp } from "@/store/useApp";
 import { useWeather, MOOD_WEATHER, PHASE_WEATHER } from "@/store/uiStore";
@@ -34,6 +34,7 @@ interface TodayData {
   cycleVisible: boolean;
   ownerMood: string | null;
   ownerNeedsSpace: boolean;
+  ownerNeed: string | null;
   cycleDayStates: Record<string, string>;
   cozy: string[];
 }
@@ -76,6 +77,7 @@ export default function TodayPage() {
   const [sosResult, setSosResult] = useState<{ phrase: string; action: string; passwordPhrase: string } | null>(null);
   const [rewardClosed, setRewardClosed] = useState(false);
   const [daysOpen, setDaysOpen] = useState(false);
+  const [needNowUI, setNeedNowUI] = useState<string | null | "loading">("loading");
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -191,7 +193,7 @@ export default function TodayPage() {
         fetch("/api/profile/cycle", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cycleDay: dayOfCycle(iso), visible: true }),
+          body: JSON.stringify({ cycleDay: dayOfCycle(iso), visible: true, expectedCycleDay: expectedCycleDay() }),
         }),
         fetch("/api/profile/phase", {
           method: "PUT",
@@ -211,7 +213,7 @@ export default function TodayPage() {
       await fetch("/api/profile/cycle", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cycleDay: store.cycleDay, visible: next }),
+        body: JSON.stringify({ cycleDay: store.cycleDay, visible: next, expectedCycleDay: expectedCycleDay() }),
       });
     } finally {
       setNavBusy(false);
@@ -271,6 +273,34 @@ export default function TodayPage() {
       setToast("Не вышло. Попробуй ещё раз.");
     }
     setTimeout(() => setToast(""), 2600);
+  }
+
+  // «Что тебе нужно?» — выбор Оли; мгновенный пуш партнёру с сервера
+  useEffect(() => {
+    if (!data) return;
+    const t = setTimeout(() => setNeedNowUI(data.ownerNeed ?? null), 0);
+    return () => clearTimeout(t);
+  }, [data?.ownerNeed]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function setNeed(id: string | null) {
+    setNeedNowUI(id);
+    try {
+      await fetch("/api/profile/phase", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ needNow: id }),
+      });
+    } catch {
+      /* не критично — отметка останется на сервере при следующем действии */
+    }
+  }
+
+  // ожидаемый день старта (число) — для «штормового предупреждения» партнёру
+  function expectedCycleDay(): number | null {
+    if (!store.cycleDay || !store.lastPeriodStart) return null;
+    const stats = computeCycleStats(store.cycleHistory, store.lastPeriodStart);
+    if (stats.daysUntilNext === null || stats.daysUntilNext < 0) return null;
+    return store.cycleDay + stats.daysUntilNext;
   }
 
   // «Напомнить ей» — пуш Оле (empty-state партнёра, пока она не собрала послание)
@@ -398,6 +428,33 @@ export default function TodayPage() {
           >
             {store.needsSpace ? "Не трогать — отмечено" : "Не трогать сегодня"}
           </button>
+
+          {/* Что тебе нужно? — убирает угадывание: партнёр видит и получает пуш */}
+          <div className="mt-4">
+            <div className="text-[13px] font-extrabold text-ink">Что тебе сейчас нужно?</div>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {NEEDS.map((n) => {
+                const active = needNowUI === n.id;
+                return (
+                  <button
+                    key={n.id}
+                    onClick={() => setNeed(active ? null : n.id)}
+                    className={cn(
+                      "rounded-full px-3.5 h-[38px] text-[13px] font-bold transition-colors border",
+                      active
+                        ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
+                        : "bg-surface text-ink border-line hover:border-primary/40"
+                    )}
+                  >
+                    {n.emoji} {n.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="text-[11px] font-semibold text-muted mt-1.5">
+              {needNowUI ? "он уже знает — и получит уведомление" : "он перестанет гадать"}
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -508,6 +565,7 @@ export default function TodayPage() {
                         body: JSON.stringify({
                           cycleDay: store.cycleDay,
                           visible: store.cycleDayVisible,
+                          expectedCycleDay: expectedCycleDay(),
                           dayStates: { ...store.dayStates, [String(d)]: color },
                         }),
                       });
@@ -674,7 +732,7 @@ export default function TodayPage() {
     await fetch("/api/profile/cycle", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible }),
+      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible, expectedCycleDay: expectedCycleDay() }),
     });
   }
 
@@ -810,6 +868,12 @@ export default function TodayPage() {
               {data.ownerNeedsSpace && (
                 <div className="mt-2 rounded-full bg-[#E05C5C]/10 px-4 py-2 text-[13px] font-extrabold text-[#B04A4A] text-center">
                   Ей нужна тишина — но она знает, что ты рядом
+                </div>
+              )}
+              {/* «Она хочет» — прямая подсказка вместо угадывания */}
+              {needLabel(data.ownerNeed) && (
+                <div className="mt-2 rounded-full bg-primary-soft px-4 py-2 text-[13px] font-extrabold text-primary text-center">
+                  Она хочет: {needLabel(data.ownerNeed)}
                 </div>
               )}
             </div>

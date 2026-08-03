@@ -136,6 +136,7 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
       recentFeedback: couple.prompts
         .filter((p) => p.feedback)
         .map((p) => ({ feedback: p.feedback as string, text: p.text })),
+      needNow: owner?.needNow ?? null,
     });
     text = r.text;
     source = r.source;

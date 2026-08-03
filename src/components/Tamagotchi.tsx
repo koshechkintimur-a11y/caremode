@@ -114,7 +114,7 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       const time = t / 1000;
       ctx.clearRect(0, 0, GW * S, GH * S);
       ctx.save();
-      ctx.translate(0, 3); // маскот с запасом сверху (корона не у края)
+      ctx.translate(0, 5); // запас сверху: корона и уши не у края
       const pal = PAL[state];
 
       let oy = 0;
@@ -250,31 +250,31 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
         px(mx + 6, 12 + oy, 1, 1, "#F0A08C");
       }
 
-      // ==== передние тучки (низ, поверх маскота) ====
+      // ==== передние тучки (подняты к маскоту, не достают до воды) ====
       const nClouds = stage === "adult" ? 3 : stage === "teen" ? 2 : 1;
       if (state === "sad") {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(45 + i * 75));
-          cloudlet(x1 + 2 + i * 10, 22 + i * 2, "#8FA3B8", "#7C92A8");
+          cloudlet(x1 + 2 + i * 10, 14 + i * 2, "#8FA3B8", "#7C92A8");
           if (Math.floor(time * 6) % 2 === 0) {
-            px(x1 + 4, 25 + i * 2, 1, 2, "#6E87A3");
-            px(x1 + 6, 26 + i * 2, 1, 2, "#6E87A3");
+            px(x1 + 4, 17 + i * 2, 1, 2, "#6E87A3");
+            px(x1 + 6, 18 + i * 2, 1, 2, "#6E87A3");
           }
         }
       } else if (state === "spiky") {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(70 + i * 80));
-          cloudlet(x1 + 2 + i * 12, 22 + i * 2, "#59647A", "#4A5468");
+          cloudlet(x1 + 2 + i * 12, 14 + i * 2, "#59647A", "#4A5468");
           if (Math.floor(time * 5) % 3 !== 0) {
-            px(x1 + 3, 24 + i * 2, 1, 2, "#FFEC27");
-            px(x1 + 4, 26 + i * 2, 2, 1, "#FFEC27");
-            px(x1 + 3, 27 + i * 2, 1, 2, "#FFEC27");
+            px(x1 + 3, 16 + i * 2, 1, 2, "#FFEC27");
+            px(x1 + 4, 18 + i * 2, 2, 1, "#FFEC27");
+            px(x1 + 3, 19 + i * 2, 1, 2, "#FFEC27");
           }
         }
       } else {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(95 + i * 75));
-          cloudlet(x1 + 4 + i * 10, 21 + i * 3, "#F4FAFF", "#E7F1FA");
+          cloudlet(x1 + 4 + i * 10, 13 + i * 3, "#F4FAFF", "#E7F1FA");
         }
       }
       ctx.restore();
@@ -374,10 +374,10 @@ export function Tamagotchi({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 4, scale: 0.97 }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/95 px-4 py-2 text-[12px] font-extrabold text-ink shadow-[0_8px_24px_rgba(0,0,0,.15)] border border-line z-20"
+                className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#1B1626]/95 px-4 py-2 text-[12px] font-extrabold text-white shadow-[0_8px_24px_rgba(0,0,0,.3)] border border-white/20 z-20"
               >
                 {bubble}
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 bg-white/95 border-b border-r border-line" />
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 bg-[#1B1626]/95 border-b border-r border-white/20" />
               </motion.div>
             )}
           </AnimatePresence>

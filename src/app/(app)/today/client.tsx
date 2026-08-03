@@ -362,7 +362,7 @@ export default function TodayPage() {
         />
 
         {/* ПУЛЬС: быстрое обновление настроения — карточка партнёра меняется */}
-        <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
           <div className="text-[15px] font-extrabold text-ink">Как ты сейчас?</div>
           <div className="text-[12px] font-semibold text-muted mt-0.5 mb-3">
             Он увидит это как новую подсказку — моментально
@@ -401,7 +401,7 @@ export default function TodayPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="text-[12px] font-bold uppercase tracking-wider text-muted">Твоя фаза</div>
             <div className="mt-1.5 text-[16px] font-extrabold text-ink">
               {store.phase ? PHASE_LABEL[store.phase] : "не указана"}
@@ -410,7 +410,7 @@ export default function TodayPage() {
               {store.lastPeriodStart ? "рассчитано на устройстве" : "уточни в настройках"}
             </div>
           </div>
-          <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="text-[12px] font-bold uppercase tracking-wider text-muted">Настроение</div>
             <div className="mt-1.5 text-[16px] font-extrabold text-ink">
               {store.mood ? MOOD_LABEL[store.mood] : "не указано"}
@@ -420,7 +420,7 @@ export default function TodayPage() {
         </div>
 
         {/* Мои дни: свёрнуто в 1 строку, раскрытие по тапу */}
-        <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
           <button onClick={() => setDaysOpen(!daysOpen)} className="w-full flex items-center justify-between gap-3 text-left">
             <div>
               <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
@@ -556,7 +556,7 @@ export default function TodayPage() {
 
         {/* Кэшбэк: он прошёл цикл на отлично — вручить награду (редкий блок — ниже ежедневных) */}
         {cashback?.canReward && (
-          <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
                 <Gift size={20} className="text-primary" />
@@ -613,7 +613,7 @@ export default function TodayPage() {
 
         {/* Его забота: как он старается (только для неё) */}
         {care && (
-          <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(127,169,143,.14)]">
+          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(127,169,143,.14)]">
             <div className="text-[15px] font-extrabold text-ink">Его забота</div>
             <div className="text-[12px] font-semibold text-muted mt-0.5">
               он старается ради тебя — {care.goodCount} {pluralCare(care.goodCount)} за 28 дней
@@ -721,7 +721,7 @@ export default function TodayPage() {
           key="good"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md rounded-[28px] bg-surface p-8 text-center shadow-[0_16px_48px_rgba(127,169,143,.25)]"
+          className="w-full max-w-md rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(127,169,143,.25)]"
         >
           <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
             <StreakRing streak={data.streak} size={56} />
@@ -759,7 +759,7 @@ export default function TodayPage() {
           key="bad"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md rounded-[28px] bg-surface p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+          className="w-full max-w-md rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
         >
           <h2 className="text-[20px] font-extrabold text-ink">Учту. Завтра подберу лучше.</h2>
           <p className="mt-2 text-[14px] font-semibold text-muted">
@@ -830,7 +830,7 @@ export default function TodayPage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full rounded-[28px] bg-surface p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+                className="w-full rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
               >
                 <div className="mx-auto w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center">
                   <MessageCircleHeart size={26} className="text-primary" />
@@ -909,7 +909,7 @@ export default function TodayPage() {
             {cashback?.reward &&
               !rewardClosed &&
               !(typeof window !== "undefined" && localStorage.getItem(`sync-reward-${cashback.reward.date}`) === "1") && (
-              <div className="w-full rounded-[24px] border-2 border-dashed border-primary/50 bg-surface p-6 text-center shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+              <div className="w-full rounded-[24px] border-2 border-dashed border-primary/50 bg-surface/75 backdrop-blur-[2px] p-6 text-center shadow-[0_8px_30px_rgba(232,131,127,.14)]">
                 <button
                   onClick={() => {
                     setRewardClosed(true);
@@ -928,7 +928,10 @@ export default function TodayPage() {
                 <div className="mt-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-muted">
                   Сертификат заботы
                 </div>
-                <div className="mt-2 text-[17px] font-extrabold text-ink leading-snug">
+                <div
+                  className="mt-2 text-[17px] font-extrabold text-ink leading-snug"
+                  style={{ textShadow: "0 1px 10px rgba(255,255,255,.45)" }}
+                >
                   {cashback.reward.text}
                 </div>
                 <div className="mt-2 text-[12px] font-semibold text-muted">
@@ -950,7 +953,7 @@ export default function TodayPage() {
 
             {/* Список уютного — горизонтальный скролл-чип */}
             {data.cozy?.length > 0 && (
-              <div className="w-full rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+              <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
                 <div className="text-[14px] font-extrabold text-ink">Что ей уютно в эти дни</div>
                 <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-5 px-5">
                   {data.cozy.map((c) => (

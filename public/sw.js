@@ -1,6 +1,7 @@
 // SYNC service worker — CacheFirst для статики, network-only для API/навигации.
-// v3: Web Push — уведомления карточки дня (iOS 16.4+ PWA).
-const CACHE = "sync-v3";
+// v4: Web Push + инвалидация статики. ВАЖНО: бампать CACHE при каждом деплое,
+// иначе браузер вечно отдаёт старые чанки (пользователь «не видит изменений»).
+const CACHE = "sync-v4";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(

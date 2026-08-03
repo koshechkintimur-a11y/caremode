@@ -78,7 +78,7 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         className="w-full"
       >
-        <div className="relative rounded-[22px] bg-ink text-white p-5 shadow-[0_12px_40px_rgba(0,0,0,.25)]">
+        <div className="relative rounded-[22px] bg-[#1B1626]/85 backdrop-blur-[3px] text-white p-5 shadow-[0_12px_40px_rgba(0,0,0,.25)]">
           <button
             onClick={skipAll}
             aria-label="Пропустить обучение"
@@ -86,7 +86,12 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
           >
             <X size={15} />
           </button>
-          <p className="text-[14px] font-semibold leading-relaxed pr-6">{current.text}</p>
+          <p
+            className="text-[14px] font-semibold leading-relaxed pr-6"
+            style={{ textShadow: "0 1px 6px rgba(0,0,0,.6)" }}
+          >
+            {current.text}
+          </p>
           <div className="flex items-center gap-3 mt-4">
             <button
               onClick={done}

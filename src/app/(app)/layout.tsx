@@ -4,6 +4,7 @@ import { Settings, FlaskConical } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Logo } from "@/components/ui/Logo";
+import { BackButton } from "@/components/ui/BackButton";
 
 // Layout приложения: только проверка сессии + шапка.
 // Маршрутизация по состоянию пары — в guard'ах каждой страницы (без циклов).
@@ -31,9 +32,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       {/* роль для дефолтной темы (читает FOUC-скрипт и ThemeProvider) */}
       <meta name="sync-role" content={user.role} />
       <header className="flex items-center justify-between px-5 pt-5 pb-1">
-        <Link href="/today">
-          <Logo size={34} />
-        </Link>
+        <div className="flex items-center gap-2">
+          <BackButton />
+          <Link href="/today">
+            <Logo size={34} />
+          </Link>
+        </div>
         <div className="flex items-center gap-2">
           {/* бутылка = инструкция (якорь) */}
           <Link

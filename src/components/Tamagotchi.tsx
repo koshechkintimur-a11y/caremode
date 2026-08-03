@@ -102,12 +102,16 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       ctx.fillRect(x * S, y * S, w * S, h * S);
     };
 
-    // маленькая тучка (эффекты вокруг)
+    // тучка-облачко (комки, не «пар»)
     const cloudlet = (x: number, y: number, top: string, bottom: string) => {
-      px(x, y, 2, 2, top);
-      px(x + 2, y - 1, 2, 1, top);
-      px(x + 4, y, 2, 2, top);
-      px(x, y + 2, 6, 2, bottom);
+      px(x + 1, y, 3, 1, top); // верхний комок
+      px(x + 2, y - 1, 3, 1, top);
+      px(x, y + 1, 4, 1, top);
+      px(x + 3, y + 1, 3, 1, top);
+      px(x + 5, y, 2, 1, top);
+      px(x + 6, y - 1, 2, 1, top);
+      px(x, y + 2, 8, 2, bottom); // плоское основание
+      px(x + 1, y + 4, 6, 1, bottom);
     };
 
     const draw = (t: number) => {

@@ -95,7 +95,7 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
           <div className="flex items-center gap-3 mt-4">
             <button
               onClick={done}
-              className="h-[38px] px-5 rounded-full bg-white text-ink text-[13px] font-extrabold active:scale-[.97] transition"
+              className="h-[38px] px-5 rounded-full bg-white text-[#1B1626] text-[13px] font-extrabold active:scale-[.97] transition"
             >
               Понятно
             </button>

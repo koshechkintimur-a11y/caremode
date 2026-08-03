@@ -232,35 +232,58 @@ export function PixelBackground() {
             }
           }
         }
-        // дальняя гора на горизонте (крупная, с уступами и деталями)
+        // остров с пальмами на горизонте (вместо горы)
         if (dive < 0.55) {
-          const rx = 16 + Math.floor(Math.sin(time * 0.5) * 1);
-          px(rx, horizon - 26, 5, 5, "#5A6E7E");
-          px(rx - 3, horizon - 21, 10, 3, "#4E6272");
-          px(rx - 5, horizon - 17, 16, 3, "#425464");
-          px(rx - 7, horizon - 13, 22, 3, "#3A4A5A");
-          px(rx - 9, horizon - 9, 28, 3, "#2F3D4B");
-          px(rx - 11, horizon - 4, 34, 3, "#2A3846");
-          px(rx - 14, horizon - 1, 40, 2, "#222F3C");
-          px(rx - 2, horizon - 25, 2, 1, "#7A8E9E"); // блик вершины
-          px(rx - 5, horizon - 19, 2, 1, "#6E8292"); // блик уступа
-          px(rx + 3, horizon - 14, 2, 1, "#6E8292");
-          px(rx - 10, horizon - 10, 1, 1, "#6E8292");
-          px(rx + 8, horizon - 10, 2, 2, "#1E2A3A"); // трещины
-          px(rx - 16, horizon - 6, 2, 2, "#1E2A3A");
-          px(rx + 18, horizon - 5, 2, 2, "#1E2A3A");
-          px(rx - 3, horizon - 24, 3, 1, "#E8F0F4"); // снежная шапка
+          const ix = 14 + Math.floor(Math.sin(time * 0.5) * 1);
+          // песчаный остров
+          px(ix, horizon - 7, 18, 2, "#D9B36A"); // песок верх
+          px(ix - 2, horizon - 5, 22, 2, "#C8A258");
+          px(ix - 4, horizon - 3, 26, 2, "#B89448");
+          px(ix - 5, horizon - 1, 28, 1, "#A8853E"); // берег
+          // пальма 1 (высокая, слева): ствол + крона
+          px(ix + 3, horizon - 11, 1, 5, "#8A5A3A");
+          px(ix + 2, horizon - 12, 3, 2, "#4E8A4E");
+          px(ix, horizon - 13, 6, 1, "#5EA85E"); // листья в стороны
+          px(ix + 2, horizon - 14, 1, 1, "#6EBA6E");
+          px(ix + 4, horizon - 12, 2, 1, "#5EA85E");
+          px(ix + 3, horizon - 9, 1, 1, "#8A5A3A"); // кокос
+          // пальма 2 (ниже, правее)
+          px(ix + 11, horizon - 8, 1, 3, "#8A5A3A");
+          px(ix + 10, horizon - 9, 3, 2, "#4E8A4E");
+          px(ix + 8, horizon - 10, 7, 1, "#5EA85E");
+          px(ix + 10, horizon - 11, 1, 1, "#6EBA6E");
+          px(ix + 12, horizon - 9, 2, 1, "#5EA85E");
+          // кустик между пальмами
+          px(ix + 7, horizon - 4, 2, 1, "#5EA85E");
+          px(ix + 6, horizon - 5, 4, 1, "#4E8A4E");
+          // блик на воде под островом
+          px(ix + 1, horizon + 2, 8, 1, pal.shine, 0.35);
+          px(ix + 3, horizon + 4, 5, 1, pal.shine, 0.2);
         }
-        // парусник на горизонте (крупнее)
+        // корабль на горизонте (два паруса, корпус на воде)
         if ((weather === "sun" || weather === "clouds") && dive < 0.55) {
-          const sx = ((time * 4 + 30) % (W + 40)) - 20;
+          const sx = ((time * 4 + 30) % (W + 50)) - 25;
           const sway = Math.floor(Math.sin(time * 2) * 1);
-          px(Math.floor(sx), horizon - 5 + sway, 6, 3, "#8A5A3A"); // корпус
-          px(Math.floor(sx) + 1, horizon - 7 + sway, 2, 2, "#A06A48"); // борт
-          px(Math.floor(sx) + 1, horizon - 13 + sway, 1, 7, "#3B5E70"); // мачта
-          px(Math.floor(sx) + 1, horizon - 12 + sway, 5, 4, "#F4F8F8"); // парус
-          px(Math.floor(sx) + 1, horizon - 8 + sway, 4, 3, "#E8F0F0");
-          px(Math.floor(sx) + 4, horizon - 14 + sway, 1, 1, "#C84040"); // флажок
+          // корпус — на воде (низ уходит в волны)
+          px(Math.floor(sx), horizon - 3 + sway, 11, 2, "#8A5A3A"); // борт
+          px(Math.floor(sx) + 1, horizon - 4 + sway, 9, 1, "#A06A48"); // палуба
+          px(Math.floor(sx), horizon - 1 + sway, 11, 2, "#6E4426"); // подводная часть
+          px(Math.floor(sx) + 9, horizon - 4 + sway, 2, 3, "#8A5A3A"); // корма
+          // бушприт (нос)
+          px(Math.floor(sx) - 1, horizon - 3 + sway, 1, 2, "#6E4426");
+          // грот-мачта + большой парус
+          px(Math.floor(sx) + 3, horizon - 17 + sway, 1, 14, "#3B5E70");
+          px(Math.floor(sx) + 3, horizon - 16 + sway, 6, 5, "#F4F8F8"); // парус верх
+          px(Math.floor(sx) + 3, horizon - 11 + sway, 5, 4, "#E8F0F0"); // парус низ
+          px(Math.floor(sx) + 3, horizon - 18 + sway, 1, 1, "#C84040"); // флаг
+          // фок-мачта + малый парус
+          px(Math.floor(sx) + 8, horizon - 12 + sway, 1, 9, "#3B5E70");
+          px(Math.floor(sx) + 8, horizon - 11 + sway, 4, 4, "#F4F8F8");
+          px(Math.floor(sx) + 8, horizon - 13 + sway, 1, 1, "#C84040");
+          // иллюминаторы
+          px(Math.floor(sx) + 2, horizon - 2 + sway, 1, 1, "#FFEC27");
+          px(Math.floor(sx) + 5, horizon - 2 + sway, 1, 1, "#FFEC27");
+          px(Math.floor(sx) + 7, horizon - 2 + sway, 1, 1, "#FFEC27");
         }
       }
 

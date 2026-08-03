@@ -621,7 +621,7 @@ export default function TodayPage() {
             <div className="mt-3 flex items-center gap-3">
               <div className="flex-1">
                 <div className="text-[13px] font-extrabold text-ink">
-                  <span className="font-pixel text-xp text-[12px]">{care.perkTitle}</span>
+                  <span className="font-pixel text-ink text-[12px]">{care.perkTitle}</span>
                 </div>
                 {care.nextPerkTitle ? (
                   <div className="mt-1.5 h-[8px] rounded-full bg-bg overflow-hidden">
@@ -873,7 +873,7 @@ export default function TodayPage() {
             {cashback && (
               <div className="w-full rounded-2xl bg-surface/70 border border-line px-4 py-3 flex items-center justify-between gap-3">
                 <div className="text-[12px] font-bold text-muted">
-                  <span className="font-pixel text-xp text-[11px]">{getPerk(cashback.goodCount)?.title ?? "без статуса"}</span>
+                  <span className="font-pixel text-ink text-[11px]">{getPerk(cashback.goodCount)?.title ?? "без статуса"}</span>
                   <span className="text-muted"> · {cashback.goodCount} GOOD · {STAGE_LABEL[stageOf(cashback.goodCount)]}</span>
                 </div>
                 {nextPerk(cashback.goodCount) ? (

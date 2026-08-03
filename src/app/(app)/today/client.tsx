@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Eye, Gift, Medal, Send, Siren, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
 import { Tamagotchi, stageOf, STAGE_LABEL } from "@/components/Tamagotchi";
-import { CycleProgress } from "@/components/CycleProgress";
 import { CoachTips } from "@/components/CoachTips";
 import { DayCarousel } from "@/components/DayCarousel";
 import { shareCard } from "@/components/ShareCard";
@@ -57,6 +57,7 @@ const MOOD_LABEL: Record<string, string> = {
 };
 
 export default function TodayPage() {
+  const router = useRouter();
   const hydrated = useHydrated();
   const store = useApp();
   const setWeather = useWeather((s) => s.setWeather);
@@ -73,6 +74,8 @@ export default function TodayPage() {
   const [sosOpen, setSosOpen] = useState(false);
   const [sosBusy, setSosBusy] = useState(false);
   const [sosResult, setSosResult] = useState<{ phrase: string; action: string; passwordPhrase: string } | null>(null);
+  const [rewardClosed, setRewardClosed] = useState(false);
+  const [daysOpen, setDaysOpen] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -270,6 +273,23 @@ export default function TodayPage() {
     setTimeout(() => setToast(""), 2600);
   }
 
+  // «Напомнить ей» — пуш Оле (empty-state партнёра, пока она не собрала послание)
+  async function remind() {
+    setToast("Отправляем…");
+    try {
+      const res = await fetch("/api/push/remind", { method: "POST" });
+      if (res.ok) {
+        const b = await res.json();
+        setToast(b.sent > 0 ? "Напомнили! 🍾" : "Она не включила уведомления — напиши ей сам 😉");
+      } else {
+        setToast("Не вышло. Попробуй ещё раз.");
+      }
+    } catch {
+      setToast("Не вышло. Попробуй ещё раз.");
+    }
+    setTimeout(() => setToast(""), 2600);
+  }
+
   // ===== загрузка =====
   if (!hydrated || !data) {
     return (
@@ -300,12 +320,26 @@ export default function TodayPage() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md flex flex-col gap-5"
       >
+        {data.paused ? (
+          <PauseCard />
+        ) : (
+          <div className="rounded-[28px] bg-gradient-to-br from-primary via-[#E98F8B] to-accent p-7 text-white shadow-[0_16px_48px_rgba(232,131,127,.4)]">
+            <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/80">
+              Подсказка для него сегодня
+            </span>
+            <p className="mt-4 text-[19px] font-extrabold leading-snug">
+              {data.prompt?.text ?? "…"}
+            </p>
+          </div>
+        )}
+
+        {/* плашка прозрачности — после карточки, в контексте «почему я вижу его карточку» */}
         <div className="flex items-center gap-2 text-[13px] font-bold text-muted">
           <Eye size={15} className="text-primary" />
           Режим прозрачности: ты видишь то же, что и он
         </div>
 
-        {/* Обучалка: подсказки для OWNER */}
+        {/* Обучалка: подсказки для OWNER (встроенные) */}
         <CoachTips
           tips={[
             {
@@ -320,19 +354,6 @@ export default function TodayPage() {
             },
           ]}
         />
-
-        {data.paused ? (
-          <PauseCard />
-        ) : (
-          <div className="rounded-[28px] bg-gradient-to-br from-primary via-[#E98F8B] to-accent p-7 text-white shadow-[0_16px_48px_rgba(232,131,127,.4)]">
-            <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/80">
-              Подсказка для него сегодня
-            </span>
-            <p className="mt-4 text-[19px] font-extrabold leading-snug">
-              {data.prompt?.text ?? "…"}
-            </p>
-          </div>
-        )}
 
         {/* ПУЛЬС: быстрое обновление настроения — карточка партнёра меняется */}
         <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
@@ -392,7 +413,142 @@ export default function TodayPage() {
           </div>
         </div>
 
-        {/* Кэшбэк: он прошёл цикл на отлично — выдать награду */}
+        {/* Мои дни: свёрнуто в 1 строку, раскрытие по тапу */}
+        <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <button onClick={() => setDaysOpen(!daysOpen)} className="w-full flex items-center justify-between gap-3 text-left">
+            <div>
+              <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
+              <div className="text-[12px] font-semibold text-muted mt-0.5">
+                {store.cycleDay
+                  ? inPeriod
+                    ? `месячные: ${store.periodDays[0]}–${store.periodDays[store.periodDays.length - 1]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
+                    : `день ${store.cycleDay} · ${PHASE_LABEL[store.phase ?? "UNKNOWN"]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
+                  : "отметь начало — он поймёт, как тебя поддержать"}
+              </div>
+            </div>
+            <ChevronDown size={18} className={cn("text-muted shrink-0 transition-transform", daysOpen && "rotate-180")} />
+          </button>
+
+          {/* кнопки отметки — всегда видны */}
+          <div className="mt-3 flex flex-col gap-2.5">
+            {inPeriod ? (
+              <button
+                onClick={endToday}
+                className="w-full h-[52px] rounded-full bg-success text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(127,169,143,.35)] active:scale-[.97] transition"
+              >
+                Закончились сегодня
+              </button>
+            ) : (
+              <button
+                onClick={startToday}
+                className="w-full h-[52px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(232,131,127,.4)] active:scale-[.97] transition"
+              >
+                Месячные начались
+              </button>
+            )}
+          </div>
+
+          {/* История → всегда доступна из «Моих дней» */}
+          <button
+            onClick={() => router.push("/calendar")}
+            className="mt-3 text-[13px] font-bold text-primary underline decoration-dotted underline-offset-2"
+          >
+            История →
+          </button>
+
+          {daysOpen && (
+            <div className="flex flex-col gap-0 mt-4">
+              {/* тумблер видимости */}
+              {store.cycleDay && (
+                <button
+                  onClick={toggleNavigator}
+                  disabled={navBusy}
+                  className="flex items-center justify-between gap-3 rounded-2xl border-2 border-line bg-surface p-4 text-left transition-colors"
+                >
+                  <div>
+                    <div className="text-[14px] font-extrabold text-ink">Показывать ему, где я в цикле</div>
+                    <div className="text-[12px] font-semibold text-muted mt-0.5 leading-snug">
+                      {store.cycleDayVisible
+                        ? "он видит день и фазу (без дат)"
+                        : "сейчас скрыто — включи, если хочешь, чтобы он понимал больше"}
+                    </div>
+                  </div>
+                  <div
+                    className={`w-[52px] h-[30px] rounded-full transition-colors relative shrink-0 ${
+                      store.cycleDayVisible ? "bg-primary" : "bg-line"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-[3px] w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        store.cycleDayVisible ? "left-[24px]" : "left-[3px]"
+                      }`}
+                    />
+                  </div>
+                </button>
+              )}
+
+              {/* 3D-карусель дней: тап по дню = самочувствие (красный/жёлтый/зелёный) */}
+              {store.cycleDay && (
+                <div className="mt-4">
+                  <DayCarousel
+                    periodDays={store.periodDays}
+                    dayStates={store.dayStates}
+                    lastPeriodStart={store.lastPeriodStart}
+                    onDayState={(d, color) => {
+                      store.setDayState(d, color);
+                      fetch("/api/profile/cycle", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          cycleDay: store.cycleDay,
+                          visible: store.cycleDayVisible,
+                          dayStates: { ...store.dayStates, [String(d)]: color },
+                        }),
+                      });
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* мягкое уточнение: ожидаемый старт прошёл, а отметки нет */}
+              {lateDays !== null && !inPeriod && (
+                <div className="mt-3 rounded-2xl border border-[#F2C94C]/50 bg-[#F2C94C]/10 px-4 py-3">
+                  <div className="text-[13px] font-bold text-ink">
+                    Ожидала начало ~{lateDays} дн назад. Всё ли нормально?
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={startToday}
+                      className="h-[38px] px-4 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[12px] active:scale-[.97] transition"
+                    >
+                      Да, отметить
+                    </button>
+                    <button
+                      onClick={() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                      className="h-[38px] px-4 rounded-full bg-surface border border-line text-ink font-bold text-[12px] active:scale-[.97] transition"
+                    >
+                      Выбрать дату
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* пикер даты («Изменить» / «Выбрать дату») */}
+              <div id="period-picker" className="mt-3 flex gap-2 items-center">
+                <input
+                  type="date"
+                  value={store.lastPeriodStart ?? ""}
+                  max={new Date().toISOString().slice(0, 10)}
+                  onChange={(e) => e.target.value && setPeriodDate(e.target.value)}
+                  className="flex-1 h-[44px] rounded-2xl bg-surface border border-line px-4 text-[13px] font-semibold text-ink outline-none focus:border-primary"
+                />
+                <div className="text-[11px] font-semibold text-muted">первый день</div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Кэшбэк: он прошёл цикл на отлично — вручить награду (редкий блок — ниже ежедневных) */}
         {cashback?.canReward && (
           <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="flex items-center gap-3">
@@ -448,133 +604,6 @@ export default function TodayPage() {
             )}
           </div>
         )}
-
-        {/* Мои дни: состояние + 2 кнопки + мягкое уточнение */}
-        <div className="rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
-              <div className="text-[12px] font-semibold text-muted mt-0.5">
-                {store.cycleDayVisible
-                  ? "он видит день и фазу (без дат)"
-                  : store.cycleDay
-                    ? "показывать ему, где ты в цикле"
-                    : "отметь начало — он поймёт, как тебя поддержать"}
-              </div>
-            </div>
-            {store.cycleDay ? (
-              <button
-                onClick={toggleNavigator}
-                disabled={navBusy}
-                className={`w-[52px] h-[30px] rounded-full transition-colors relative shrink-0 ${
-                  store.cycleDayVisible ? "bg-primary" : "bg-line"
-                }`}
-                aria-label="Навигатор цикла"
-              >
-                <motion.span
-                  layout
-                  transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                  className={`absolute top-[3px] w-6 h-6 rounded-full bg-white shadow ${
-                    store.cycleDayVisible ? "left-[24px]" : "left-[3px]"
-                  }`}
-                />
-              </button>
-            ) : null}
-          </div>
-
-          {store.cycleDay && (
-            <div className="mt-3 rounded-2xl bg-bg px-4 py-2.5 flex items-center justify-between">
-              <div className="text-[13px] font-bold text-ink">
-                {inPeriod
-                  ? `месячные: ${store.periodDays[0]}–${store.periodDays[store.periodDays.length - 1]}`
-                  : `день ${store.cycleDay} · ${PHASE_LABEL[store.phase ?? "UNKNOWN"]}`}
-                {store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}
-              </div>
-              <button
-                onClick={() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-                className="text-[12px] font-bold text-primary underline decoration-dotted underline-offset-2"
-              >
-                Изменить
-              </button>
-            </div>
-          )}
-
-          {/* 3D-карусель дней: тап по дню = самочувствие (красный/жёлтый/зелёный) */}
-          {store.cycleDay && (
-            <div className="mt-4">
-              <DayCarousel
-                periodDays={store.periodDays}
-                dayStates={store.dayStates}
-                lastPeriodStart={store.lastPeriodStart}
-                onDayState={(d, color) => {
-                  store.setDayState(d, color);
-                  fetch("/api/profile/cycle", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      cycleDay: store.cycleDay,
-                      visible: store.cycleDayVisible,
-                      dayStates: { ...store.dayStates, [String(d)]: color },
-                    }),
-                  });
-                }}
-              />
-            </div>
-          )}
-
-          {/* мягкое уточнение: ожидаемый старт прошёл, а отметки нет */}
-          {lateDays !== null && !inPeriod && (
-            <div className="mt-3 rounded-2xl border border-[#F2C94C]/50 bg-[#F2C94C]/10 px-4 py-3">
-              <div className="text-[13px] font-bold text-ink">
-                Ожидала начало ~{lateDays} дн назад. Всё ли нормально?
-              </div>
-              <div className="flex gap-2 mt-2">
-                <button
-                  onClick={startToday}
-                  className="h-[38px] px-4 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[12px] active:scale-[.97] transition"
-                >
-                  Да, отметить
-                </button>
-                <button
-                  onClick={() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-                  className="h-[38px] px-4 rounded-full bg-surface border border-line text-ink font-bold text-[12px] active:scale-[.97] transition"
-                >
-                  Выбрать дату
-                </button>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-3 flex flex-col gap-2.5">
-            {inPeriod ? (
-              <button
-                onClick={endToday}
-                className="w-full h-[52px] rounded-full bg-success text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(127,169,143,.35)] active:scale-[.97] transition"
-              >
-                Закончились сегодня
-              </button>
-            ) : (
-              <button
-                onClick={startToday}
-                className="w-full h-[52px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(232,131,127,.4)] active:scale-[.97] transition"
-              >
-                Месячные начались
-              </button>
-            )}
-          </div>
-
-          {/* пикер даты («Изменить» / «Выбрать дату») */}
-          <div id="period-picker" className="mt-3 flex gap-2 items-center">
-            <input
-              type="date"
-              value={store.lastPeriodStart ?? ""}
-              max={new Date().toISOString().slice(0, 10)}
-              onChange={(e) => e.target.value && setPeriodDate(e.target.value)}
-              className="flex-1 h-[44px] rounded-2xl bg-surface border border-line px-4 text-[13px] font-semibold text-ink outline-none focus:border-primary"
-            />
-            <div className="text-[11px] font-semibold text-muted">первый день</div>
-          </div>
-        </div>
 
         {/* Его забота: как он старается (только для неё) */}
         {care && (
@@ -769,7 +798,7 @@ export default function TodayPage() {
                 {!data.ownerMood && !data.ownerNeedsSpace && !data.cycleDay ? (
                   "Она ещё не отметила настроение — скоро питомец оживёт"
                 ) : (
-                  <>тапни — скажет, как ей · делай дела из карточки — растёт ({STAGE_LABEL[stageOf(cashback?.goodCount ?? 0)]}, уже «{getPerk(cashback?.goodCount ?? 0)?.title ?? "без статуса"}»)</>
+                  <>тапни — скажет, как ей · делай дела из карточки — растёт</>
                 )}
               </div>
               {data.ownerNeedsSpace && (
@@ -779,6 +808,42 @@ export default function TodayPage() {
               )}
             </div>
 
+            {/* Обучалка: маскот (встроенный блок после маскота) */}
+            <CoachTips
+              tips={[
+                {
+                  id: "pet",
+                  anchor: "pet",
+                  text: "Это твой питомец. Он показывает, каково ей сегодня: злится — не приставай, грустит — обними, прыгает — всё отлично. Заботься — и он будет расти.",
+                },
+              ]}
+            />
+
+            {!data.prompt?.text ? (
+              /* Empty-state: Оля ещё не собрала послание */
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full rounded-[28px] bg-surface p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+              >
+                <div className="mx-auto w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center">
+                  <MessageCircleHeart size={26} className="text-primary" />
+                </div>
+                <h2 className="mt-4 text-[20px] font-extrabold text-ink">
+                  Она ещё собирает твоё послание
+                </h2>
+                <p className="mt-2 text-[14px] font-semibold text-muted leading-relaxed">
+                  Как только будет готово — ты узнаешь первым 🍾
+                </p>
+                <button
+                  onClick={remind}
+                  className="mt-5 h-[46px] px-6 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                >
+                  Напомнить ей
+                </button>
+              </motion.div>
+            ) : (
+              <>
             <DailyCard
               text={data.prompt?.text ?? ""}
               streak={data.streak}
@@ -788,31 +853,69 @@ export default function TodayPage() {
               onBad={() => feedback("BAD")}
               onShare={share}
             />
-            {data.subStatus !== "ACTIVE" && (
-              <div className="text-[12px] font-bold text-muted">
-                ИИ-подсказки на сегодня: {data.aiCardsLeft}/2 · дальше — кураторская подборка
+            <CoachTips
+              tips={[
+                {
+                  id: "good",
+                  anchor: "card",
+                  text: "Сделай это сегодня и отметь GOOD — питомец получит опыт, а у неё появится «Его забота».",
+                },
+              ]}
+            />
+
+            {/* XP: один компактный блок (перк + GOOD + стадия + прогресс) */}
+            {cashback && (
+              <div className="w-full rounded-2xl bg-surface/70 border border-line px-4 py-3 flex items-center justify-between gap-3">
+                <div className="text-[12px] font-bold text-muted">
+                  <span className="font-pixel text-xp text-[11px]">{getPerk(cashback.goodCount)?.title ?? "без статуса"}</span>
+                  <span className="text-muted"> · {cashback.goodCount} GOOD · {STAGE_LABEL[stageOf(cashback.goodCount)]}</span>
+                </div>
+                {nextPerk(cashback.goodCount) ? (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-20 h-[7px] rounded-full bg-bg overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                        style={{ width: `${Math.min(100, Math.round((cashback.goodCount / nextPerk(cashback.goodCount)!.at) * 100))}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] font-bold text-muted">
+                      до «{nextPerk(cashback.goodCount)!.title}» ещё {nextPerk(cashback.goodCount)!.at - cashback.goodCount}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-[11px] font-bold text-muted shrink-0">максимум</span>
+                )}
               </div>
             )}
 
-            {/* Перк-статус — XP в пиксельном шрифте */}
-            {cashback && getPerk(cashback.goodCount) && (
-              <div className="text-[12px] font-bold text-muted">
-                Статус:{" "}
-                <span className="font-pixel text-xp text-[11px]">
-                  {getPerk(cashback.goodCount)!.title}
-                </span>{" "}
-                · <span className="font-pixel text-xp text-[11px]">{cashback.goodCount}</span> GOOD
-                {nextPerk(cashback.goodCount)
-                  ? ` · до «${nextPerk(cashback.goodCount)!.title}» ещё ${
-                      nextPerk(cashback.goodCount)!.at - cashback.goodCount
-                    }`
-                  : " · максимум"}
-              </div>
-            )}
+            {/* SOS: позиция 3 — сразу после действия, всегда в зоне видимости */}
+            <button
+              onClick={() => {
+                setSosResult(null);
+                setSosOpen(true);
+              }}
+              className="h-[50px] w-full rounded-full bg-danger/12 border-2 border-danger/30 text-danger font-extrabold text-[14px] flex items-center justify-center gap-2 active:scale-[.97] transition"
+            >
+              <Siren size={17} /> Я накосячил — нужен план
+            </button>
 
-            {/* Сертификат от неё */}
-            {cashback?.reward && (
+            {/* Сертификат от неё — блок, пока не закрыт */}
+            {cashback?.reward &&
+              !rewardClosed &&
+              !(typeof window !== "undefined" && localStorage.getItem(`sync-reward-${cashback.reward.date}`) === "1") && (
               <div className="w-full rounded-[24px] border-2 border-dashed border-primary/50 bg-surface p-6 text-center shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+                <button
+                  onClick={() => {
+                    setRewardClosed(true);
+                    try {
+                      localStorage.setItem(`sync-reward-${cashback.reward!.date}`, "1");
+                    } catch {}
+                  }}
+                  aria-label="Закрыть сертификат"
+                  className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg flex items-center justify-center"
+                >
+                  <X size={14} className="text-muted" />
+                </button>
                 <div className="mx-auto w-12 h-12 rounded-full bg-primary-soft flex items-center justify-center">
                   <Medal size={22} className="text-primary" />
                 </div>
@@ -839,15 +942,15 @@ export default function TodayPage() {
               </div>
             )}
 
-            {/* Список уютного */}
+            {/* Список уютного — горизонтальный скролл-чип */}
             {data.cozy?.length > 0 && (
               <div className="w-full rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
                 <div className="text-[14px] font-extrabold text-ink">Что ей уютно в эти дни</div>
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-5 px-5">
                   {data.cozy.map((c) => (
                     <span
                       key={c}
-                      className="rounded-full bg-primary-soft px-3.5 h-[34px] flex items-center text-[12px] font-bold text-primary"
+                      className="rounded-full bg-primary-soft px-3.5 h-[34px] shrink-0 flex items-center text-[12px] font-bold text-primary whitespace-nowrap"
                     >
                       {c}
                     </span>
@@ -855,30 +958,17 @@ export default function TodayPage() {
                 </div>
               </div>
             )}
+              </>
+            )}
 
-            {/* Полоска цикла (без дат) */}
-            {data.cycleVisible && data.cycleDay ? (
-              <div className="w-full rounded-[24px] bg-surface p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-                <CycleProgress day={data.cycleDay} dayStates={data.cycleDayStates} />
-              </div>
-            ) : (
+            {/* Навигатор цикла: блок «скоро» — только если Оля не включила; полоска живёт в шапке */}
+            {!data.cycleVisible && (
               <div className="w-full rounded-[24px] bg-surface/60 border border-dashed border-line p-4 text-center">
                 <div className="text-[13px] font-bold text-muted">
                   Навигатор цикла скоро: она решит, показывать ли его тебе
                 </div>
               </div>
             )}
-
-            {/* SOS: я накосячил */}
-            <button
-              onClick={() => {
-                setSosResult(null);
-                setSosOpen(true);
-              }}
-              className="h-[50px] w-full rounded-full bg-danger/12 border-2 border-danger/30 text-danger font-extrabold text-[14px] flex items-center justify-center gap-2 active:scale-[.97] transition"
-            >
-              <Siren size={17} /> Я накосячил — нужен план
-            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -979,22 +1069,6 @@ export default function TodayPage() {
           {toast}
         </motion.div>
       )}
-
-      {/* Обучалка: контекстные подсказки, по одной, с «Пропустить» */}
-      <CoachTips
-        tips={[
-          {
-            id: "pet",
-            anchor: "pet",
-            text: "Это твой питомец. Он показывает, каково ей сегодня: злится — не приставай, грустит — обними, прыгает — всё отлично. Заботься — и он будет расти.",
-          },
-          {
-            id: "good",
-            anchor: "card",
-            text: "Сделай это сегодня и отметь GOOD — питомец получит опыт, а у неё появится «Его забота».",
-          },
-        ]}
-      />
     </div>
   );
 }

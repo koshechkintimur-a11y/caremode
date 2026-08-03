@@ -68,17 +68,6 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
     setDismissed(true);
   }
 
-  const pos =
-    cur.anchor === "pet"
-      ? "top-[28%]"
-      : cur.anchor === "card"
-        ? "top-[52%]"
-        : cur.anchor === "mood"
-          ? "top-[62%]"
-          : cur.anchor === "space"
-            ? "top-[72%]"
-            : "top-[30%]";
-
   return (
     <AnimatePresence>
       <motion.div
@@ -87,9 +76,9 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 8, scale: 0.98 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed left-1/2 -translate-x-1/2 ${pos} z-[9999] w-[calc(100%-3rem)] max-w-sm`}
+        className="w-full"
       >
-        <div className="relative rounded-[22px] bg-ink text-white p-5 shadow-[0_12px_40px_rgba(0,0,0,.35)]">
+        <div className="relative rounded-[22px] bg-ink text-white p-5 shadow-[0_12px_40px_rgba(0,0,0,.25)]">
           <button
             onClick={skipAll}
             aria-label="Пропустить обучение"
@@ -112,7 +101,6 @@ export function CoachTips({ tips }: { tips: CoachTip[] }) {
               Пропустить всё
             </button>
           </div>
-          <div className="absolute -bottom-1.5 left-8 w-3 h-3 rotate-45 bg-ink" />
         </div>
       </motion.div>
     </AnimatePresence>

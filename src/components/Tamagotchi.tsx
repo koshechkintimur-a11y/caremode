@@ -76,8 +76,8 @@ const PAL: Record<TamagotchiState, { body: string; dark: string; light: string }
 };
 
 const S = 4;
-const GW = 40;
-const GH = 32; // полная высота: корона и передние тучки не обрезаются
+const GW = 44; // шире: боковые тучки не обрезаются
+const GH = 40; // выше: запас под передними тучками (не достают до воды)
 
 // размеры форм: полуширина облака, сдвиг по Y, (уши/макушки считаются от неё)
 const SIZES: Record<PetStage, { bw: number; baseY: number }> = {
@@ -113,6 +113,8 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
     const draw = (t: number) => {
       const time = t / 1000;
       ctx.clearRect(0, 0, GW * S, GH * S);
+      ctx.save();
+      ctx.translate(0, 3); // маскот с запасом сверху (корона не у края)
       const pal = PAL[state];
 
       let oy = 0;
@@ -125,8 +127,8 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       const spikySad = state === "spiky" && time % 4 > 3.2;
       const sadMode = state === "sad" || spikySad;
 
-      // ==== задние тучки (плывут слева направо) ====
-      const drift = (phase: number) => ((time * 9 + phase) % (GW + 40)) - 20;
+      // ==== задние тучки (плывут слева направо, в границах канваса) ====
+      const drift = (phase: number) => ((time * 9 + phase) % (GW - 6)) - 2;
       if (state === "sad") {
         const x = drift(0);
         cloudlet(Math.round(x) + 6, 3, "#8FA3B8", "#7C92A8");
@@ -142,7 +144,7 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       }
 
       // ==== маскот ====
-      const mx = 20 + ox;
+      const mx = 22 + ox;
       const earDrop = sadMode ? 1 : 0;
 
       // ушки-треугольники (позиция зависит от ширины облака)
@@ -275,6 +277,7 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
           cloudlet(x1 + 4 + i * 10, 21 + i * 3, "#F4FAFF", "#E7F1FA");
         }
       }
+      ctx.restore();
     };
 
     const loop = (t: number) => {
@@ -291,7 +294,7 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       width={GW * S}
       height={GH * S}
       className="block"
-      style={{ imageRendering: "pixelated", width: 425, height: 340, maxWidth: "100%" }}
+      style={{ imageRendering: "pixelated", width: 425, height: 386, maxWidth: "100%" }}
       aria-label={`Питомец (${STAGE_LABEL[stage]}): ${LABELS[state]}`}
     />
   );
@@ -355,7 +358,7 @@ export function Tamagotchi({
 
   return (
     <div className="w-full relative">
-      <div className="relative flex flex-col items-center mt-10 pb-1">
+      <div className="relative flex flex-col items-center mt-[107px] pb-1">
         <motion.button
           onClick={pet}
           whileTap={{ scale: 0.94 }}

@@ -16,9 +16,25 @@ export async function generateWithDeepSeek(
     ? SYSTEM_PROMPT[ctx.locale] +
       "\n\nДОПОЛНИТЕЛЬНО: предыдущий вариант нарушил правила. Будь максимально осторожен с тоном: тепло, конкретно, без единой шутки о ней."
     : SYSTEM_PROMPT[ctx.locale];
-  const system = ctx.partnerContext
-    ? `${base}\n\n## Стиль партнёра (учитывай в совете)\n${ctx.partnerContext}`
-    : base;
+
+  // Few-shot: учимся на реальных реакциях пары (2 GOOD — образец стиля, 1 BAD — чего избегать)
+  const goodShots = ctx.recentFeedback
+    .filter((f) => f.feedback === "GOOD" && f.text)
+    .slice(-2)
+    .map((f) => `✅ Работало: «${f.text}»`)
+    .join("\n");
+  const badShots = ctx.recentFeedback
+    .filter((f) => f.feedback === "BAD" && f.text)
+    .slice(-1)
+    .map((f) => `❌ Не повторяй: «${f.text}»`)
+    .join("\n");
+  const shots = [goodShots, badShots].filter(Boolean).join("\n");
+
+  const system = [
+    base,
+    ctx.partnerContext ? `\n\n## Стиль партнёра (учитывай в совете)\n${ctx.partnerContext}` : "",
+    shots ? `\n\n## Что уже пробовали (учись на этом)\n${shots}` : "",
+  ].join("");
 
   try {
     const res = await fetch(ENDPOINT, {

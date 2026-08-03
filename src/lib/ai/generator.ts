@@ -10,7 +10,7 @@ export interface PromptContext {
   careProfile: CareProfile;
   locale: "ru" | "en";
   dayTogether: number;
-  recentFeedback: string[]; // GOOD | BAD | MISSED за последние дни
+  recentFeedback: { feedback: string; text: string }[]; // GOOD | BAD | MISSED + текст карточки
   partnerContext?: string; // стиль партнёра из микро-опроса
 }
 

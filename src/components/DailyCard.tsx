@@ -29,14 +29,17 @@ export function DailyCard({
         initial={{ opacity: 0, scale: 0.94, y: 14 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 22 }}
-        className="relative w-full max-w-md overflow-hidden rounded-[28px] bg-gradient-to-br from-primary via-[#E98F8B] to-accent p-7 pt-6 text-white shadow-[0_16px_48px_rgba(232,131,127,.35)]"
+        className="relative w-full max-w-md overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/80 via-[#E98F8B]/75 to-accent/80 p-7 pt-6 text-white shadow-[0_16px_48px_rgba(232,131,127,.3)] backdrop-blur-[2px]"
       >
         {/* мягкие блики */}
         <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/15 blur-2xl" />
         <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-white/10 blur-3xl" />
 
         <div className="relative flex items-center justify-between">
-          <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/80">
+          <span
+            className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/90"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,.5)" }}
+          >
             Твоя подсказка на сегодня
           </span>
           <button
@@ -48,7 +51,10 @@ export function DailyCard({
           </button>
         </div>
 
-        <p className="relative mt-6 text-[21px] font-extrabold leading-snug tracking-tight">
+        <p
+          className="relative mt-6 text-[21px] font-extrabold leading-snug tracking-tight"
+          style={{ textShadow: "0 2px 14px rgba(0,0,0,.55)" }}
+        >
           {text}
         </p>
 

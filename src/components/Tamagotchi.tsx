@@ -77,13 +77,13 @@ const PAL: Record<TamagotchiState, { body: string; dark: string; light: string }
 
 const S = 4;
 const GW = 40;
-const GH = 28; // компактнее: нижняя пустота канваса обрезана
+const GH = 32; // полная высота: корона и передние тучки не обрезаются
 
 // размеры форм: полуширина облака, сдвиг по Y, (уши/макушки считаются от неё)
 const SIZES: Record<PetStage, { bw: number; baseY: number }> = {
   baby: { bw: 5, baseY: 2 },
   teen: { bw: 8, baseY: 0 },
-  adult: { bw: 11, baseY: -1 },
+  adult: { bw: 11, baseY: 0 }, // baseY=0: корона (y=1) не выходит за верх канваса
 };
 
 function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetStage }) {
@@ -253,26 +253,26 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       if (state === "sad") {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(45 + i * 75));
-          cloudlet(x1 + 2 + i * 10, 19 + i * 2, "#8FA3B8", "#7C92A8");
+          cloudlet(x1 + 2 + i * 10, 22 + i * 2, "#8FA3B8", "#7C92A8");
           if (Math.floor(time * 6) % 2 === 0) {
-            px(x1 + 4, 22 + i * 2, 1, 2, "#6E87A3");
-            px(x1 + 6, 23 + i * 2, 1, 2, "#6E87A3");
+            px(x1 + 4, 25 + i * 2, 1, 2, "#6E87A3");
+            px(x1 + 6, 26 + i * 2, 1, 2, "#6E87A3");
           }
         }
       } else if (state === "spiky") {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(70 + i * 80));
-          cloudlet(x1 + 2 + i * 12, 19 + i * 2, "#59647A", "#4A5468");
+          cloudlet(x1 + 2 + i * 12, 22 + i * 2, "#59647A", "#4A5468");
           if (Math.floor(time * 5) % 3 !== 0) {
-            px(x1 + 3, 21 + i * 2, 1, 2, "#FFEC27");
-            px(x1 + 4, 23 + i * 2, 2, 1, "#FFEC27");
             px(x1 + 3, 24 + i * 2, 1, 2, "#FFEC27");
+            px(x1 + 4, 26 + i * 2, 2, 1, "#FFEC27");
+            px(x1 + 3, 27 + i * 2, 1, 2, "#FFEC27");
           }
         }
       } else {
         for (let i = 0; i < nClouds; i++) {
           const x1 = Math.round(drift(95 + i * 75));
-          cloudlet(x1 + 4 + i * 10, 18 + i * 3, "#F4FAFF", "#E7F1FA");
+          cloudlet(x1 + 4 + i * 10, 21 + i * 3, "#F4FAFF", "#E7F1FA");
         }
       }
     };
@@ -291,7 +291,7 @@ function PixelCloudPet({ state, stage }: { state: TamagotchiState; stage: PetSta
       width={GW * S}
       height={GH * S}
       className="block"
-      style={{ imageRendering: "pixelated", width: 425, height: 297, maxWidth: "100%" }}
+      style={{ imageRendering: "pixelated", width: 425, height: 340, maxWidth: "100%" }}
       aria-label={`Питомец (${STAGE_LABEL[stage]}): ${LABELS[state]}`}
     />
   );

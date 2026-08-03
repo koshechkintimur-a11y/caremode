@@ -323,11 +323,17 @@ export default function TodayPage() {
         {data.paused ? (
           <PauseCard />
         ) : (
-          <div className="rounded-[28px] bg-gradient-to-br from-primary via-[#E98F8B] to-accent p-7 text-white shadow-[0_16px_48px_rgba(232,131,127,.4)]">
-            <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/80">
+          <div className="rounded-[28px] bg-gradient-to-br from-primary/80 via-[#E98F8B]/75 to-accent/80 p-7 text-white shadow-[0_16px_48px_rgba(232,131,127,.3)] backdrop-blur-[2px]">
+            <span
+              className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/90"
+              style={{ textShadow: "0 1px 8px rgba(0,0,0,.5)" }}
+            >
               Подсказка для него сегодня
             </span>
-            <p className="mt-4 text-[19px] font-extrabold leading-snug">
+            <p
+              className="mt-4 text-[19px] font-extrabold leading-snug"
+              style={{ textShadow: "0 2px 14px rgba(0,0,0,.55)" }}
+            >
               {data.prompt?.text ?? "…"}
             </p>
           </div>

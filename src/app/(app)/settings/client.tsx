@@ -29,6 +29,8 @@ interface MeData {
   subStatus: string;
   aiCardsLeft: number;
   role: "OWNER" | "PARTNER";
+  pushEnabled: boolean;
+  pushPromptTime: string | null;
 }
 
 export default function SettingsPage() {
@@ -61,6 +63,8 @@ export default function SettingsPage() {
         subStatus: b.subStatus ?? "NONE",
         aiCardsLeft: b.aiCardsLeft ?? 0,
         role: b.role ?? "PARTNER",
+        pushEnabled: Boolean(b.pushEnabled),
+        pushPromptTime: b.pushPromptTime ?? null,
       });
       setPause(Boolean(b.pausePartner));
       setPromptTime(b.promptTime ?? null);
@@ -275,6 +279,75 @@ export default function SettingsPage() {
             <RefreshCw size={14} />
             Сбросить данные устройства (фаза, настроение)
           </button>
+        </div>
+      )}
+
+      {/* Напоминание отметить настроение — только OWNER */}
+      {me?.role === "OWNER" && (
+        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="text-[16px] font-extrabold text-ink">Напоминать мне</div>
+          <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
+            пуш «Как ты сегодня?» — если ещё не отметила настроение
+          </div>
+
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-[14px] font-extrabold text-ink">Напоминания</div>
+            <button
+              onClick={async () => {
+                const next = !me.pushEnabled;
+                setMe({ ...me, pushEnabled: next });
+                await fetch("/api/profile/push-remind", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ enabled: next, time: me.pushPromptTime }),
+                });
+              }}
+              className={`w-[52px] h-[30px] rounded-full transition-colors relative ${me.pushEnabled ? "bg-primary" : "bg-line"}`}
+            >
+              <motion.span
+                layout
+                transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                className={`absolute top-[3px] w-6 h-6 rounded-full bg-surface shadow ${me.pushEnabled ? "left-[24px]" : "left-[3px]"}`}
+              />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            {(
+              [
+                ["9", "Утром · 9:00"],
+                ["10", "В 10:00"],
+                ["20", "Вечером · 20:00"],
+              ] as [string, string][]
+            ).map(([t, label]) => (
+              <button
+                key={t}
+                onClick={async () => {
+                  setMe({ ...me, pushPromptTime: t });
+                  await fetch("/api/profile/push-remind", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ enabled: me.pushEnabled, time: t }),
+                  });
+                }}
+                className={cn(
+                  "rounded-2xl h-[42px] text-[12px] font-bold border transition-colors",
+                  me.pushPromptTime === t
+                    ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
+                    : "bg-surface text-ink border-line"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-3 text-[11px] font-semibold text-muted">
+            {me.pushEnabled && me.pushPromptTime
+              ? `придёт в ${me.pushPromptTime}:00, если ты ещё не отметила день`
+              : me.pushEnabled
+                ? "выбери время — и начнём напоминать"
+                : "включи, чтобы не пропускать день"}
+          </div>
         </div>
       )}
 

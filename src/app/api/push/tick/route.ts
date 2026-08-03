@@ -40,6 +40,50 @@ export async function GET() {
     const owner = couple.members.find((m) => m.role === "OWNER");
     if (!partner || !owner) continue;
 
+    // ==== Пуш ОЛЕ: напоминание отметить настроение (если ещё не отметила сегодня) ====
+    const ownerHour = owner.pushPromptTime ? Number(owner.pushPromptTime) : null;
+    const ownerSubs = (owner.pushSubs as PushSub[] | null) ?? [];
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const ownerMoodToday =
+      owner.moodUpdatedAt !== null &&
+      new Date(owner.moodUpdatedAt).getTime() >= todayStart.getTime();
+    if (
+      owner.pushEnabled &&
+      ownerSubs.length > 0 &&
+      ownerHour !== null &&
+      ownerHour === hour &&
+      owner.lastPushDate !== today &&
+      !ownerMoodToday
+    ) {
+      const payload = JSON.stringify({
+        title: "Как ты сегодня? 💛",
+        body: "Один тап — и он получит подсказку, как тебя поддержать.",
+        url: "/today",
+      });
+      let ownerFailed: string[] = [];
+      for (const sub of ownerSubs) {
+        try {
+          await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+          sent++;
+        } catch {
+          ownerFailed = [...ownerFailed, sub.endpoint];
+        }
+      }
+      if (ownerFailed.length > 0) {
+        const alive = ownerSubs.filter((s) => !ownerFailed.includes(s.endpoint));
+        await prisma.user.update({
+          where: { id: owner.id },
+          data: { pushSubs: alive as unknown as object, lastPushDate: today },
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: owner.id },
+          data: { lastPushDate: today },
+        });
+      }
+    }
+
     const subs = (partner.pushSubs as PushSub[] | null) ?? [];
     if (subs.length === 0) continue;
 

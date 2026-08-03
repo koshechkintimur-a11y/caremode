@@ -781,6 +781,8 @@ export const UserScalarFieldEnum = {
   needsSpace: 'needsSpace',
   dayStates: 'dayStates',
   pushSubs: 'pushSubs',
+  pushEnabled: 'pushEnabled',
+  pushPromptTime: 'pushPromptTime',
   lastPushDate: 'lastPushDate',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'

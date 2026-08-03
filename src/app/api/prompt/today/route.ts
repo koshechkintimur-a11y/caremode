@@ -28,6 +28,8 @@ export async function GET() {
     subStatus: user.subStatus,
     pausePartner: user.pausePartner,
     promptTime: user.promptTime ?? null,
+    pushEnabled: user.pushEnabled ?? false,
+    pushPromptTime: user.pushPromptTime ?? null,
     cycleDay: owner?.cycleDayVisible ? owner.cycleDay : null,
     cycleVisible: owner?.cycleDayVisible ?? false,
     ownerMood: owner?.mood ?? null,

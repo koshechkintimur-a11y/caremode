@@ -65,6 +65,8 @@ export type UserMinAggregateOutputType = {
   sosUsed: number | null
   sosDate: string | null
   needsSpace: boolean | null
+  pushEnabled: boolean | null
+  pushPromptTime: string | null
   lastPushDate: string | null
   updatedAt: Date | null
   createdAt: Date | null
@@ -95,6 +97,8 @@ export type UserMaxAggregateOutputType = {
   sosUsed: number | null
   sosDate: string | null
   needsSpace: boolean | null
+  pushEnabled: boolean | null
+  pushPromptTime: string | null
   lastPushDate: string | null
   updatedAt: Date | null
   createdAt: Date | null
@@ -129,6 +133,8 @@ export type UserCountAggregateOutputType = {
   needsSpace: number
   dayStates: number
   pushSubs: number
+  pushEnabled: number
+  pushPromptTime: number
   lastPushDate: number
   updatedAt: number
   createdAt: number
@@ -175,6 +181,8 @@ export type UserMinAggregateInputType = {
   sosUsed?: true
   sosDate?: true
   needsSpace?: true
+  pushEnabled?: true
+  pushPromptTime?: true
   lastPushDate?: true
   updatedAt?: true
   createdAt?: true
@@ -205,6 +213,8 @@ export type UserMaxAggregateInputType = {
   sosUsed?: true
   sosDate?: true
   needsSpace?: true
+  pushEnabled?: true
+  pushPromptTime?: true
   lastPushDate?: true
   updatedAt?: true
   createdAt?: true
@@ -239,6 +249,8 @@ export type UserCountAggregateInputType = {
   needsSpace?: true
   dayStates?: true
   pushSubs?: true
+  pushEnabled?: true
+  pushPromptTime?: true
   lastPushDate?: true
   updatedAt?: true
   createdAt?: true
@@ -360,6 +372,8 @@ export type UserGroupByOutputType = {
   needsSpace: boolean
   dayStates: runtime.JsonValue | null
   pushSubs: runtime.JsonValue | null
+  pushEnabled: boolean
+  pushPromptTime: string | null
   lastPushDate: string | null
   updatedAt: Date
   createdAt: Date
@@ -417,6 +431,8 @@ export type UserWhereInput = {
   needsSpace?: Prisma.BoolFilter<"User"> | boolean
   dayStates?: Prisma.JsonNullableFilter<"User">
   pushSubs?: Prisma.JsonNullableFilter<"User">
+  pushEnabled?: Prisma.BoolFilter<"User"> | boolean
+  pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -453,6 +469,8 @@ export type UserOrderByWithRelationInput = {
   needsSpace?: Prisma.SortOrder
   dayStates?: Prisma.SortOrderInput | Prisma.SortOrder
   pushSubs?: Prisma.SortOrderInput | Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -492,6 +510,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   needsSpace?: Prisma.BoolFilter<"User"> | boolean
   dayStates?: Prisma.JsonNullableFilter<"User">
   pushSubs?: Prisma.JsonNullableFilter<"User">
+  pushEnabled?: Prisma.BoolFilter<"User"> | boolean
+  pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -528,6 +548,8 @@ export type UserOrderByWithAggregationInput = {
   needsSpace?: Prisma.SortOrder
   dayStates?: Prisma.SortOrderInput | Prisma.SortOrder
   pushSubs?: Prisma.SortOrderInput | Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -570,6 +592,8 @@ export type UserScalarWhereWithAggregatesInput = {
   needsSpace?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   dayStates?: Prisma.JsonNullableWithAggregatesFilter<"User">
   pushSubs?: Prisma.JsonNullableWithAggregatesFilter<"User">
+  pushEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  pushPromptTime?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -603,6 +627,8 @@ export type UserCreateInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -639,6 +665,8 @@ export type UserUncheckedCreateInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -673,6 +701,8 @@ export type UserUpdateInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -709,6 +739,8 @@ export type UserUncheckedUpdateInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -744,6 +776,8 @@ export type UserCreateManyInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -777,6 +811,8 @@ export type UserUpdateManyMutationInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -811,6 +847,8 @@ export type UserUncheckedUpdateManyInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,6 +883,8 @@ export type UserCountOrderByAggregateInput = {
   needsSpace?: Prisma.SortOrder
   dayStates?: Prisma.SortOrder
   pushSubs?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -882,6 +922,8 @@ export type UserMaxOrderByAggregateInput = {
   sosUsed?: Prisma.SortOrder
   sosDate?: Prisma.SortOrder
   needsSpace?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -912,6 +954,8 @@ export type UserMinOrderByAggregateInput = {
   sosUsed?: Prisma.SortOrder
   sosDate?: Prisma.SortOrder
   needsSpace?: Prisma.SortOrder
+  pushEnabled?: Prisma.SortOrder
+  pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -1075,6 +1119,8 @@ export type UserCreateWithoutCoupleInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -1109,6 +1155,8 @@ export type UserUncheckedCreateWithoutCoupleInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -1172,6 +1220,8 @@ export type UserScalarWhereInput = {
   needsSpace?: Prisma.BoolFilter<"User"> | boolean
   dayStates?: Prisma.JsonNullableFilter<"User">
   pushSubs?: Prisma.JsonNullableFilter<"User">
+  pushEnabled?: Prisma.BoolFilter<"User"> | boolean
+  pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1205,6 +1255,8 @@ export type UserCreateWithoutAchievementsInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -1240,6 +1292,8 @@ export type UserUncheckedCreateWithoutAchievementsInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -1289,6 +1343,8 @@ export type UserUpdateWithoutAchievementsInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1324,6 +1380,8 @@ export type UserUncheckedUpdateWithoutAchievementsInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1357,6 +1415,8 @@ export type UserCreateManyCoupleInput = {
   needsSpace?: boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: boolean
+  pushPromptTime?: string | null
   lastPushDate?: string | null
   updatedAt?: Date | string
   createdAt?: Date | string
@@ -1390,6 +1450,8 @@ export type UserUpdateWithoutCoupleInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1424,6 +1486,8 @@ export type UserUncheckedUpdateWithoutCoupleInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1458,6 +1522,8 @@ export type UserUncheckedUpdateManyWithoutCoupleInput = {
   needsSpace?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dayStates?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   pushSubs?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1523,6 +1589,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   needsSpace?: boolean
   dayStates?: boolean
   pushSubs?: boolean
+  pushEnabled?: boolean
+  pushPromptTime?: boolean
   lastPushDate?: boolean
   updatedAt?: boolean
   createdAt?: boolean
@@ -1560,6 +1628,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   needsSpace?: boolean
   dayStates?: boolean
   pushSubs?: boolean
+  pushEnabled?: boolean
+  pushPromptTime?: boolean
   lastPushDate?: boolean
   updatedAt?: boolean
   createdAt?: boolean
@@ -1595,6 +1665,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   needsSpace?: boolean
   dayStates?: boolean
   pushSubs?: boolean
+  pushEnabled?: boolean
+  pushPromptTime?: boolean
   lastPushDate?: boolean
   updatedAt?: boolean
   createdAt?: boolean
@@ -1630,12 +1702,14 @@ export type UserSelectScalar = {
   needsSpace?: boolean
   dayStates?: boolean
   pushSubs?: boolean
+  pushEnabled?: boolean
+  pushPromptTime?: boolean
   lastPushDate?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "lastPushDate" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
   achievements?: boolean | Prisma.User$achievementsArgs<ExtArgs>
@@ -1683,6 +1757,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     needsSpace: boolean
     dayStates: runtime.JsonValue | null
     pushSubs: runtime.JsonValue | null
+    pushEnabled: boolean
+    pushPromptTime: string | null
     lastPushDate: string | null
     updatedAt: Date
     createdAt: Date
@@ -2139,6 +2215,8 @@ export interface UserFieldRefs {
   readonly needsSpace: Prisma.FieldRef<"User", 'Boolean'>
   readonly dayStates: Prisma.FieldRef<"User", 'Json'>
   readonly pushSubs: Prisma.FieldRef<"User", 'Json'>
+  readonly pushEnabled: Prisma.FieldRef<"User", 'Boolean'>
+  readonly pushPromptTime: Prisma.FieldRef<"User", 'String'>
   readonly lastPushDate: Prisma.FieldRef<"User", 'String'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart } from "lucide-react";
+import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart, Sparkles } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
@@ -35,6 +35,7 @@ interface TodayData {
   ownerMood: string | null;
   ownerNeedsSpace: boolean;
   ownerNeed: string | null;
+  emptyOwner: boolean;
   cycleDayStates: Record<string, string>;
   cozy: string[];
 }
@@ -303,6 +304,27 @@ export default function TodayPage() {
     return store.cycleDay + stats.daysUntilNext;
   }
 
+  // Олина заглушка: карточка не генерируется, пока она ничего не настроила
+  const ownerEmptyCard = data
+    ? data.emptyOwner && data.role === "OWNER" ? (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full rounded-[28px] bg-surface/70 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+      >
+        <div className="mx-auto w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center">
+          <Sparkles size={26} className="text-primary" />
+        </div>
+        <h2 className="mt-4 text-[20px] font-extrabold text-ink">
+          Подсказка появится, когда ты отметишь, как себя чувствуешь
+        </h2>
+        <p className="mt-2 text-[14px] font-semibold text-muted leading-relaxed">
+          Один тап в пульсе — и он получит её первой 🌊
+        </p>
+      </motion.div>
+    ) : null
+    : null;
+
   // «Напомнить ей» — пуш Оле (empty-state партнёра, пока она не собрала послание)
   async function remind() {
     setToast("Отправляем…");
@@ -392,7 +414,7 @@ export default function TodayPage() {
         />
 
         {/* ПУЛЬС: быстрое обновление настроения — карточка партнёра меняется */}
-        <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
           <div className="text-[15px] font-extrabold text-ink">Как ты сейчас?</div>
           <div className="text-[12px] font-semibold text-muted mt-0.5 mb-3">
             Он увидит это как новую подсказку — моментально
@@ -408,7 +430,7 @@ export default function TodayPage() {
                     "rounded-full px-4 h-[40px] text-[13px] font-bold transition-colors border",
                     active
                       ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
-                      : "bg-surface text-ink border-line hover:border-primary/40"
+                      : "bg-surface/70 text-ink border-line hover:border-primary/40"
                   )}
                 >
                   {m.label}
@@ -423,7 +445,7 @@ export default function TodayPage() {
               "mt-3 w-full h-[46px] rounded-full text-[14px] font-extrabold border-2 transition-colors active:scale-[.98]",
               store.needsSpace
                 ? "bg-[#E05C5C] border-transparent text-white"
-                : "bg-surface text-[#B04A4A] border-[#E05C5C]/40"
+                : "bg-surface/70 text-[#B04A4A] border-[#E05C5C]/40"
             )}
           >
             {store.needsSpace ? "Не трогать — отмечено" : "Не трогать сегодня"}
@@ -443,7 +465,7 @@ export default function TodayPage() {
                       "rounded-full px-3.5 h-[38px] text-[13px] font-bold transition-colors border",
                       active
                         ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
-                        : "bg-surface text-ink border-line hover:border-primary/40"
+                        : "bg-surface/70 text-ink border-line hover:border-primary/40"
                     )}
                   >
                     {n.emoji} {n.label}
@@ -458,7 +480,7 @@ export default function TodayPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="text-[12px] font-bold uppercase tracking-wider text-muted">Твоя фаза</div>
             <div className="mt-1.5 text-[16px] font-extrabold text-ink">
               {store.phase ? PHASE_LABEL[store.phase] : "не указана"}
@@ -467,7 +489,7 @@ export default function TodayPage() {
               {store.lastPeriodStart ? "рассчитано на устройстве" : "уточни в настройках"}
             </div>
           </div>
-          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="text-[12px] font-bold uppercase tracking-wider text-muted">Настроение</div>
             <div className="mt-1.5 text-[16px] font-extrabold text-ink">
               {store.mood ? MOOD_LABEL[store.mood] : "не указано"}
@@ -477,7 +499,7 @@ export default function TodayPage() {
         </div>
 
         {/* Мои дни: свёрнуто в 1 строку, раскрытие по тапу */}
-        <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
           <button onClick={() => setDaysOpen(!daysOpen)} className="w-full flex items-center justify-between gap-3 text-left">
             <div>
               <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
@@ -526,7 +548,7 @@ export default function TodayPage() {
                 <button
                   onClick={toggleNavigator}
                   disabled={navBusy}
-                  className="flex items-center justify-between gap-3 rounded-2xl border-2 border-line bg-surface p-4 text-left transition-colors"
+                  className="flex items-center justify-between gap-3 rounded-2xl border-2 border-line bg-surface/70 p-4 text-left transition-colors"
                 >
                   <div>
                     <div className="text-[14px] font-extrabold text-ink">Показывать ему, где я в цикле</div>
@@ -589,7 +611,7 @@ export default function TodayPage() {
                     </button>
                     <button
                       onClick={() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" })}
-                      className="h-[38px] px-4 rounded-full bg-surface border border-line text-ink font-bold text-[12px] active:scale-[.97] transition"
+                      className="h-[38px] px-4 rounded-full bg-surface/70 border border-line text-ink font-bold text-[12px] active:scale-[.97] transition"
                     >
                       Выбрать дату
                     </button>
@@ -604,7 +626,7 @@ export default function TodayPage() {
                   value={store.lastPeriodStart ?? ""}
                   max={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => e.target.value && setPeriodDate(e.target.value)}
-                  className="flex-1 h-[44px] rounded-2xl bg-surface border border-line px-4 text-[13px] font-semibold text-ink outline-none focus:border-primary"
+                  className="flex-1 h-[44px] rounded-2xl bg-surface/70 border border-line px-4 text-[13px] font-semibold text-ink outline-none focus:border-primary"
                 />
                 <div className="text-[11px] font-semibold text-muted">первый день</div>
               </div>
@@ -614,7 +636,7 @@ export default function TodayPage() {
 
         {/* Кэшбэк: он прошёл цикл на отлично — вручить награду (редкий блок — ниже ежедневных) */}
         {cashback?.canReward && (
-          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
                 <Gift size={20} className="text-primary" />
@@ -638,7 +660,7 @@ export default function TodayPage() {
                       "rounded-2xl border px-4 py-3 text-left text-[13px] font-bold transition-colors",
                       rewardText === t
                         ? "border-primary bg-primary-soft text-ink"
-                        : "border-line bg-surface text-ink"
+                        : "border-line bg-surface/70 text-ink"
                     )}
                   >
                     {t}
@@ -648,7 +670,7 @@ export default function TodayPage() {
                   value={rewardText}
                   onChange={(e) => setRewardText(e.target.value)}
                   placeholder="…или напиши свою"
-                  className="h-[46px] rounded-2xl bg-surface border border-line px-4 text-[14px] font-semibold text-ink outline-none focus:border-primary"
+                  className="h-[46px] rounded-2xl bg-surface/70 border border-line px-4 text-[14px] font-semibold text-ink outline-none focus:border-primary"
                 />
                 <button
                   onClick={giveReward}
@@ -671,7 +693,7 @@ export default function TodayPage() {
 
         {/* Его забота: как он старается (только для неё) */}
         {care && (
-          <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(127,169,143,.14)]">
+          <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(127,169,143,.14)]">
             <div className="text-[15px] font-extrabold text-ink">Его забота</div>
             <div className="text-[12px] font-semibold text-muted mt-0.5">
               он старается ради тебя — {care.goodCount} {pluralCare(care.goodCount)} за 28 дней
@@ -779,7 +801,7 @@ export default function TodayPage() {
           key="good"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(127,169,143,.25)]"
+          className="w-full max-w-md rounded-[28px] bg-surface/70 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(127,169,143,.25)]"
         >
           <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
             <StreakRing streak={data.streak} size={56} />
@@ -817,7 +839,7 @@ export default function TodayPage() {
           key="bad"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+          className="w-full max-w-md rounded-[28px] bg-surface/70 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
         >
           <h2 className="text-[20px] font-extrabold text-ink">Учту. Завтра подберу лучше.</h2>
           <p className="mt-2 text-[14px] font-semibold text-muted">
@@ -825,7 +847,7 @@ export default function TodayPage() {
           </p>
           <button
             onClick={() => setDone(null)}
-            className="mt-6 h-[50px] px-8 rounded-full bg-surface border border-line text-ink font-bold text-[14px] active:scale-[.97] transition"
+            className="mt-6 h-[50px] px-8 rounded-full bg-surface/70 border border-line text-ink font-bold text-[14px] active:scale-[.97] transition"
           >
             К карточке дня
           </button>
@@ -890,11 +912,12 @@ export default function TodayPage() {
             />
 
             {!data.prompt?.text ? (
+              ownerEmptyCard ?? (
               /* Empty-state: Оля ещё не собрала послание */
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full rounded-[28px] bg-surface/80 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+                className="w-full rounded-[28px] bg-surface/70 backdrop-blur-[2px] p-8 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
               >
                 <div className="mx-auto w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center">
                   <MessageCircleHeart size={26} className="text-primary" />
@@ -912,6 +935,7 @@ export default function TodayPage() {
                   Напомнить ей
                 </button>
               </motion.div>
+              )
             ) : (
               <>
             <DailyCard
@@ -935,7 +959,7 @@ export default function TodayPage() {
 
             {/* XP: один компактный блок (перк + GOOD + стадия + прогресс) */}
             {cashback && (
-              <div className="w-full rounded-2xl bg-surface/70 border border-line px-4 py-3 flex items-center justify-between gap-3">
+              <div className="w-full rounded-2xl bg-surface/60 border border-line px-4 py-3 flex items-center justify-between gap-3">
                 <div className="text-[12px] font-bold text-muted">
                   <span className="font-pixel text-ink text-[11px]">{getPerk(cashback.goodCount)?.title ?? "без статуса"}</span>
                   <span className="text-muted"> · {cashback.goodCount} GOOD · {STAGE_LABEL[stageOf(cashback.goodCount)]}</span>
@@ -973,7 +997,7 @@ export default function TodayPage() {
             {cashback?.reward &&
               !rewardClosed &&
               !(typeof window !== "undefined" && localStorage.getItem(`sync-reward-${cashback.reward.date}`) === "1") && (
-              <div className="w-full rounded-[24px] border-2 border-dashed border-primary/50 bg-surface/75 backdrop-blur-[2px] p-6 text-center shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+              <div className="w-full rounded-[24px] border-2 border-dashed border-primary/50 bg-surface/65 backdrop-blur-[2px] p-6 text-center shadow-[0_8px_30px_rgba(232,131,127,.14)]">
                 <button
                   onClick={() => {
                     setRewardClosed(true);
@@ -1008,7 +1032,7 @@ export default function TodayPage() {
                       setTimeout(() => setToast(""), 2600);
                     });
                   }}
-                  className="mt-4 h-[42px] px-5 rounded-full bg-surface border border-line text-ink font-bold text-[13px] flex items-center gap-2 mx-auto active:scale-[.97] transition"
+                  className="mt-4 h-[42px] px-5 rounded-full bg-surface/70 border border-line text-ink font-bold text-[13px] flex items-center gap-2 mx-auto active:scale-[.97] transition"
                 >
                   <Medal size={14} className="text-primary" /> Поделиться
                 </button>
@@ -1017,7 +1041,7 @@ export default function TodayPage() {
 
             {/* Список уютного — горизонтальный скролл-чип */}
             {data.cozy?.length > 0 && (
-              <div className="rounded-[24px] bg-surface/80 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+              <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
                 <div className="text-[14px] font-extrabold text-ink">Что ей уютно в эти дни</div>
                 <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-5 px-5">
                   {data.cozy.map((c) => (
@@ -1062,7 +1086,7 @@ export default function TodayPage() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 32 }}
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[28px] bg-surface p-6 pb-8 max-w-md mx-auto"
+              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[28px] bg-surface/70 backdrop-blur-[2px] p-6 pb-8 max-w-md mx-auto"
             >
               <div className="flex items-center justify-between">
                 <div className="text-[17px] font-extrabold text-ink">Что случилось?</div>

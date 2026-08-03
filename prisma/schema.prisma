@@ -39,6 +39,8 @@ model User {
   needsSpace    Boolean  @default(false) // «не трогать» — её отметка на сегодня
   dayStates     Json? // { "1": "red"|"yellow"|"green", ... } — самочувствие по дням цикла (числа, без дат)
   pushSubs      Json? // Web Push подписки: [{endpoint, keys}] — уведомления карточки дня
+  pushEnabled   Boolean @default(false) // OWNER: напоминание «Как ты сегодня?»
+  pushPromptTime String? // OWNER: час напоминания: "9" | "10" | "20"
   lastPushDate  String? // YYYY-MM-DD последней отправки карточки (антидубль)
   updatedAt     DateTime @default(now()) @updatedAt
   achievements  Achievement[]

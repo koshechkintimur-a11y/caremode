@@ -39,6 +39,7 @@ export interface TodayResult {
     feedback: string | null;
     source: string;
   } | null;
+  emptyOwner?: boolean;
   paused: boolean;
   paywall: boolean; // всегда false сейчас — задел на будущую подписку
   streak: number;
@@ -62,6 +63,21 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
   // Режим инкогнито: партнёр видит только нейтральное «пауза»
   if (owner.pausePartner) {
     return { prompt: null, paused: true, paywall: false, streak, aiCardsLeft: 0 };
+  }
+
+  // Оля ещё НИЧЕГО не настроила (нет послания и ни одной отметки) —
+  // карточку не генерируем: «пустышка» ломает восприятие («откуда подсказка?»).
+  const cpRaw = (owner.careProfile ?? {}) as Record<string, unknown>;
+  const cpEmpty =
+    !cpRaw ||
+    ((!Array.isArray(cpRaw.food) || cpRaw.food.length === 0) &&
+      (!Array.isArray(cpRaw.space) || cpRaw.space.length === 0) &&
+      (!Array.isArray(cpRaw.words) || cpRaw.words.length === 0) &&
+      !cpRaw.custom);
+  const ownerEmpty =
+    cpEmpty && !owner.mood && !owner.cycleDay && !owner.needsSpace && !owner.phase;
+  if (ownerEmpty) {
+    return { prompt: null, emptyOwner: true, paused: false, paywall: false, streak, aiCardsLeft: 0 };
   }
 
   const day = todayKey();

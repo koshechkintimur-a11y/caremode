@@ -11,7 +11,7 @@ export function Logo({ size = 40 }: { size?: number }) {
         <Heart size={size * 0.5} className="text-white" fill="currentColor" />
       </div>
       <span className="font-pixel text-ink flex items-center gap-1.5" style={{ fontSize: size * 0.52 }}>
-        sync<span className="text-primary">.</span>
+        caremode<span className="text-primary">.</span>
         <span className="pixel-cursor" />
       </span>
     </div>

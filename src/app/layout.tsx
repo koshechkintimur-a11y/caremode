@@ -21,10 +21,10 @@ const pixelFont = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "sync — переводчик эмпатии",
+  title: "CareMode — переводчик эмпатии",
   description: "Подсказки, как поддержать свою девушку сегодня. Без догадок и обид.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "sync" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "CareMode" },
   icons: { icon: "/icons/icon-192.png", apple: "/icons/icon-192.png" },
 };
 

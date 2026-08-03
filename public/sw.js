@@ -51,7 +51,7 @@ self.addEventListener("fetch", (e) => {
 
 // ===== Web Push =====
 self.addEventListener("push", (e) => {
-  let data = { title: "SYNC", body: "", url: "/today" };
+  let data = { title: "CareMode", body: "", url: "/today" };
   try {
     data = e.data ? JSON.parse(e.data.text()) : data;
   } catch {

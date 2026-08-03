@@ -1,6 +1,6 @@
 {
-  "name": "sync — переводчик эмпатии",
-  "short_name": "sync",
+  "name": "CareMode — переводчик эмпатии",
+  "short_name": "CareMode",
   "description": "Подсказки, как поддержать свою девушку. Без догадок и обид.",
   "start_url": "/today",
   "scope": "/",

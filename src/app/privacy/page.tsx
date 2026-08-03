@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 
-export const metadata: Metadata = { title: "Политика конфиденциальности — SYNC" };
+export const metadata: Metadata = { title: "Политика конфиденциальности — CareMode" };
 
 // Политика конфиденциальности (152-ФЗ, ст. 6, 7, 9, 10.3, 12, 14–22).
 // Не является юридической консультацией; перед публичным запуском
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3">
           <Logo size={34} />
-          <span className="font-pixel text-[14px] text-ink">sync .</span>
+          <span className="font-pixel text-[14px] text-ink">caremode .</span>
         </div>
 
         <h1 className="mt-8 text-[26px] font-extrabold text-ink leading-tight">
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-[17px] font-extrabold text-ink mb-2">1. Общие положения</h2>
             <p>
-              Используя сервис SYNC (далее — «Сервис»), вы принимаете условия настоящей политики.
+              Используя сервис CareMode (далее — «Сервис»), вы принимаете условия настоящей политики.
               Продолжая пользоваться Сервисом, вы соглашаетесь с обработкой данных в объёме,
               описанном ниже, в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».
             </p>

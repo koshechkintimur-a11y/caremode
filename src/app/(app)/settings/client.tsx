@@ -130,7 +130,7 @@ export default function SettingsPage() {
         (navigator as unknown as { standalone?: boolean }).standalone === true;
       if (!isStandalone) {
         setPushErr(
-          "Открой SYNC из ярлыка на главном экране: Поделиться → «На главный экран», затем включи уведомления оттуда (в Safari они не работают на iPhone)"
+          "Открой CareMode из ярлыка на главном экране: Поделиться → «На главный экран», затем включи уведомления оттуда (в Safari они не работают на iPhone)"
         );
         return;
       }

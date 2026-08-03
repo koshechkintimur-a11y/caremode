@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============ SYNC: ровно 4 сущности ============
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String? // NULL для входов через Google/Яндекс (OAuth)
+  role          Role          @default(OWNER) // OWNER = создательница профиля заботы, PARTNER = получатель подсказок
+  careProfile   Json? // выборы карточек: { food: string[], space: string[], words: string[], custom?: string }
+  phase         Phase? // ТОЛЬКО фаза, без дат цикла (с устройства, с согласия)
+  phaseUpdatedAt DateTime?
+  mood          Mood?
+  moodUpdatedAt DateTime?
+  pausePartner  Boolean       @default(false) // режим инкогнито
+  cycleDay      Int? // день цикла (1..40) — БЕЗ дат, только число, с согласия
+  cycleDayVisible Boolean    @default(false) // показывать партнёру навигатор цикла
+  coupleId      String?
+  couple        CoupleProfile? @relation("CoupleMembers", fields: [coupleId], references: [id], onDelete: SetNull)
+  subStatus     SubStatus     @default(NONE)
+  subExpiresAt  DateTime?
+  freeCardsUsed Int           @default(0) // пейволл: 3 бесплатные карточки
+  firstName     String? // имя (регистрация «в 10 секунд»)
+  consentAt     DateTime? // согласие на обработку ПДн (152-ФЗ, ст. 9) — ставится при регистрации/входе
+  partnerProfile Json? // { reaction, painPoint, signalStyle, answeredAt }
+  promptTime    String? // когда присылать карточку: morning | wake | evening
+  sosUsed       Int      @default(0) // счётчик SOS-генераций за день
+  sosDate       String? // YYYY-MM-DD последнего сброса счётчика SOS
+  needsSpace    Boolean  @default(false) // «не трогать» — её отметка на сегодня
+  dayStates     Json? // { "1": "red"|"yellow"|"green", ... } — самочувствие по дням цикла (числа, без дат)
+  pushSubs      Json? // Web Push подписки: [{endpoint, keys}] — уведомления карточки дня
+  lastPushDate  String? // YYYY-MM-DD последней отправки карточки (антидубль)
+  updatedAt     DateTime @default(now()) @updatedAt
+  achievements  Achievement[]
+  createdAt     DateTime      @default(now())
+}
+
+model CoupleProfile {
+  id         String   @id @default(cuid())
+  inviteCode String   @unique // 6 символов, без 0/O/1/I
+  locale     String   @default("ru")
+  ownerId    String   @unique // скалярные FK: связи обрабатываются в коде
+  partnerId  String?  @unique
+  startDate  DateTime @default(now())
+  members    User[]   @relation("CoupleMembers")
+  prompts    DailyPrompt[]
+}
+
+model DailyPrompt {
+  id        String   @id @default(cuid())
+  coupleId  String
+  couple    CoupleProfile @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  day       String // YYYY-MM-DD (локальный день)
+  text      String
+  source    Source   @default(FALLBACK) // AI | FALLBACK
+  moodContext String? // настроение OWNER на момент генерации — для «пульса»
+  feedback  Feedback? // GOOD | MISSED | BAD
+  createdAt DateTime @default(now())
+
+  @@unique([coupleId, day]) // одна карточка в день на пару
+}
+
+model Achievement {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String // ninja_7d | gentleman_10 | first_cycle_together | cycle_reward
+  meta       String? // доп. данные (текст награды в cycle_reward и т.п.)
+  unlockedAt DateTime @default(now())
+}
+
+enum Role {
+  OWNER
+  PARTNER
+}
+
+enum Phase {
+  MENSTRUAL
+  FOLLICULAR
+  OVULATION
+  LUTEAL
+  UNKNOWN
+}
+
+enum Mood {
+  TERRIBLE
+  MEH
+  OKAY
+  GREAT
+}
+
+enum Feedback {
+  GOOD
+  MISSED
+  BAD
+}
+
+enum Source {
+  AI
+  FALLBACK
+}
+
+enum SubStatus {
+  NONE
+  TRIAL
+  ACTIVE
+}

@@ -354,9 +354,13 @@ export default function TodayPage() {
 
   // ===== OWNER: прозрачность + пульс =====
   if (data.role === "OWNER") {
-    // состояние «мои дни»: идёт ли сейчас период + мягкое уточнение о задержке
+    // состояние «мои дни»: идёт ли сейчас период.
+    // В периоде: отмеченный день ИЛИ первые 7 дней цикла (начало указано датой —
+    // periodDays пуст, но месячные идут: 4-й день = «Закончились сегодня», не «Начались»)
     const inPeriod =
-      store.cycleDay !== null && store.periodDays.includes(store.cycleDay);
+      store.cycleDay !== null &&
+      (store.periodDays.includes(store.cycleDay) ||
+        (store.periodDays.length === 0 && store.cycleDay >= 1 && store.cycleDay <= 7));
     const lateDays = (() => {
       if (!store.cycleDay || !store.lastPeriodStart) return null;
       const stats = computeCycleStats(store.cycleHistory, store.lastPeriodStart);
@@ -884,9 +888,10 @@ export default function TodayPage() {
 
   // «Закончились сегодня» — период от старта до текущего дня
   function endToday() {
-    if (store.cycleDay === null || store.periodDays.length === 0) return;
+    if (store.cycleDay === null) return;
+    const first = store.periodDays[0] ?? 1; // старт мог быть указан датой без отметок дней
     const days: number[] = [];
-    for (let d = store.periodDays[0]; d <= store.cycleDay; d++) days.push(d);
+    for (let d = first; d <= store.cycleDay; d++) days.push(d);
     selectPeriodDays(days);
   }
 

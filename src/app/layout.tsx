@@ -50,8 +50,11 @@ export default function RootLayout({
         />
         <PwaRegister />
         <PixelBackground />
+        {/* z-10: контент гарантированно поверх канваса (страховка от Safari fixed/z-багов) */}
         <ThemeProvider>
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <div className="relative z-10">
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </div>
         </ThemeProvider>
       </body>
     </html>

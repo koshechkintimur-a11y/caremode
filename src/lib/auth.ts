@@ -81,6 +81,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               consentAt: new Date(), // вход через OAuth = принятие политики (см. /privacy)
             },
           });
+          // регистрация (новый юзер) — метрика, без персональных данных
+          if (dbUser.createdAt.getTime() > Date.now() - 30_000) {
+            void import("@/lib/analytics").then(({ track }) => track("register", { userId: dbUser.id }));
+          }
           token.id = dbUser.id;
           token.role = dbUser.role;
           token.coupleId = dbUser.coupleId ?? null;

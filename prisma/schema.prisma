@@ -44,6 +44,7 @@ model User {
   pushEnabled   Boolean @default(false) // OWNER: напоминание «Как ты сегодня?»
   pushPromptTime String? // OWNER: час напоминания: "9" | "10" | "20"
   lastPushDate  String? // YYYY-MM-DD последней отправки карточки (антидубль)
+  lastSeenAt    DateTime? // активность: обновляется при заходе в приложение
   updatedAt     DateTime @default(now()) @updatedAt
   achievements  Achievement[]
   createdAt     DateTime      @default(now())
@@ -74,6 +75,18 @@ model DailyPrompt {
   createdAt   DateTime      @default(now())
 
   @@unique([coupleId, day]) // одна карточка в день на пару
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  userId    String?
+  coupleId  String?
+  type      String // register | pair_created | partner_joined | card_good | card_bad | card_missed | sos | need_now | thank | mood | needs_space | period_start | push_card | push_storm | push_owner_remind | push_done | push_thank | remind_owner
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([userId, type])
 }
 
 model Achievement {

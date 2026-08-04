@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { applyFeedback } from "@/lib/prompt";
+import { track } from "@/lib/analytics";
 
 // POST /api/prompt/feedback — { promptId, feedback: GOOD|MISSED|BAD }
 // При GOOD: мгновенный пуш ОЛЕ — она видит конкретное действие в ленте заботы.
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
           include: { couple: { include: { members: true } } },
         });
         const owner = prompt?.couple?.members.find((m) => m.role === "OWNER");
+        track("card_good", { userId: session.user.id, coupleId: prompt?.coupleId });
         const subs = (owner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
         if (owner && prompt && subs.length > 0 && !owner.pausePartner) {
           const vapid = {
@@ -70,6 +72,9 @@ export async function POST(req: Request) {
         /* пуш не критичен */
       }
     }
+
+    if (body.feedback === "BAD") track("card_bad", { userId: session.user.id });
+    if (body.feedback === "MISSED") track("card_missed", { userId: session.user.id });
 
     return NextResponse.json({ ok: true, streak, unlocked });
   } catch (e: unknown) {

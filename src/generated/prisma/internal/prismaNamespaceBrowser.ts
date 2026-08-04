@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   CoupleProfile: 'CoupleProfile',
   DailyPrompt: 'DailyPrompt',
+  Event: 'Event',
   Achievement: 'Achievement'
 } as const
 
@@ -104,6 +105,7 @@ export const UserScalarFieldEnum = {
   pushEnabled: 'pushEnabled',
   pushPromptTime: 'pushPromptTime',
   lastPushDate: 'lastPushDate',
+  lastSeenAt: 'lastSeenAt',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 } as const
@@ -137,6 +139,18 @@ export const DailyPromptScalarFieldEnum = {
 } as const
 
 export type DailyPromptScalarFieldEnum = (typeof DailyPromptScalarFieldEnum)[keyof typeof DailyPromptScalarFieldEnum]
+
+
+export const EventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  coupleId: 'coupleId',
+  type: 'type',
+  meta: 'meta',
+  createdAt: 'createdAt'
+} as const
+
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
 
 
 export const AchievementScalarFieldEnum = {

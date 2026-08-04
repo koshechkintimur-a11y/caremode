@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 import { Phase, Mood } from "@/generated/prisma/enums";
 
 // PUT /api/profile/phase — OWNER передаёт ТОЛЬКО фазу + настроение (без дат)
@@ -54,6 +55,10 @@ export async function PUT(req: Request) {
       needNow,
     },
   });
+
+  if (body.mood) track("mood", { userId: session.user.id });
+  if (body.needsSpace) track("needs_space", { userId: session.user.id });
+  if (needNow) track("need_now", { userId: session.user.id });
 
   // Мгновенный пуш партнёру, когда она отметила «что нужно»
   if (needNow) {

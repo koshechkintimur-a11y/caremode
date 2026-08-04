@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 import { generateSos } from "@/lib/ai/generator";
 import { canUseSos, consumeSos, SOS_DAILY_LIMIT } from "@/lib/sos";
 import { SOS_FALLBACK } from "@/lib/ai/prompts";
@@ -34,6 +35,7 @@ export async function POST(req: Request) {
 
   const result = await generateSos(type, careProfile as never, locale);
   await consumeSos(session.user.id);
+  track("sos", { userId: session.user.id, coupleId: user?.coupleId ?? undefined });
 
   return NextResponse.json({ ...result, left: SOS_DAILY_LIMIT - 1 });
 }

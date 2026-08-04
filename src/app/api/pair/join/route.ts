@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 
-// POST /api/pair/join — PARTNER вводит инвайт-код
+// POST /api/pair/join — PARTNER входит в пару по коду
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
       data: { coupleId: couple.id, role: "PARTNER" },
     }),
   ]);
+  track("partner_joined", { userId: user.id, coupleId: couple.id });
 
   return NextResponse.json({ ok: true });
 }

@@ -69,6 +69,7 @@ export type UserMinAggregateOutputType = {
   pushEnabled: boolean | null
   pushPromptTime: string | null
   lastPushDate: string | null
+  lastSeenAt: Date | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -102,6 +103,7 @@ export type UserMaxAggregateOutputType = {
   pushEnabled: boolean | null
   pushPromptTime: string | null
   lastPushDate: string | null
+  lastSeenAt: Date | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -140,6 +142,7 @@ export type UserCountAggregateOutputType = {
   pushEnabled: number
   pushPromptTime: number
   lastPushDate: number
+  lastSeenAt: number
   updatedAt: number
   createdAt: number
   _all: number
@@ -189,6 +192,7 @@ export type UserMinAggregateInputType = {
   pushEnabled?: true
   pushPromptTime?: true
   lastPushDate?: true
+  lastSeenAt?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -222,6 +226,7 @@ export type UserMaxAggregateInputType = {
   pushEnabled?: true
   pushPromptTime?: true
   lastPushDate?: true
+  lastSeenAt?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -260,6 +265,7 @@ export type UserCountAggregateInputType = {
   pushEnabled?: true
   pushPromptTime?: true
   lastPushDate?: true
+  lastSeenAt?: true
   updatedAt?: true
   createdAt?: true
   _all?: true
@@ -385,6 +391,7 @@ export type UserGroupByOutputType = {
   pushEnabled: boolean
   pushPromptTime: string | null
   lastPushDate: string | null
+  lastSeenAt: Date | null
   updatedAt: Date
   createdAt: Date
   _count: UserCountAggregateOutputType | null
@@ -446,6 +453,7 @@ export type UserWhereInput = {
   pushEnabled?: Prisma.BoolFilter<"User"> | boolean
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileNullableScalarRelationFilter, Prisma.CoupleProfileWhereInput> | null
@@ -486,6 +494,7 @@ export type UserOrderByWithRelationInput = {
   pushEnabled?: Prisma.SortOrder
   pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   couple?: Prisma.CoupleProfileOrderByWithRelationInput
@@ -529,6 +538,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pushEnabled?: Prisma.BoolFilter<"User"> | boolean
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileNullableScalarRelationFilter, Prisma.CoupleProfileWhereInput> | null
@@ -569,6 +579,7 @@ export type UserOrderByWithAggregationInput = {
   pushEnabled?: Prisma.SortOrder
   pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -615,6 +626,7 @@ export type UserScalarWhereWithAggregatesInput = {
   pushEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   pushPromptTime?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -652,6 +664,7 @@ export type UserCreateInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   couple?: Prisma.CoupleProfileCreateNestedOneWithoutMembersInput
@@ -692,6 +705,7 @@ export type UserUncheckedCreateInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutUserInput
@@ -730,6 +744,7 @@ export type UserUpdateInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   couple?: Prisma.CoupleProfileUpdateOneWithoutMembersNestedInput
@@ -770,6 +785,7 @@ export type UserUncheckedUpdateInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutUserNestedInput
@@ -809,6 +825,7 @@ export type UserCreateManyInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -846,6 +863,7 @@ export type UserUpdateManyMutationInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -884,6 +902,7 @@ export type UserUncheckedUpdateManyInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -922,6 +941,7 @@ export type UserCountOrderByAggregateInput = {
   pushEnabled?: Prisma.SortOrder
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -962,6 +982,7 @@ export type UserMaxOrderByAggregateInput = {
   pushEnabled?: Prisma.SortOrder
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -995,6 +1016,7 @@ export type UserMinOrderByAggregateInput = {
   pushEnabled?: Prisma.SortOrder
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
+  lastSeenAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -1162,6 +1184,7 @@ export type UserCreateWithoutCoupleInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementCreateNestedManyWithoutUserInput
@@ -1200,6 +1223,7 @@ export type UserUncheckedCreateWithoutCoupleInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutUserInput
@@ -1267,6 +1291,7 @@ export type UserScalarWhereInput = {
   pushEnabled?: Prisma.BoolFilter<"User"> | boolean
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
+  lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -1304,6 +1329,7 @@ export type UserCreateWithoutAchievementsInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   couple?: Prisma.CoupleProfileCreateNestedOneWithoutMembersInput
@@ -1343,6 +1369,7 @@ export type UserUncheckedCreateWithoutAchievementsInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -1396,6 +1423,7 @@ export type UserUpdateWithoutAchievementsInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   couple?: Prisma.CoupleProfileUpdateOneWithoutMembersNestedInput
@@ -1435,6 +1463,7 @@ export type UserUncheckedUpdateWithoutAchievementsInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1472,6 +1501,7 @@ export type UserCreateManyCoupleInput = {
   pushEnabled?: boolean
   pushPromptTime?: string | null
   lastPushDate?: string | null
+  lastSeenAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -1509,6 +1539,7 @@ export type UserUpdateWithoutCoupleInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUpdateManyWithoutUserNestedInput
@@ -1547,6 +1578,7 @@ export type UserUncheckedUpdateWithoutCoupleInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutUserNestedInput
@@ -1585,6 +1617,7 @@ export type UserUncheckedUpdateManyWithoutCoupleInput = {
   pushEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1654,6 +1687,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pushEnabled?: boolean
   pushPromptTime?: boolean
   lastPushDate?: boolean
+  lastSeenAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1695,6 +1729,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   pushEnabled?: boolean
   pushPromptTime?: boolean
   lastPushDate?: boolean
+  lastSeenAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1734,6 +1769,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   pushEnabled?: boolean
   pushPromptTime?: boolean
   lastPushDate?: boolean
+  lastSeenAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1773,11 +1809,12 @@ export type UserSelectScalar = {
   pushEnabled?: boolean
   pushPromptTime?: boolean
   lastPushDate?: boolean
+  lastSeenAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "cycleVaultKey" | "cycleVault" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "cycleVaultKey" | "cycleVault" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "lastSeenAt" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
   achievements?: boolean | Prisma.User$achievementsArgs<ExtArgs>
@@ -1830,6 +1867,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pushEnabled: boolean
     pushPromptTime: string | null
     lastPushDate: string | null
+    lastSeenAt: Date | null
     updatedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2290,6 +2328,7 @@ export interface UserFieldRefs {
   readonly pushEnabled: Prisma.FieldRef<"User", 'Boolean'>
   readonly pushPromptTime: Prisma.FieldRef<"User", 'String'>
   readonly lastPushDate: Prisma.FieldRef<"User", 'String'>
+  readonly lastSeenAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 
 // POST /api/push/remind — партнёр просит напомнить OWNER собрать послание.
 // Шлёт пуш Оле (если у неё есть подписки); иначе { sent: 0 } → клиент покажет фолбэк.
@@ -54,6 +55,7 @@ export async function POST() {
         data: { pushSubs: subs.filter((s) => !dead.includes(s.endpoint)) },
       });
     }
+    track("remind_owner", { userId: session.user.id });
     return NextResponse.json({ ok: true, sent });
   } catch {
     return NextResponse.json({ error: "server error" }, { status: 500 });

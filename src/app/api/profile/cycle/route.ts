@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 
 // PUT /api/profile/cycle — OWNER передаёт «день цикла» (число, без дат)
 // и согласие показывать навигатор партнёру.
@@ -41,6 +42,8 @@ export async function PUT(req: Request) {
     }
     dayStates = body.dayStates;
   }
+
+  if (body.cycleDay !== undefined) track("period_start", { userId: session.user.id });
 
   await prisma.user.update({
     where: { id: session.user.id },

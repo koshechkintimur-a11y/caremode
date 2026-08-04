@@ -57,6 +57,11 @@ export type CoupleProfile = Prisma.CoupleProfileModel
  */
 export type DailyPrompt = Prisma.DailyPromptModel
 /**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel
+/**
  * Model Achievement
  * 
  */

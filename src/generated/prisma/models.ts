@@ -11,5 +11,6 @@
 export type * from './models/User'
 export type * from './models/CoupleProfile'
 export type * from './models/DailyPrompt'
+export type * from './models/Event'
 export type * from './models/Achievement'
 export type * from './commonInputTypes'

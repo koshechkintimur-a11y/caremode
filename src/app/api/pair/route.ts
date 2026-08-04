@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 
 // POST /api/pair — OWNER создаёт пару → инвайт-код
 export async function POST() {
@@ -17,6 +18,7 @@ export async function POST() {
     data: { inviteCode, ownerId: user.id },
   });
   await prisma.user.update({ where: { id: user.id }, data: { coupleId: couple.id } });
+  track("pair_created", { userId: user.id, coupleId: couple.id });
 
   return NextResponse.json({ inviteCode: couple.inviteCode });
 }

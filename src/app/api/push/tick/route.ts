@@ -66,6 +66,7 @@ export async function GET() {
         try {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
+          void import("@/lib/analytics").then(({ track }) => track("push_owner_remind", { userId: owner.id, coupleId: couple.id }));
         } catch {
           ownerFailed = [...ownerFailed, sub.endpoint];
         }
@@ -117,6 +118,7 @@ export async function GET() {
         try {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
+          void import("@/lib/analytics").then(({ track }) => track("push_storm", { userId: partner.id, coupleId: couple.id }));
         } catch {
           stormFailed = [...stormFailed, sub.endpoint];
         }
@@ -156,6 +158,7 @@ export async function GET() {
           payload
         );
         sent++;
+        void import("@/lib/analytics").then(({ track }) => track("push_card", { userId: partner.id, coupleId: couple.id }));
       } catch {
         failed = [...failed, sub.endpoint];
       }

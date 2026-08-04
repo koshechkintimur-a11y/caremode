@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { track } from "@/lib/analytics";
 
 // PUT /api/prompt/thank — OWNER нажимает «Заметил 💛» на действие в ленте заботы.
 // Парню уходит статус «Она заметила» + пуш. Только позитивный контур.
@@ -33,6 +34,7 @@ export async function PUT(req: Request) {
     where: { id: prompt.id },
     data: { thankedAt: new Date() },
   });
+  track("thank", { userId: session.user.id, coupleId: user.coupleId });
 
   // Пуш парню: «Она заметила» — эмоциональная награда петли
   try {

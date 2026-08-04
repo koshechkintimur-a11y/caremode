@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
+import { track } from "@/lib/analytics";
 
 // Регистрация + вход одним вызовом. signIn в server action делает 303-редирект
 // (NEXT_REDIRECT), поэтому клиентский signIn не нужен — он падает на URL-баге
@@ -29,7 +30,7 @@ export async function registerUser(
     return { ok: false, error: "Этот email уже зарегистрирован. Войди." };
   }
   const passwordHash = await bcrypt.hash(password, 10);
-  await prisma.user.create({
+  const created = await prisma.user.create({
     data: {
       email,
       passwordHash,
@@ -38,6 +39,7 @@ export async function registerUser(
       consentAt: new Date(),
     },
   });
+  track("register", { userId: created.id });
   await signIn("credentials", {
     email,
     password,

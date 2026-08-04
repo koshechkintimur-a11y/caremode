@@ -11,6 +11,11 @@ export async function GET() {
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
   if (!user?.coupleId) return NextResponse.json({ error: "no couple" }, { status: 409 });
 
+  // активность: не чаще раза в 5 минут (поллинг /today идёт каждые ~30с)
+  if (!user.lastSeenAt || Date.now() - user.lastSeenAt.getTime() > 5 * 60_000) {
+    void prisma.user.update({ where: { id: user.id }, data: { lastSeenAt: new Date() } }).catch(() => {});
+  }
+
   const result = await getOrCreateTodayPrompt(user.coupleId);
 
   // Петля «Сделал»: когда Оля открывает приложение, её GOOD-действия (3 дня)

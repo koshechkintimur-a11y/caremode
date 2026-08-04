@@ -13,6 +13,21 @@ export async function GET() {
 
   const result = await getOrCreateTodayPrompt(user.coupleId);
 
+  // Петля «Сделал»: когда Оля открывает приложение, её GOOD-действия (3 дня)
+  // помечаются seenAt — парень увидит статус «Она видела 💛»
+  if (user.role === "OWNER") {
+    const threeDaysAgo = new Date(Date.now() - 3 * 86_400_000);
+    await prisma.dailyPrompt.updateMany({
+      where: {
+        coupleId: user.coupleId,
+        feedback: "GOOD",
+        seenAt: null,
+        createdAt: { gte: threeDaysAgo },
+      },
+      data: { seenAt: new Date() },
+    });
+  }
+
   // Навигатор цикла живёт на OWNER: партнёр видит его только с её согласия
   const couple = await prisma.coupleProfile.findUnique({
     where: { id: user.coupleId },
@@ -24,7 +39,6 @@ export async function GET() {
     ...result,
     locale: couple?.locale ?? "ru",
     role: user.role,
-    aiCardsLeft: result.aiCardsLeft,
     subStatus: user.subStatus,
     pausePartner: user.pausePartner,
     promptTime: user.promptTime ?? null,

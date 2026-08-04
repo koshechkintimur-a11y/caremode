@@ -811,6 +811,8 @@ export const DailyPromptScalarFieldEnum = {
   source: 'source',
   moodContext: 'moodContext',
   feedback: 'feedback',
+  seenAt: 'seenAt',
+  thankedAt: 'thankedAt',
   createdAt: 'createdAt'
 } as const
 

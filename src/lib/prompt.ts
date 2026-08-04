@@ -38,6 +38,8 @@ export interface TodayResult {
     text: string;
     feedback: string | null;
     source: string;
+    seenAt: string | null;
+    thankedAt: string | null;
   } | null;
   emptyOwner?: boolean;
   paused: boolean;
@@ -104,7 +106,7 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
 
   if (existing && !moodChanged) {
     return {
-      prompt: { id: existing.id, day: existing.day, text: existing.text, feedback: existing.feedback, source: existing.source },
+      prompt: { id: existing.id, day: existing.day, text: existing.text, feedback: existing.feedback, source: existing.source, seenAt: existing.seenAt ? existing.seenAt.toISOString() : null, thankedAt: existing.thankedAt ? existing.thankedAt.toISOString() : null },
       paused: false,
       paywall: false,
       streak,
@@ -126,7 +128,7 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
       data: { coupleId, day, text: fallbackAfterBad(care, locale), source: "FALLBACK", moodContext: mood ?? null },
     });
     return {
-      prompt: { id: created.id, day, text: created.text, feedback: created.feedback, source: created.source },
+      prompt: { id: created.id, day, text: created.text, feedback: created.feedback, source: created.source, seenAt: null, thankedAt: null },
       paused: false,
       paywall: false,
       streak,
@@ -171,7 +173,7 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
       });
 
   return {
-    prompt: { id: created.id, day, text: created.text, feedback: created.feedback, source: created.source },
+    prompt: { id: created.id, day, text: created.text, feedback: created.feedback, source: created.source, seenAt: null, thankedAt: null },
     paused: false,
     paywall: false,
     streak,

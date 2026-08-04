@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart, Sparkles } from "lucide-react";
+import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart, Sparkles, Check } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
@@ -22,7 +22,7 @@ import { getPerk, nextPerk } from "@/lib/perks";
 import { cn } from "@/lib/utils";
 
 interface TodayData {
-  prompt: { id: string; day: string; text: string; feedback: string | null; source?: string } | null;
+  prompt: { id: string; day: string; text: string; feedback: string | null; source?: string; seenAt: string | null; thankedAt: string | null } | null;
   paused: boolean;
   paywall: boolean;
   streak: number;
@@ -85,7 +85,7 @@ export default function TodayPage() {
     perkTitle: string;
     nextPerkTitle: string | null;
     nextPerkAt: number | null;
-    recent: { text: string; day: string }[];
+    recent: { id: string; text: string; day: string; thanked: boolean; seen: boolean }[];
   } | null>(null);
 
   useEffect(() => {
@@ -380,14 +380,38 @@ export default function TodayPage() {
               className="text-[12px] font-bold uppercase tracking-[0.14em] text-white/90"
               style={{ textShadow: "0 1px 8px rgba(0,0,0,.5)" }}
             >
-              Подсказка для него сегодня
+              {data.prompt?.feedback === "GOOD" ? "Он сделал это сегодня" : "Подсказка для него сегодня"}
             </span>
             <p
               className="mt-4 text-[19px] font-extrabold leading-snug"
               style={{ textShadow: "0 2px 14px rgba(0,0,0,.55)" }}
             >
-              {data.prompt?.text ?? "…"}
+              {data.prompt?.feedback === "GOOD" ? "✓ Готово — забота уже в пути" : (data.prompt?.text ?? "…")}
             </p>
+            {data.prompt?.feedback === "GOOD" && (
+              data.prompt.thankedAt ? (
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-[13px] font-extrabold">
+                  Ты заметила ✨
+                </div>
+              ) : (
+                <button
+                  onClick={async () => {
+                    const res = await fetch("/api/prompt/thank", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ promptId: data.prompt!.id }),
+                    });
+                    if (res.ok) {
+                      setToast("Он увидит, что ты заметила 💛");
+                      setTimeout(() => setToast(""), 2600);
+                    }
+                  }}
+                  className="mt-4 h-[42px] px-6 rounded-full bg-white text-primary font-extrabold text-[13px] active:scale-[.97] transition"
+                >
+                  Заметить 💛
+                </button>
+              )
+            )}
           </div>
         )}
 
@@ -724,10 +748,44 @@ export default function TodayPage() {
             {care.recent.length > 0 && (
               <div className="mt-3 rounded-2xl bg-bg px-4 py-3">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-muted">Недавние поступки</div>
-                <div className="mt-1.5 flex flex-col gap-1">
-                  {care.recent.map((r, i) => (
-                    <div key={i} className="text-[12px] font-semibold text-ink leading-snug">
-                      {r.day} · {r.text.length > 90 ? r.text.slice(0, 90) + "…" : r.text}
+                <div className="mt-1.5 flex flex-col gap-1.5">
+                  {care.recent.map((r) => (
+                    <div key={r.id} className="flex items-center justify-between gap-2 text-[12px] font-semibold text-ink leading-snug">
+                      <span>
+                        {r.day} · {r.text.length > 90 ? r.text.slice(0, 90) + "…" : r.text}
+                      </span>
+                      {r.thanked ? (
+                        <span className="shrink-0 text-[11px] font-extrabold text-success" title="Она заметила">
+                          ✨ заметила
+                        </span>
+                      ) : (
+                        <button
+                          onClick={async () => {
+                            const res = await fetch("/api/prompt/thank", {
+                              method: "PUT",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ promptId: r.id }),
+                            });
+                            if (res.ok) {
+                              setCare((c) =>
+                                c
+                                  ? {
+                                      ...c,
+                                      recent: c.recent.map((x) =>
+                                        x.id === r.id ? { ...x, thanked: true } : x
+                                      ),
+                                    }
+                                  : c
+                              );
+                              setToast("Он увидит, что ты заметила 💛");
+                              setTimeout(() => setToast(""), 2600);
+                            }
+                          }}
+                          className="shrink-0 rounded-full bg-primary-soft px-3 h-[26px] text-[11px] font-extrabold text-primary active:scale-[.95] transition"
+                        >
+                          💛 Заметить
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -938,6 +996,48 @@ export default function TodayPage() {
               )
             ) : (
               <>
+            {data.prompt?.feedback === "GOOD" ? (
+              /* Сделано ✓ — карточка закрыта, петля заботы: статусы + благодарность */
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full rounded-[28px] bg-surface/70 backdrop-blur-[2px] p-6 text-center shadow-[0_16px_48px_rgba(232,131,127,.14)]"
+              >
+                <div className="mx-auto w-14 h-14 rounded-full bg-success/15 flex items-center justify-center">
+                  <Check size={26} className="text-success" />
+                </div>
+                <div className="mt-3 font-pixel text-[13px] text-ink">Сделано ✓</div>
+                <p className="mt-1.5 text-[13px] font-semibold text-muted leading-relaxed">
+                  {data.prompt.text.length > 110 ? data.prompt.text.slice(0, 110) + "…" : data.prompt.text}
+                </p>
+                {data.role === "PARTNER" ? (
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-[12px] font-extrabold text-primary">
+                    {data.prompt.thankedAt
+                      ? "Она поблагодарила ✨"
+                      : data.prompt.seenAt
+                        ? "Она видела 💛"
+                        : "Забота доставлена — она увидит позже"}
+                  </div>
+                ) : (
+                  <button
+                    onClick={async () => {
+                      const res = await fetch("/api/prompt/thank", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ promptId: data.prompt!.id }),
+                      });
+                      if (res.ok) {
+                        setToast("Он увидит, что ты заметила 💛");
+                        setTimeout(() => setToast(""), 2600);
+                      }
+                    }}
+                    className="mt-4 h-[42px] px-6 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                  >
+                    Заметить 💛
+                  </button>
+                )}
+              </motion.div>
+            ) : (
             <DailyCard
               text={data.prompt?.text ?? ""}
               streak={data.streak}
@@ -947,6 +1047,7 @@ export default function TodayPage() {
               onBad={() => feedback("BAD")}
               onShare={share}
             />
+            )}
             <CoachTips
               tips={[
                 {

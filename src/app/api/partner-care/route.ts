@@ -24,8 +24,8 @@ export async function GET() {
     prisma.dailyPrompt.findMany({
       where: { coupleId: user.coupleId, feedback: "GOOD" },
       orderBy: { day: "desc" },
-      take: 3,
-      select: { text: true, day: true },
+      take: 7,
+      select: { id: true, text: true, day: true, seenAt: true, thankedAt: true },
     }),
     calcStreak(user.coupleId),
   ]);
@@ -39,6 +39,12 @@ export async function GET() {
     perkTitle: perk?.title ?? "детёныш",
     nextPerkTitle: next?.title ?? null,
     nextPerkAt: next?.at ?? null,
-    recent: recent.map((r) => ({ text: r.text, day: r.day.slice(5).split("-").reverse().join(".") })),
+    recent: recent.map((r) => ({
+      id: r.id,
+      text: r.text,
+      day: r.day.slice(5).split("-").reverse().join("."),
+      thanked: Boolean(r.thankedAt),
+      seen: Boolean(r.seenAt),
+    })),
   });
 }

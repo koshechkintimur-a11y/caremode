@@ -66,8 +66,10 @@ model DailyPrompt {
   text      String
   source    Source   @default(FALLBACK) // AI | FALLBACK
   moodContext String? // настроение OWNER на момент генерации — для «пульса»
-  feedback  Feedback? // GOOD | MISSED | BAD
-  createdAt DateTime @default(now())
+  feedback    Feedback? // GOOD | MISSED | BAD
+  seenAt      DateTime? // Оля открыла приложение после его «Сделал»
+  thankedAt   DateTime? // Оля нажала «Заметил 💛» — статус для парня
+  createdAt   DateTime      @default(now())
 
   @@unique([coupleId, day]) // одна карточка в день на пару
 }

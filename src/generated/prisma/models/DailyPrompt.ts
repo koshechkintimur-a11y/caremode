@@ -32,6 +32,8 @@ export type DailyPromptMinAggregateOutputType = {
   source: $Enums.Source | null
   moodContext: string | null
   feedback: $Enums.Feedback | null
+  seenAt: Date | null
+  thankedAt: Date | null
   createdAt: Date | null
 }
 
@@ -43,6 +45,8 @@ export type DailyPromptMaxAggregateOutputType = {
   source: $Enums.Source | null
   moodContext: string | null
   feedback: $Enums.Feedback | null
+  seenAt: Date | null
+  thankedAt: Date | null
   createdAt: Date | null
 }
 
@@ -54,6 +58,8 @@ export type DailyPromptCountAggregateOutputType = {
   source: number
   moodContext: number
   feedback: number
+  seenAt: number
+  thankedAt: number
   createdAt: number
   _all: number
 }
@@ -67,6 +73,8 @@ export type DailyPromptMinAggregateInputType = {
   source?: true
   moodContext?: true
   feedback?: true
+  seenAt?: true
+  thankedAt?: true
   createdAt?: true
 }
 
@@ -78,6 +86,8 @@ export type DailyPromptMaxAggregateInputType = {
   source?: true
   moodContext?: true
   feedback?: true
+  seenAt?: true
+  thankedAt?: true
   createdAt?: true
 }
 
@@ -89,6 +99,8 @@ export type DailyPromptCountAggregateInputType = {
   source?: true
   moodContext?: true
   feedback?: true
+  seenAt?: true
+  thankedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -173,6 +185,8 @@ export type DailyPromptGroupByOutputType = {
   source: $Enums.Source
   moodContext: string | null
   feedback: $Enums.Feedback | null
+  seenAt: Date | null
+  thankedAt: Date | null
   createdAt: Date
   _count: DailyPromptCountAggregateOutputType | null
   _min: DailyPromptMinAggregateOutputType | null
@@ -205,6 +219,8 @@ export type DailyPromptWhereInput = {
   source?: Prisma.EnumSourceFilter<"DailyPrompt"> | $Enums.Source
   moodContext?: Prisma.StringNullableFilter<"DailyPrompt"> | string | null
   feedback?: Prisma.EnumFeedbackNullableFilter<"DailyPrompt"> | $Enums.Feedback | null
+  seenAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
+  thankedAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DailyPrompt"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileScalarRelationFilter, Prisma.CoupleProfileWhereInput>
 }
@@ -217,6 +233,8 @@ export type DailyPromptOrderByWithRelationInput = {
   source?: Prisma.SortOrder
   moodContext?: Prisma.SortOrderInput | Prisma.SortOrder
   feedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  seenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  thankedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   couple?: Prisma.CoupleProfileOrderByWithRelationInput
 }
@@ -233,6 +251,8 @@ export type DailyPromptWhereUniqueInput = Prisma.AtLeast<{
   source?: Prisma.EnumSourceFilter<"DailyPrompt"> | $Enums.Source
   moodContext?: Prisma.StringNullableFilter<"DailyPrompt"> | string | null
   feedback?: Prisma.EnumFeedbackNullableFilter<"DailyPrompt"> | $Enums.Feedback | null
+  seenAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
+  thankedAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DailyPrompt"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileScalarRelationFilter, Prisma.CoupleProfileWhereInput>
 }, "id" | "coupleId_day">
@@ -245,6 +265,8 @@ export type DailyPromptOrderByWithAggregationInput = {
   source?: Prisma.SortOrder
   moodContext?: Prisma.SortOrderInput | Prisma.SortOrder
   feedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  seenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  thankedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.DailyPromptCountOrderByAggregateInput
   _max?: Prisma.DailyPromptMaxOrderByAggregateInput
@@ -262,6 +284,8 @@ export type DailyPromptScalarWhereWithAggregatesInput = {
   source?: Prisma.EnumSourceWithAggregatesFilter<"DailyPrompt"> | $Enums.Source
   moodContext?: Prisma.StringNullableWithAggregatesFilter<"DailyPrompt"> | string | null
   feedback?: Prisma.EnumFeedbackNullableWithAggregatesFilter<"DailyPrompt"> | $Enums.Feedback | null
+  seenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DailyPrompt"> | Date | string | null
+  thankedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DailyPrompt"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DailyPrompt"> | Date | string
 }
 
@@ -272,6 +296,8 @@ export type DailyPromptCreateInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
   couple: Prisma.CoupleProfileCreateNestedOneWithoutPromptsInput
 }
@@ -284,6 +310,8 @@ export type DailyPromptUncheckedCreateInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -294,6 +322,8 @@ export type DailyPromptUpdateInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   couple?: Prisma.CoupleProfileUpdateOneRequiredWithoutPromptsNestedInput
 }
@@ -306,6 +336,8 @@ export type DailyPromptUncheckedUpdateInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -317,6 +349,8 @@ export type DailyPromptCreateManyInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -327,6 +361,8 @@ export type DailyPromptUpdateManyMutationInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -338,6 +374,8 @@ export type DailyPromptUncheckedUpdateManyInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -364,6 +402,8 @@ export type DailyPromptCountOrderByAggregateInput = {
   source?: Prisma.SortOrder
   moodContext?: Prisma.SortOrder
   feedback?: Prisma.SortOrder
+  seenAt?: Prisma.SortOrder
+  thankedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -375,6 +415,8 @@ export type DailyPromptMaxOrderByAggregateInput = {
   source?: Prisma.SortOrder
   moodContext?: Prisma.SortOrder
   feedback?: Prisma.SortOrder
+  seenAt?: Prisma.SortOrder
+  thankedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -386,6 +428,8 @@ export type DailyPromptMinOrderByAggregateInput = {
   source?: Prisma.SortOrder
   moodContext?: Prisma.SortOrder
   feedback?: Prisma.SortOrder
+  seenAt?: Prisma.SortOrder
+  thankedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -446,6 +490,8 @@ export type DailyPromptCreateWithoutCoupleInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -456,6 +502,8 @@ export type DailyPromptUncheckedCreateWithoutCoupleInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -495,6 +543,8 @@ export type DailyPromptScalarWhereInput = {
   source?: Prisma.EnumSourceFilter<"DailyPrompt"> | $Enums.Source
   moodContext?: Prisma.StringNullableFilter<"DailyPrompt"> | string | null
   feedback?: Prisma.EnumFeedbackNullableFilter<"DailyPrompt"> | $Enums.Feedback | null
+  seenAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
+  thankedAt?: Prisma.DateTimeNullableFilter<"DailyPrompt"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DailyPrompt"> | Date | string
 }
 
@@ -505,6 +555,8 @@ export type DailyPromptCreateManyCoupleInput = {
   source?: $Enums.Source
   moodContext?: string | null
   feedback?: $Enums.Feedback | null
+  seenAt?: Date | string | null
+  thankedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -515,6 +567,8 @@ export type DailyPromptUpdateWithoutCoupleInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -525,6 +579,8 @@ export type DailyPromptUncheckedUpdateWithoutCoupleInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -535,6 +591,8 @@ export type DailyPromptUncheckedUpdateManyWithoutCoupleInput = {
   source?: Prisma.EnumSourceFieldUpdateOperationsInput | $Enums.Source
   moodContext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   feedback?: Prisma.NullableEnumFeedbackFieldUpdateOperationsInput | $Enums.Feedback | null
+  seenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thankedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -548,6 +606,8 @@ export type DailyPromptSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   source?: boolean
   moodContext?: boolean
   feedback?: boolean
+  seenAt?: boolean
+  thankedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.CoupleProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dailyPrompt"]>
@@ -560,6 +620,8 @@ export type DailyPromptSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   source?: boolean
   moodContext?: boolean
   feedback?: boolean
+  seenAt?: boolean
+  thankedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.CoupleProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dailyPrompt"]>
@@ -572,6 +634,8 @@ export type DailyPromptSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   source?: boolean
   moodContext?: boolean
   feedback?: boolean
+  seenAt?: boolean
+  thankedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.CoupleProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dailyPrompt"]>
@@ -584,10 +648,12 @@ export type DailyPromptSelectScalar = {
   source?: boolean
   moodContext?: boolean
   feedback?: boolean
+  seenAt?: boolean
+  thankedAt?: boolean
   createdAt?: boolean
 }
 
-export type DailyPromptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coupleId" | "day" | "text" | "source" | "moodContext" | "feedback" | "createdAt", ExtArgs["result"]["dailyPrompt"]>
+export type DailyPromptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coupleId" | "day" | "text" | "source" | "moodContext" | "feedback" | "seenAt" | "thankedAt" | "createdAt", ExtArgs["result"]["dailyPrompt"]>
 export type DailyPromptInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   couple?: boolean | Prisma.CoupleProfileDefaultArgs<ExtArgs>
 }
@@ -611,6 +677,8 @@ export type $DailyPromptPayload<ExtArgs extends runtime.Types.Extensions.Interna
     source: $Enums.Source
     moodContext: string | null
     feedback: $Enums.Feedback | null
+    seenAt: Date | null
+    thankedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["dailyPrompt"]>
   composites: {}
@@ -1043,6 +1111,8 @@ export interface DailyPromptFieldRefs {
   readonly source: Prisma.FieldRef<"DailyPrompt", 'Source'>
   readonly moodContext: Prisma.FieldRef<"DailyPrompt", 'String'>
   readonly feedback: Prisma.FieldRef<"DailyPrompt", 'Feedback'>
+  readonly seenAt: Prisma.FieldRef<"DailyPrompt", 'DateTime'>
+  readonly thankedAt: Prisma.FieldRef<"DailyPrompt", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"DailyPrompt", 'DateTime'>
 }
     

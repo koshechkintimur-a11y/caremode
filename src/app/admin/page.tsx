@@ -34,10 +34,15 @@ const TYPE_LABELS: Record<string, string> = {
   remind_owner: "«Напомнить ей»",
 };
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const cookieStore = await cookies();
   if (cookieStore.get("admin_ok")?.value !== "1") {
-    return <AdminLogin />;
+    const { error } = await searchParams;
+    return <AdminLogin error={error === "1"} />;
   }
 
   const now = new Date();

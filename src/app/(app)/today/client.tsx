@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Eye, Gift, Medal, Send, Siren, X, ChevronDown, MessageCircleHeart, Sparkles, Check } from "lucide-react";
+import { Eye, Gift, Medal, Send, Siren, X, MessageCircleHeart, Sparkles, Check } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
@@ -76,7 +76,6 @@ export default function TodayPage() {
   const [sosBusy, setSosBusy] = useState(false);
   const [sosResult, setSosResult] = useState<{ phrase: string; action: string; passwordPhrase: string } | null>(null);
   const [rewardClosed, setRewardClosed] = useState(false);
-  const [daysOpen, setDaysOpen] = useState(false);
   const [needNowUI, setNeedNowUI] = useState<string | null | "loading">("loading");
   const [periodStartOpen, setPeriodStartOpen] = useState(false);
   const [care, setCare] = useState<{
@@ -526,21 +525,18 @@ export default function TodayPage() {
           </div>
         </div>
 
-        {/* Мои дни: свёрнуто в 1 строку, раскрытие по тапу */}
+        {/* Мои дни: всегда раскрыто (без сворачивания) */}
         <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-          <button onClick={() => setDaysOpen(!daysOpen)} className="w-full flex items-center justify-between gap-3 text-left">
-            <div>
-              <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
-              <div className="text-[12px] font-semibold text-muted mt-0.5">
-                {store.cycleDay
-                  ? inPeriod
-                    ? `месячные: ${store.periodDays[0]}–${store.periodDays[store.periodDays.length - 1]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
-                    : `день ${store.cycleDay} · ${PHASE_LABEL[store.phase ?? "UNKNOWN"]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
-                  : "отметь начало — он поймёт, как тебя поддержать"}
-              </div>
+          <div>
+            <div className="text-[15px] font-extrabold text-ink">Мои дни</div>
+            <div className="text-[12px] font-semibold text-muted mt-0.5">
+              {store.cycleDay
+                ? inPeriod
+                  ? `месячные: ${store.periodDays[0]}–${store.periodDays[store.periodDays.length - 1]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
+                  : `день ${store.cycleDay} · ${PHASE_LABEL[store.phase ?? "UNKNOWN"]}${store.lastPeriodStart ? ` · начались ${formatDate(store.lastPeriodStart)}` : ""}`
+                : "отметь начало — он поймёт, как тебя поддержать"}
             </div>
-            <ChevronDown size={18} className={cn("text-muted shrink-0 transition-transform", daysOpen && "rotate-180")} />
-          </button>
+          </div>
 
           {/* кнопки отметки — всегда видны */}
           <div className="mt-3 flex flex-col gap-2.5">
@@ -604,7 +600,6 @@ export default function TodayPage() {
                 <button
                   onClick={() => {
                     setPeriodStartOpen(false);
-                    setDaysOpen(true); // раскрываем «Мои дни» — иначе скролл в никуда
                     setTimeout(() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" }), 350);
                   }}
                   className="mt-2 w-full h-[40px] rounded-xl text-[13px] font-bold text-primary border border-primary/40 active:scale-[.97] transition"
@@ -626,7 +621,6 @@ export default function TodayPage() {
             История →
           </button>
 
-          {daysOpen && (
             <div className="flex flex-col gap-0 mt-4">
               {/* тумблер видимости */}
               {store.cycleDay && (
@@ -716,7 +710,6 @@ export default function TodayPage() {
                 <div className="text-[11px] font-semibold text-muted">первый день</div>
               </div>
             </div>
-          )}
         </div>
 
         {/* Кэшбэк: он прошёл цикл на отлично — вручить награду (редкий блок — ниже ежедневных) */}

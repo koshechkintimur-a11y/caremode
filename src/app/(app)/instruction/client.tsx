@@ -7,7 +7,7 @@ import { Check, X, KeyRound, Zap, Send, Share2, Pencil } from "lucide-react";
 import { PixelBottle } from "@/components/PixelBottle";
 import { shareCard } from "@/components/ShareCard";
 import { genitive } from "@/lib/instruction";
-import { useHydrated } from "@/lib/useHydrated";
+import { useApp } from "@/store/useApp";
 
 interface Instruction {
   do: string[];
@@ -29,7 +29,7 @@ interface Data {
 
 export function InstructionPage({ role }: { role: "OWNER" | "PARTNER" }) {
   const router = useRouter();
-  const hydrated = useHydrated();
+  const hydrated = useApp((s) => s.hydrated);
   const [data, setData] = useState<Data | null>(null);
   const [opened, setOpened] = useState(false);
   const [toast, setToast] = useState("");

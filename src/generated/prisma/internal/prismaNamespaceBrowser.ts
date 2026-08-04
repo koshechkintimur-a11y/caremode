@@ -86,6 +86,8 @@ export const UserScalarFieldEnum = {
   needNow: 'needNow',
   lastStormDate: 'lastStormDate',
   cycleDayVisible: 'cycleDayVisible',
+  cycleVaultKey: 'cycleVaultKey',
+  cycleVault: 'cycleVault',
   coupleId: 'coupleId',
   subStatus: 'subStatus',
   subExpiresAt: 'subExpiresAt',

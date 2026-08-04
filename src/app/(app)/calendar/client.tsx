@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/store/useApp";
-import { useHydrated } from "@/lib/useHydrated";
 import { cn } from "@/lib/utils";
 
 // Календарь-история цикла: только на устройстве (localStorage).
@@ -26,7 +25,7 @@ function monthGrid(year: number, month: number): (number | null)[] {
 
 export default function CalendarClient() {
   const store = useApp();
-  const hydrated = useHydrated();
+  const hydrated = useApp((s) => s.hydrated);
   const today = new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
 

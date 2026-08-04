@@ -16,7 +16,6 @@ import { MOODS, NEEDS, needLabel } from "@/lib/careOptions";
 import { computeCycleStats } from "@/lib/cycle";
 import { useApp } from "@/store/useApp";
 import { useWeather, MOOD_WEATHER, PHASE_WEATHER } from "@/store/uiStore";
-import { useHydrated } from "@/lib/useHydrated";
 import { PHASE_LABEL, dayOfCycle, phaseFromStartDate, phaseOfDay } from "@/lib/phase";
 import { getPerk, nextPerk } from "@/lib/perks";
 import { cn } from "@/lib/utils";
@@ -60,7 +59,7 @@ const MOOD_LABEL: Record<string, string> = {
 
 export default function TodayPage() {
   const router = useRouter();
-  const hydrated = useHydrated();
+  const hydrated = useApp((s) => s.hydrated);
   const store = useApp();
   const setWeather = useWeather((s) => s.setWeather);
   const [data, setData] = useState<TodayData | null>(null);

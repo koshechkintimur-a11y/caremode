@@ -55,6 +55,7 @@ export type UserMinAggregateOutputType = {
   needNow: string | null
   lastStormDate: string | null
   cycleDayVisible: boolean | null
+  cycleVaultKey: string | null
   coupleId: string | null
   subStatus: $Enums.SubStatus | null
   subExpiresAt: Date | null
@@ -87,6 +88,7 @@ export type UserMaxAggregateOutputType = {
   needNow: string | null
   lastStormDate: string | null
   cycleDayVisible: boolean | null
+  cycleVaultKey: string | null
   coupleId: string | null
   subStatus: $Enums.SubStatus | null
   subExpiresAt: Date | null
@@ -120,6 +122,8 @@ export type UserCountAggregateOutputType = {
   needNow: number
   lastStormDate: number
   cycleDayVisible: number
+  cycleVaultKey: number
+  cycleVault: number
   coupleId: number
   subStatus: number
   subExpiresAt: number
@@ -171,6 +175,7 @@ export type UserMinAggregateInputType = {
   needNow?: true
   lastStormDate?: true
   cycleDayVisible?: true
+  cycleVaultKey?: true
   coupleId?: true
   subStatus?: true
   subExpiresAt?: true
@@ -203,6 +208,7 @@ export type UserMaxAggregateInputType = {
   needNow?: true
   lastStormDate?: true
   cycleDayVisible?: true
+  cycleVaultKey?: true
   coupleId?: true
   subStatus?: true
   subExpiresAt?: true
@@ -236,6 +242,8 @@ export type UserCountAggregateInputType = {
   needNow?: true
   lastStormDate?: true
   cycleDayVisible?: true
+  cycleVaultKey?: true
+  cycleVault?: true
   coupleId?: true
   subStatus?: true
   subExpiresAt?: true
@@ -359,6 +367,8 @@ export type UserGroupByOutputType = {
   needNow: string | null
   lastStormDate: string | null
   cycleDayVisible: boolean
+  cycleVaultKey: string | null
+  cycleVault: runtime.JsonValue | null
   coupleId: string | null
   subStatus: $Enums.SubStatus
   subExpiresAt: Date | null
@@ -418,6 +428,8 @@ export type UserWhereInput = {
   needNow?: Prisma.StringNullableFilter<"User"> | string | null
   lastStormDate?: Prisma.StringNullableFilter<"User"> | string | null
   cycleDayVisible?: Prisma.BoolFilter<"User"> | boolean
+  cycleVaultKey?: Prisma.StringNullableFilter<"User"> | string | null
+  cycleVault?: Prisma.JsonNullableFilter<"User">
   coupleId?: Prisma.StringNullableFilter<"User"> | string | null
   subStatus?: Prisma.EnumSubStatusFilter<"User"> | $Enums.SubStatus
   subExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -456,6 +468,8 @@ export type UserOrderByWithRelationInput = {
   needNow?: Prisma.SortOrderInput | Prisma.SortOrder
   lastStormDate?: Prisma.SortOrderInput | Prisma.SortOrder
   cycleDayVisible?: Prisma.SortOrder
+  cycleVaultKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  cycleVault?: Prisma.SortOrderInput | Prisma.SortOrder
   coupleId?: Prisma.SortOrderInput | Prisma.SortOrder
   subStatus?: Prisma.SortOrder
   subExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -497,6 +511,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   needNow?: Prisma.StringNullableFilter<"User"> | string | null
   lastStormDate?: Prisma.StringNullableFilter<"User"> | string | null
   cycleDayVisible?: Prisma.BoolFilter<"User"> | boolean
+  cycleVaultKey?: Prisma.StringNullableFilter<"User"> | string | null
+  cycleVault?: Prisma.JsonNullableFilter<"User">
   coupleId?: Prisma.StringNullableFilter<"User"> | string | null
   subStatus?: Prisma.EnumSubStatusFilter<"User"> | $Enums.SubStatus
   subExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -535,6 +551,8 @@ export type UserOrderByWithAggregationInput = {
   needNow?: Prisma.SortOrderInput | Prisma.SortOrder
   lastStormDate?: Prisma.SortOrderInput | Prisma.SortOrder
   cycleDayVisible?: Prisma.SortOrder
+  cycleVaultKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  cycleVault?: Prisma.SortOrderInput | Prisma.SortOrder
   coupleId?: Prisma.SortOrderInput | Prisma.SortOrder
   subStatus?: Prisma.SortOrder
   subExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -579,6 +597,8 @@ export type UserScalarWhereWithAggregatesInput = {
   needNow?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastStormDate?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   cycleDayVisible?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  cycleVaultKey?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cycleVault?: Prisma.JsonNullableWithAggregatesFilter<"User">
   coupleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   subStatus?: Prisma.EnumSubStatusWithAggregatesFilter<"User"> | $Enums.SubStatus
   subExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -615,6 +635,8 @@ export type UserCreateInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
   freeCardsUsed?: number
@@ -652,6 +674,8 @@ export type UserUncheckedCreateInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: string | null
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
@@ -689,6 +713,8 @@ export type UserUpdateInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -726,6 +752,8 @@ export type UserUncheckedUpdateInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -763,6 +791,8 @@ export type UserCreateManyInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: string | null
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
@@ -799,6 +829,8 @@ export type UserUpdateManyMutationInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -834,6 +866,8 @@ export type UserUncheckedUpdateManyInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -870,6 +904,8 @@ export type UserCountOrderByAggregateInput = {
   needNow?: Prisma.SortOrder
   lastStormDate?: Prisma.SortOrder
   cycleDayVisible?: Prisma.SortOrder
+  cycleVaultKey?: Prisma.SortOrder
+  cycleVault?: Prisma.SortOrder
   coupleId?: Prisma.SortOrder
   subStatus?: Prisma.SortOrder
   subExpiresAt?: Prisma.SortOrder
@@ -912,6 +948,7 @@ export type UserMaxOrderByAggregateInput = {
   needNow?: Prisma.SortOrder
   lastStormDate?: Prisma.SortOrder
   cycleDayVisible?: Prisma.SortOrder
+  cycleVaultKey?: Prisma.SortOrder
   coupleId?: Prisma.SortOrder
   subStatus?: Prisma.SortOrder
   subExpiresAt?: Prisma.SortOrder
@@ -944,6 +981,7 @@ export type UserMinOrderByAggregateInput = {
   needNow?: Prisma.SortOrder
   lastStormDate?: Prisma.SortOrder
   cycleDayVisible?: Prisma.SortOrder
+  cycleVaultKey?: Prisma.SortOrder
   coupleId?: Prisma.SortOrder
   subStatus?: Prisma.SortOrder
   subExpiresAt?: Prisma.SortOrder
@@ -1107,6 +1145,8 @@ export type UserCreateWithoutCoupleInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
   freeCardsUsed?: number
@@ -1143,6 +1183,8 @@ export type UserUncheckedCreateWithoutCoupleInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
   freeCardsUsed?: number
@@ -1207,6 +1249,8 @@ export type UserScalarWhereInput = {
   needNow?: Prisma.StringNullableFilter<"User"> | string | null
   lastStormDate?: Prisma.StringNullableFilter<"User"> | string | null
   cycleDayVisible?: Prisma.BoolFilter<"User"> | boolean
+  cycleVaultKey?: Prisma.StringNullableFilter<"User"> | string | null
+  cycleVault?: Prisma.JsonNullableFilter<"User">
   coupleId?: Prisma.StringNullableFilter<"User"> | string | null
   subStatus?: Prisma.EnumSubStatusFilter<"User"> | $Enums.SubStatus
   subExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -1243,6 +1287,8 @@ export type UserCreateWithoutAchievementsInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
   freeCardsUsed?: number
@@ -1279,6 +1325,8 @@ export type UserUncheckedCreateWithoutAchievementsInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: string | null
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
@@ -1331,6 +1379,8 @@ export type UserUpdateWithoutAchievementsInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1367,6 +1417,8 @@ export type UserUncheckedUpdateWithoutAchievementsInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   coupleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1403,6 +1455,8 @@ export type UserCreateManyCoupleInput = {
   needNow?: string | null
   lastStormDate?: string | null
   cycleDayVisible?: boolean
+  cycleVaultKey?: string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: $Enums.SubStatus
   subExpiresAt?: Date | string | null
   freeCardsUsed?: number
@@ -1438,6 +1492,8 @@ export type UserUpdateWithoutCoupleInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1474,6 +1530,8 @@ export type UserUncheckedUpdateWithoutCoupleInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1510,6 +1568,8 @@ export type UserUncheckedUpdateManyWithoutCoupleInput = {
   needNow?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastStormDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cycleDayVisible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cycleVaultKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cycleVault?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   subStatus?: Prisma.EnumSubStatusFieldUpdateOperationsInput | $Enums.SubStatus
   subExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   freeCardsUsed?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1576,6 +1636,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   needNow?: boolean
   lastStormDate?: boolean
   cycleDayVisible?: boolean
+  cycleVaultKey?: boolean
+  cycleVault?: boolean
   coupleId?: boolean
   subStatus?: boolean
   subExpiresAt?: boolean
@@ -1615,6 +1677,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   needNow?: boolean
   lastStormDate?: boolean
   cycleDayVisible?: boolean
+  cycleVaultKey?: boolean
+  cycleVault?: boolean
   coupleId?: boolean
   subStatus?: boolean
   subExpiresAt?: boolean
@@ -1652,6 +1716,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   needNow?: boolean
   lastStormDate?: boolean
   cycleDayVisible?: boolean
+  cycleVaultKey?: boolean
+  cycleVault?: boolean
   coupleId?: boolean
   subStatus?: boolean
   subExpiresAt?: boolean
@@ -1689,6 +1755,8 @@ export type UserSelectScalar = {
   needNow?: boolean
   lastStormDate?: boolean
   cycleDayVisible?: boolean
+  cycleVaultKey?: boolean
+  cycleVault?: boolean
   coupleId?: boolean
   subStatus?: boolean
   subExpiresAt?: boolean
@@ -1709,7 +1777,7 @@ export type UserSelectScalar = {
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "cycleVaultKey" | "cycleVault" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
   achievements?: boolean | Prisma.User$achievementsArgs<ExtArgs>
@@ -1744,6 +1812,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     needNow: string | null
     lastStormDate: string | null
     cycleDayVisible: boolean
+    cycleVaultKey: string | null
+    cycleVault: runtime.JsonValue | null
     coupleId: string | null
     subStatus: $Enums.SubStatus
     subExpiresAt: Date | null
@@ -2202,6 +2272,8 @@ export interface UserFieldRefs {
   readonly needNow: Prisma.FieldRef<"User", 'String'>
   readonly lastStormDate: Prisma.FieldRef<"User", 'String'>
   readonly cycleDayVisible: Prisma.FieldRef<"User", 'Boolean'>
+  readonly cycleVaultKey: Prisma.FieldRef<"User", 'String'>
+  readonly cycleVault: Prisma.FieldRef<"User", 'Json'>
   readonly coupleId: Prisma.FieldRef<"User", 'String'>
   readonly subStatus: Prisma.FieldRef<"User", 'SubStatus'>
   readonly subExpiresAt: Prisma.FieldRef<"User", 'DateTime'>

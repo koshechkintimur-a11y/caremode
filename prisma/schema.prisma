@@ -25,6 +25,8 @@ model User {
   needNow       String? // «что ей нужно сейчас»: hug|food|talk|alone|movie
   lastStormDate String? // антидубль штормового пуша (YYYY-MM-DD)
   cycleDayVisible Boolean    @default(false) // показывать партнёру навигатор цикла
+  cycleVaultKey String? // AES-ключ vault (base64) — генерируется один раз на аккаунт
+  cycleVault    Json? // зашифрованный блоб данных цикла (даты только в шифре)
   coupleId      String?
   couple        CoupleProfile? @relation("CoupleMembers", fields: [coupleId], references: [id], onDelete: SetNull)
   subStatus     SubStatus     @default(NONE)

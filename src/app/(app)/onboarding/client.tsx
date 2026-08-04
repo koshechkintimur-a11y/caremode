@@ -9,7 +9,6 @@ import { CarePicker, CARE_GROUPS } from "@/components/CarePicker";
 import { DONT_GROUP, SUPER_POWERS } from "@/lib/careOptions";
 import { MoodPicker } from "@/components/MoodPicker";
 import { useApp } from "@/store/useApp";
-import { useHydrated } from "@/lib/useHydrated";
 import { phaseFromStartDate } from "@/lib/phase";
 import { computeCycleStats } from "@/lib/cycle";
 import { cn } from "@/lib/utils";
@@ -18,7 +17,7 @@ const STEPS = ["Ты", "Бесит", "Цикл", "Штрихи"];
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const hydrated = useHydrated();
+  const hydrated = useApp((s) => s.hydrated);
   const store = useApp();
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);

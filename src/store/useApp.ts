@@ -4,13 +4,15 @@
 // На сервер уходит только фаза + настроение (по явному действию).
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { CareProfile } from "@/lib/fallback";
 import { phaseFromStartDate, dayOfCycle, type Phase } from "@/lib/phase";
+import { cycleStorage } from "@/lib/cycleStorage";
 
 export type Mood = "TERRIBLE" | "MEH" | "OKAY" | "GREAT" | null;
 
 interface AppState {
+  hydrated: boolean; // true после расшифровки и восстановления стора
   phase: Phase | null;
   mood: Mood;
   lastPeriodStart: string | null; // ISO YYYY-MM-DD — только на устройстве
@@ -45,6 +47,7 @@ const emptyProfile: CareProfile = { food: [], space: [], words: [], custom: "" }
 export const useApp = create<AppState>()(
   persist(
     (set, get) => ({
+      hydrated: false,
       phase: null,
       mood: null,
       lastPeriodStart: null,
@@ -128,6 +131,6 @@ export const useApp = create<AppState>()(
           careProfile: emptyProfile,
         }),
     }),
-    { name: "sync-device-v1" }
+    { name: "sync-device-v1", storage: createJSONStorage(() => cycleStorage), onRehydrateStorage: () => () => { useApp.setState({ hydrated: true }); } }
   )
 );

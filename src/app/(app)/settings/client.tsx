@@ -8,7 +8,6 @@ import {
   ShieldCheck, Lock, Trash2, Trophy, CreditCard, RefreshCw, ChevronRight, Plus, X, FlaskConical, Clock, CalendarDays,
 } from "lucide-react";
 import { useApp } from "@/store/useApp";
-import { useHydrated } from "@/lib/useHydrated";
 import { useTheme, type Theme } from "@/components/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { dayOfCycle, phaseFromStartDate, PHASE_LABEL } from "@/lib/phase";
@@ -34,7 +33,7 @@ interface MeData {
 }
 
 export default function SettingsPage() {
-  const hydrated = useHydrated();
+  const hydrated = useApp((s) => s.hydrated);
   const store = useApp();
   const router = useRouter();
   const { theme, setTheme } = useTheme();

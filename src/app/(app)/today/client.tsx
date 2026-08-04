@@ -604,7 +604,8 @@ export default function TodayPage() {
                 <button
                   onClick={() => {
                     setPeriodStartOpen(false);
-                    document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    setDaysOpen(true); // раскрываем «Мои дни» — иначе скролл в никуда
+                    setTimeout(() => document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" }), 350);
                   }}
                   className="mt-2 w-full h-[40px] rounded-xl text-[13px] font-bold text-primary border border-primary/40 active:scale-[.97] transition"
                 >

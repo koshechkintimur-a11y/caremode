@@ -21,8 +21,12 @@ export async function POST(req: Request) {
   const adminUser = process.env.ADMIN_USER ?? "admin";
   const adminPass = process.env.ADMIN_PASS ?? "";
 
-  const failUrl = new URL("/admin", req.url);
-  failUrl.searchParams.set("error", "1");
+  // внешний base из заголовков nginx (req.url внутри — localhost:3000)
+  const proto = req.headers.get("x-forwarded-proto") ?? "https";
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "caremode.ru";
+  const base = `${proto}://${host}`;
+
+  const failUrl = `${base}/admin?error=1`;
 
   if (!adminPass || user !== adminUser || pass !== adminPass) {
     return NextResponse.redirect(failUrl, 303);
@@ -36,7 +40,7 @@ export async function POST(req: Request) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return NextResponse.redirect(new URL("/admin", req.url), 303);
+  return NextResponse.redirect(`${base}/admin`, 303);
 }
 
 // POST /api/admin/logout — сброс куки

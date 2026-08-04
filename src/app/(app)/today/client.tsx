@@ -79,6 +79,7 @@ export default function TodayPage() {
   const [rewardClosed, setRewardClosed] = useState(false);
   const [daysOpen, setDaysOpen] = useState(false);
   const [needNowUI, setNeedNowUI] = useState<string | null | "loading">("loading");
+  const [periodStartOpen, setPeriodStartOpen] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -549,11 +550,67 @@ export default function TodayPage() {
               </button>
             ) : (
               <button
-                onClick={startToday}
+                onClick={() => setPeriodStartOpen((v) => !v)}
                 className="w-full h-[52px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(232,131,127,.4)] active:scale-[.97] transition"
               >
-                Месячные начались
+                {periodStartOpen ? "Отмена" : "Месячные начались"}
               </button>
+            )}
+
+            {/* Когда начались? — не сбрасываем на сегодня, если начало было раньше */}
+            {periodStartOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3 rounded-2xl border border-line bg-surface/70 p-4"
+              >
+                <div className="text-[13px] font-extrabold text-ink">Когда начались?</div>
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  <button
+                    onClick={() => {
+                      setPeriodStartOpen(false);
+                      selectPeriodDays([1]);
+                    }}
+                    className="rounded-xl h-[42px] bg-bg text-[13px] font-bold text-ink border border-line active:scale-[.97] transition"
+                  >
+                    Сегодня
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPeriodStartOpen(false);
+                      const d = new Date();
+                      d.setDate(d.getDate() - 1);
+                      setPeriodDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`);
+                    }}
+                    className="rounded-xl h-[42px] bg-bg text-[13px] font-bold text-ink border border-line active:scale-[.97] transition"
+                  >
+                    Вчера
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPeriodStartOpen(false);
+                      const d = new Date();
+                      d.setDate(d.getDate() - 2);
+                      setPeriodDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`);
+                    }}
+                    className="rounded-xl h-[42px] bg-bg text-[13px] font-bold text-ink border border-line active:scale-[.97] transition"
+                  >
+                    Позавчера
+                  </button>
+                </div>
+                <button
+                  onClick={() => {
+                    setPeriodStartOpen(false);
+                    document.getElementById("period-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  className="mt-2 w-full h-[40px] rounded-xl text-[13px] font-bold text-primary border border-primary/40 active:scale-[.97] transition"
+                >
+                  📅 Выбрать дату
+                </button>
+                <div className="mt-2 text-[11px] font-semibold text-muted">
+                  начались раньше — выбери день, чтобы не сбить цикл
+                </div>
+              </motion.div>
             )}
           </div>
 
@@ -628,7 +685,7 @@ export default function TodayPage() {
                   </div>
                   <div className="flex gap-2 mt-2">
                     <button
-                      onClick={startToday}
+                      onClick={() => setPeriodStartOpen(true)}
                       className="h-[38px] px-4 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[12px] active:scale-[.97] transition"
                     >
                       Да, отметить
@@ -824,11 +881,6 @@ export default function TodayPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phase: store.phase, mood: store.mood, needsSpace: next }),
     });
-  }
-
-  // «Месячные начались сегодня» — новый цикл: день 1
-  function startToday() {
-    selectPeriodDays([1]);
   }
 
   // «Закончились сегодня» — период от старта до текущего дня

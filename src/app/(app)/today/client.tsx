@@ -355,12 +355,12 @@ export default function TodayPage() {
   // ===== OWNER: прозрачность + пульс =====
   if (data.role === "OWNER") {
     // состояние «мои дни»: идёт ли сейчас период.
-    // В периоде: отмеченный день ИЛИ первые 7 дней цикла (начало указано датой —
-    // periodDays пуст, но месячные идут: 4-й день = «Закончились сегодня», не «Начались»)
+    // В периоде: дни 1-7 цикла (типичная длина месячных) ИЛИ любой отмеченный день.
+    // Важно: periodDays может быть [1] (нажали «Сегодня» 4 дня назад) — день 4
+    // не отмечен, но месячные идут — кнопка должна быть «Закончились сегодня».
     const inPeriod =
       store.cycleDay !== null &&
-      (store.periodDays.includes(store.cycleDay) ||
-        (store.periodDays.length === 0 && store.cycleDay >= 1 && store.cycleDay <= 7));
+      (store.cycleDay <= 7 || store.periodDays.includes(store.cycleDay));
     const lateDays = (() => {
       if (!store.cycleDay || !store.lastPeriodStart) return null;
       const stats = computeCycleStats(store.cycleHistory, store.lastPeriodStart);

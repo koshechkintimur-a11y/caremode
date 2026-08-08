@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "tgChatId" TEXT;
+ALTER TABLE "User" ADD COLUMN "tgCode" TEXT;
+ALTER TABLE "User" ADD COLUMN "tgCodeAt" DATETIME;

@@ -70,6 +70,9 @@ export type UserMinAggregateOutputType = {
   pushPromptTime: string | null
   lastPushDate: string | null
   lastSeenAt: Date | null
+  tgChatId: string | null
+  tgCode: string | null
+  tgCodeAt: Date | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -104,6 +107,9 @@ export type UserMaxAggregateOutputType = {
   pushPromptTime: string | null
   lastPushDate: string | null
   lastSeenAt: Date | null
+  tgChatId: string | null
+  tgCode: string | null
+  tgCodeAt: Date | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -143,6 +149,9 @@ export type UserCountAggregateOutputType = {
   pushPromptTime: number
   lastPushDate: number
   lastSeenAt: number
+  tgChatId: number
+  tgCode: number
+  tgCodeAt: number
   updatedAt: number
   createdAt: number
   _all: number
@@ -193,6 +202,9 @@ export type UserMinAggregateInputType = {
   pushPromptTime?: true
   lastPushDate?: true
   lastSeenAt?: true
+  tgChatId?: true
+  tgCode?: true
+  tgCodeAt?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -227,6 +239,9 @@ export type UserMaxAggregateInputType = {
   pushPromptTime?: true
   lastPushDate?: true
   lastSeenAt?: true
+  tgChatId?: true
+  tgCode?: true
+  tgCodeAt?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -266,6 +281,9 @@ export type UserCountAggregateInputType = {
   pushPromptTime?: true
   lastPushDate?: true
   lastSeenAt?: true
+  tgChatId?: true
+  tgCode?: true
+  tgCodeAt?: true
   updatedAt?: true
   createdAt?: true
   _all?: true
@@ -392,6 +410,9 @@ export type UserGroupByOutputType = {
   pushPromptTime: string | null
   lastPushDate: string | null
   lastSeenAt: Date | null
+  tgChatId: string | null
+  tgCode: string | null
+  tgCodeAt: Date | null
   updatedAt: Date
   createdAt: Date
   _count: UserCountAggregateOutputType | null
@@ -454,6 +475,9 @@ export type UserWhereInput = {
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  tgChatId?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCode?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCodeAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileNullableScalarRelationFilter, Prisma.CoupleProfileWhereInput> | null
@@ -495,6 +519,9 @@ export type UserOrderByWithRelationInput = {
   pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgChatId?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgCodeAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   couple?: Prisma.CoupleProfileOrderByWithRelationInput
@@ -539,6 +566,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  tgChatId?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCode?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCodeAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   couple?: Prisma.XOR<Prisma.CoupleProfileNullableScalarRelationFilter, Prisma.CoupleProfileWhereInput> | null
@@ -580,6 +610,9 @@ export type UserOrderByWithAggregationInput = {
   pushPromptTime?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPushDate?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgChatId?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  tgCodeAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -627,6 +660,9 @@ export type UserScalarWhereWithAggregatesInput = {
   pushPromptTime?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  tgChatId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tgCode?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tgCodeAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -665,6 +701,9 @@ export type UserCreateInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   couple?: Prisma.CoupleProfileCreateNestedOneWithoutMembersInput
@@ -706,6 +745,9 @@ export type UserUncheckedCreateInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutUserInput
@@ -745,6 +787,9 @@ export type UserUpdateInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   couple?: Prisma.CoupleProfileUpdateOneWithoutMembersNestedInput
@@ -786,6 +831,9 @@ export type UserUncheckedUpdateInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutUserNestedInput
@@ -826,6 +874,9 @@ export type UserCreateManyInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -864,6 +915,9 @@ export type UserUpdateManyMutationInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -903,6 +957,9 @@ export type UserUncheckedUpdateManyInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -942,6 +999,9 @@ export type UserCountOrderByAggregateInput = {
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
+  tgChatId?: Prisma.SortOrder
+  tgCode?: Prisma.SortOrder
+  tgCodeAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -983,6 +1043,9 @@ export type UserMaxOrderByAggregateInput = {
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
+  tgChatId?: Prisma.SortOrder
+  tgCode?: Prisma.SortOrder
+  tgCodeAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -1017,6 +1080,9 @@ export type UserMinOrderByAggregateInput = {
   pushPromptTime?: Prisma.SortOrder
   lastPushDate?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
+  tgChatId?: Prisma.SortOrder
+  tgCode?: Prisma.SortOrder
+  tgCodeAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -1185,6 +1251,9 @@ export type UserCreateWithoutCoupleInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementCreateNestedManyWithoutUserInput
@@ -1224,6 +1293,9 @@ export type UserUncheckedCreateWithoutCoupleInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   achievements?: Prisma.AchievementUncheckedCreateNestedManyWithoutUserInput
@@ -1292,6 +1364,9 @@ export type UserScalarWhereInput = {
   pushPromptTime?: Prisma.StringNullableFilter<"User"> | string | null
   lastPushDate?: Prisma.StringNullableFilter<"User"> | string | null
   lastSeenAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  tgChatId?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCode?: Prisma.StringNullableFilter<"User"> | string | null
+  tgCodeAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
@@ -1330,6 +1405,9 @@ export type UserCreateWithoutAchievementsInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
   couple?: Prisma.CoupleProfileCreateNestedOneWithoutMembersInput
@@ -1370,6 +1448,9 @@ export type UserUncheckedCreateWithoutAchievementsInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -1424,6 +1505,9 @@ export type UserUpdateWithoutAchievementsInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   couple?: Prisma.CoupleProfileUpdateOneWithoutMembersNestedInput
@@ -1464,6 +1548,9 @@ export type UserUncheckedUpdateWithoutAchievementsInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1502,6 +1589,9 @@ export type UserCreateManyCoupleInput = {
   pushPromptTime?: string | null
   lastPushDate?: string | null
   lastSeenAt?: Date | string | null
+  tgChatId?: string | null
+  tgCode?: string | null
+  tgCodeAt?: Date | string | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -1540,6 +1630,9 @@ export type UserUpdateWithoutCoupleInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUpdateManyWithoutUserNestedInput
@@ -1579,6 +1672,9 @@ export type UserUncheckedUpdateWithoutCoupleInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achievements?: Prisma.AchievementUncheckedUpdateManyWithoutUserNestedInput
@@ -1618,6 +1714,9 @@ export type UserUncheckedUpdateManyWithoutCoupleInput = {
   pushPromptTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastPushDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tgChatId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tgCodeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1688,6 +1787,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pushPromptTime?: boolean
   lastPushDate?: boolean
   lastSeenAt?: boolean
+  tgChatId?: boolean
+  tgCode?: boolean
+  tgCodeAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1730,6 +1832,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   pushPromptTime?: boolean
   lastPushDate?: boolean
   lastSeenAt?: boolean
+  tgChatId?: boolean
+  tgCode?: boolean
+  tgCodeAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1770,6 +1875,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   pushPromptTime?: boolean
   lastPushDate?: boolean
   lastSeenAt?: boolean
+  tgChatId?: boolean
+  tgCode?: boolean
+  tgCodeAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
@@ -1810,11 +1918,14 @@ export type UserSelectScalar = {
   pushPromptTime?: boolean
   lastPushDate?: boolean
   lastSeenAt?: boolean
+  tgChatId?: boolean
+  tgCode?: boolean
+  tgCodeAt?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "cycleVaultKey" | "cycleVault" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "lastSeenAt" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "careProfile" | "phase" | "phaseUpdatedAt" | "mood" | "moodUpdatedAt" | "pausePartner" | "cycleDay" | "expectedCycleDay" | "needNow" | "lastStormDate" | "cycleDayVisible" | "cycleVaultKey" | "cycleVault" | "coupleId" | "subStatus" | "subExpiresAt" | "freeCardsUsed" | "firstName" | "consentAt" | "partnerProfile" | "promptTime" | "sosUsed" | "sosDate" | "needsSpace" | "dayStates" | "pushSubs" | "pushEnabled" | "pushPromptTime" | "lastPushDate" | "lastSeenAt" | "tgChatId" | "tgCode" | "tgCodeAt" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   couple?: boolean | Prisma.User$coupleArgs<ExtArgs>
   achievements?: boolean | Prisma.User$achievementsArgs<ExtArgs>
@@ -1868,6 +1979,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pushPromptTime: string | null
     lastPushDate: string | null
     lastSeenAt: Date | null
+    tgChatId: string | null
+    tgCode: string | null
+    tgCodeAt: Date | null
     updatedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2329,6 +2443,9 @@ export interface UserFieldRefs {
   readonly pushPromptTime: Prisma.FieldRef<"User", 'String'>
   readonly lastPushDate: Prisma.FieldRef<"User", 'String'>
   readonly lastSeenAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly tgChatId: Prisma.FieldRef<"User", 'String'>
+  readonly tgCode: Prisma.FieldRef<"User", 'String'>
+  readonly tgCodeAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }

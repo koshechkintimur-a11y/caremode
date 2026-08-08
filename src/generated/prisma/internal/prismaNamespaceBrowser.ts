@@ -106,6 +106,9 @@ export const UserScalarFieldEnum = {
   pushPromptTime: 'pushPromptTime',
   lastPushDate: 'lastPushDate',
   lastSeenAt: 'lastSeenAt',
+  tgChatId: 'tgChatId',
+  tgCode: 'tgCode',
+  tgCodeAt: 'tgCodeAt',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 } as const

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { applyFeedback } from "@/lib/prompt";
 import { track } from "@/lib/analytics";
+import { sendTg, TG_MSGS } from "@/lib/tg";
 
 // POST /api/prompt/feedback — { promptId, feedback: GOOD|MISSED|BAD }
 // При GOOD: мгновенный пуш ОЛЕ — она видит конкретное действие в ленте заботы.
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
         });
         const owner = prompt?.couple?.members.find((m) => m.role === "OWNER");
         track("card_good", { userId: session.user.id, coupleId: prompt?.coupleId });
+        void sendTg(owner, TG_MSGS.heDid((prompt?.text ?? "забота").slice(0, 80)));
         const subs = (owner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
         if (owner && prompt && subs.length > 0 && !owner.pausePartner) {
           const vapid = {

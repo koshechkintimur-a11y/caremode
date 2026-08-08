@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { track } from "@/lib/analytics";
+import { sendTg, TG_MSGS } from "@/lib/tg";
 
 // POST /api/cycle/supplies/done — партнёр отметил «Сделаю ✓»:
 // карточка у него гаснет, Оле уходит пуш «он уже в магазине 💛».
@@ -16,13 +17,14 @@ export async function POST() {
   });
   if (!user?.coupleId || !user.couple) return NextResponse.json({ error: "no couple" }, { status: 409 });
 
+  const owner = user.couple.members.find((m) => m.role === "OWNER");
+
   await prisma.coupleProfile.update({
     where: { id: user.coupleId },
     data: { suppliesDone: true },
   });
   track("supplies_done", { userId: user.id, coupleId: user.coupleId });
-
-  const owner = user.couple.members.find((m) => m.role === "OWNER");
+  void sendTg(owner, TG_MSGS.suppliesDone);
   const subs = (owner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
   let sent = 0;
   if (owner && subs.length > 0 && !owner.pausePartner) {

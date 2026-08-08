@@ -60,6 +60,25 @@ export async function PUT(req: Request) {
   if (body.needsSpace) track("needs_space", { userId: session.user.id });
   if (needNow) track("need_now", { userId: session.user.id });
 
+  // Telegram-уведомления партнёру: настроение и «что нужно» — пуш на каждое действие
+  {
+    const u2 = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: { couple: { include: { members: true } } },
+    });
+    const partner = u2?.couple?.members.find((m) => m.id !== session.user.id);
+    if (body.mood) {
+      const label =
+        ({ BAD: "Всё бесит", LOW: "Так себе", GREAT: "Отлично" } as Record<string, string>)[
+          String(body.mood)
+        ] ?? String(body.mood);
+      void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.sheMood(label)));
+    }
+    if (needNow) {
+      void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.sheNeeds(String(needNow))));
+    }
+  }
+
   // Мгновенный пуш партнёру, когда она отметила «что нужно»
   if (needNow) {
     try {

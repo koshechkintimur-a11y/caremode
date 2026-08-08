@@ -45,6 +45,9 @@ model User {
   pushPromptTime String? // OWNER: час напоминания: "9" | "10" | "20"
   lastPushDate  String? // YYYY-MM-DD последней отправки карточки (антидубль)
   lastSeenAt    DateTime? // активность: обновляется при заходе в приложение
+  tgChatId      String? // Telegram-уведомления: chat_id, после связки с ботом
+  tgCode        String? // одноразовый код связки (показывается в приложении)
+  tgCodeAt      DateTime? // когда создан код (TTL 10 минут)
   updatedAt     DateTime @default(now()) @updatedAt
   achievements  Achievement[]
   createdAt     DateTime      @default(now())

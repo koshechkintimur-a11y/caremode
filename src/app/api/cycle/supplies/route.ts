@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { track } from "@/lib/analytics";
+import { sendTg, TG_MSGS } from "@/lib/tg";
 
 // POST /api/cycle/supplies — Оля: «закончились прокладки» → мгновенный пуш партнёру
 // (он успевает среагировать на опережение — заехать в магазин до вечера).
@@ -24,6 +25,7 @@ export async function POST() {
     where: { id: user.coupleId },
     data: { suppliesAt: new Date(), suppliesDone: false },
   });
+  void sendTg(partner, TG_MSGS.supplies);
 
   const subs = (partner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
   let sent = 0;

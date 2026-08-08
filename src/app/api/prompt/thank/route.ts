@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { track } from "@/lib/analytics";
+import { sendTg, TG_MSGS } from "@/lib/tg";
 
 // PUT /api/prompt/thank — OWNER нажимает «Заметил 💛» на действие в ленте заботы.
 // Парню уходит статус «Она заметила» + пуш. Только позитивный контур.
@@ -43,6 +44,7 @@ export async function PUT(req: Request) {
       include: { members: true },
     });
     const partner = couple?.members.find((m) => m.role === "PARTNER");
+    void sendTg(partner, TG_MSGS.sheThanked);
     const subs = (partner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
     if (partner && subs.length > 0) {
       const vapid = {

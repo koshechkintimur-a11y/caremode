@@ -67,6 +67,7 @@ export async function GET() {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
           void import("@/lib/analytics").then(({ track }) => track("push_owner_remind", { userId: owner.id, coupleId: couple.id }));
+          void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(owner, TG_MSGS.ownerRemind));
         } catch {
           ownerFailed = [...ownerFailed, sub.endpoint];
         }
@@ -119,6 +120,7 @@ export async function GET() {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
           void import("@/lib/analytics").then(({ track }) => track("push_storm", { userId: partner.id, coupleId: couple.id }));
+          void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.storm));
         } catch {
           stormFailed = [...stormFailed, sub.endpoint];
         }
@@ -159,6 +161,7 @@ export async function GET() {
         );
         sent++;
         void import("@/lib/analytics").then(({ track }) => track("push_card", { userId: partner.id, coupleId: couple.id }));
+        void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.cardForHim((prompt?.text ?? "").slice(0, 300))));
       } catch {
         failed = [...failed, sub.endpoint];
       }

@@ -50,6 +50,10 @@ export default function SettingsPage() {
   const [myName, setMyName] = useState("");
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [nameBusy, setNameBusy] = useState(false);
+  const [tgConnected, setTgConnected] = useState(false);
+  const [tgBot, setTgBot] = useState<string | null>(null);
+  const [tgCode, setTgCode] = useState<string | null>(null);
+  const [tgBusy, setTgBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -73,6 +77,11 @@ export default function SettingsPage() {
       setPromptTime(b.promptTime ?? null);
       setMyName(p.firstName ?? "");
       setPartnerName(p.partnerFirstName ?? null);
+    } catch {}
+    try {
+      const t = await fetch("/api/tg/status").then((r) => r.json());
+      setTgConnected(Boolean(t.connected));
+      setTgBot(t.bot ?? null);
     } catch {}
   }, []);
 
@@ -249,6 +258,74 @@ export default function SettingsPage() {
           <div className="mt-3 text-[12px] font-semibold text-muted">
             Партнёр ещё не указал имя — блок пары появится, когда оба будут заполнены.
           </div>
+        )}
+      </div>
+
+      {/* Telegram-уведомления: надёжные пуши на каждое действие (работают на iOS без ярлыка) */}
+      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="text-[16px] font-extrabold text-ink">Telegram-уведомления</div>
+        <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
+          пуш на каждое действие: он сделал · она поблагодарила · закончились прокладки и др.
+        </div>
+
+        {tgConnected ? (
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-[13px] font-extrabold text-success">Подключено ✓</div>
+            <button
+              onClick={async () => {
+                await fetch("/api/tg/status", { method: "DELETE" });
+                setTgConnected(false);
+              }}
+              className="h-[40px] px-5 rounded-full border border-line text-[12px] font-bold text-muted active:scale-[.97] transition"
+            >
+              Отключить
+            </button>
+          </div>
+        ) : tgCode ? (
+          <div className="rounded-2xl border border-line bg-surface/70 p-4">
+            <div className="text-[12px] font-bold text-muted">
+              Отправь этот код боту{" "}
+              <span className="text-primary">{tgBot ? `@${tgBot}` : "в Telegram"}</span>:
+            </div>
+            <div className="mt-2 text-center font-pixel text-[22px] text-ink tracking-[0.3em]">
+              {tgCode}
+            </div>
+            <div className="mt-2 text-[11px] font-semibold text-muted text-center">
+              ждём подтверждения… (код живёт 10 минут)
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={async () => {
+              if (tgBusy) return;
+              setTgBusy(true);
+              try {
+                const res = await fetch("/api/tg/code", { method: "POST" });
+                const d = await res.json();
+                if (d.code) {
+                  setTgCode(d.code);
+                  // поллинг: как только бот подтвердил — показываем «Подключено»
+                  const t = setInterval(async () => {
+                    try {
+                      const s = await fetch("/api/tg/status").then((r) => r.json());
+                      if (s.connected) {
+                        clearInterval(t);
+                        setTgCode(null);
+                        setTgConnected(true);
+                      }
+                    } catch {}
+                  }, 3000);
+                  setTimeout(() => clearInterval(t), 11 * 60_000);
+                }
+              } finally {
+                setTgBusy(false);
+              }
+            }}
+            disabled={tgBusy || !tgBot}
+            className="w-full h-[46px] rounded-full bg-gradient-to-br from-[#2AABEE] to-[#229ED9] text-white font-extrabold text-[14px] disabled:opacity-40 active:scale-[.97] transition"
+          >
+            {tgBusy ? "…" : "Подключить Telegram"}
+          </button>
         )}
       </div>
 

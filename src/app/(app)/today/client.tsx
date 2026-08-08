@@ -1369,11 +1369,14 @@ export default function TodayPage() {
                 goodCount={cashback?.goodCount ?? 0}
                 day={data.cycleDay}
               />
-              <div className="mt-2 text-[12px] font-semibold text-muted text-center">
+              <div className="mt-2 text-[12px] font-bold text-ink/75 text-center leading-relaxed">
                 {!data.ownerMood && !data.ownerNeedsSpace && !data.cycleDay ? (
                   "Она ещё не отметила настроение — скоро питомец оживёт"
                 ) : (
-                  <>тапни — скажет, как ей · делай дела из карточки — растёт</>
+                  <>
+                    Тапни по питомцу — подскажет, что ей нужно
+                    <span className="block text-ink/55">Делай дела из карточки — и он растёт</span>
+                  </>
                 )}
               </div>
               {data.ownerNeedsSpace && (
@@ -1444,8 +1447,8 @@ export default function TodayPage() {
                 </div>
               )}
               {data.ownerPeriodEnded && (
-                <div className="mt-3 rounded-2xl border-2 border-success/50 bg-success/15 px-4 py-4">
-                  <div className="text-[16px] font-extrabold text-success">🌤 Месячные закончились</div>
+                <div className="mt-3 rounded-2xl border-2 border-ink/15 bg-surface/55 px-4 py-4">
+                  <div className="text-[16px] font-extrabold text-ink">🌤 Месячные закончились</div>
                   <div className="text-[12px] font-semibold text-muted mt-1 leading-snug">
                     Она снова в строю — впереди лучшие дни для свидания и комплиментов.
                   </div>
@@ -1482,10 +1485,8 @@ export default function TodayPage() {
                 </div>
               )}
 
-              {/* События пары: она отметила — подтверди */}
-              <div className="mt-3 w-full">
               {/* ЦИКЛ ПРОСТЫМИ СЛОВАМИ: что с ней происходит и что делать */}
-              <div className="mt-3 rounded-2xl bg-surface/55 backdrop-blur-[16px] border border-line p-4">
+              <div className="mt-4 rounded-2xl bg-surface/55 backdrop-blur-[16px] border border-line p-4">
                 <div className="text-[12px] font-bold uppercase tracking-wider text-muted">
                   {data.cycleVisible && data.cycleDay ? "Её цикл простыми словами" : "Как устроен её цикл"}
                 </div>
@@ -1530,20 +1531,22 @@ export default function TodayPage() {
                 )}
               </div>
 
+              {/* События пары: она отметила — подтверди */}
+              <div className="mt-5 w-full">
                 <EventsBlock role="PARTNER" toast={(t) => { setToast(t); setTimeout(() => setToast(""), 2600); }} />
               </div>
             </div>
 
             {/* Обучалка: маскот (встроенный блок после маскота) */}
-            <CoachTips
-              tips={[
-                {
-                  id: "pet",
-                  anchor: "pet",
-                  text: "Это твой питомец. Он показывает, каково ей сегодня: злится — не приставай, грустит — обними, прыгает — всё отлично. Заботься — и он будет расти.",
-                },
-              ]}
-            />
+        <CoachTips
+          tips={[
+            {
+              id: "pet",
+              anchor: "pet",
+              text: "Это твой питомец. Он показывает, каково ей сегодня: злится — не приставай, грустит — обними, прыгает — всё отлично. Заботься — и он будет расти.",
+            },
+          ]}
+        />
 
             {!data.prompt?.text ? (
               ownerEmptyCard ?? (

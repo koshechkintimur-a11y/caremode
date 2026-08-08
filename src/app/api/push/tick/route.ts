@@ -19,6 +19,12 @@ function todayKey(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+// локальная дата пары (РФ, UTC+3): события хранятся как локальные YYYY-MM-DD
+function localKey(offsetDays: number): string {
+  const d = new Date(Date.now() + 3 * 3600_000 + offsetDays * 86_400_000);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
 export async function GET() {
   if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
     return NextResponse.json({ error: "vapid not configured" }, { status: 500 });
@@ -39,6 +45,35 @@ export async function GET() {
     const partner = couple.members.find((m) => m.role === "PARTNER");
     const owner = couple.members.find((m) => m.role === "OWNER");
     if (!partner || !owner) continue;
+
+    // ==== НАПОМИНАНИЯ О СОБЫТИЯХ ПАРЫ: сегодня/завтра — ТГ + Web Push обоим ====
+    {
+      const eventDate = localKey(0);
+      const eventNext = localKey(1);
+      const events = await prisma.coupleEvent.findMany({
+        where: { coupleId: couple.id, date: { in: [eventDate, eventNext] }, remindedAt: null },
+      });
+      for (const ev of events) {
+        const when = ev.date === eventDate ? "Сегодня" : "Завтра";
+        const kindEmoji = { date: "💞", anniversary: "🎂", appointment: "🩺" }[ev.kind] ?? "📅";
+        const text = `${kindEmoji} <b>${when}: ${ev.title}</b>\n\nНе потеряйте этот день.`;
+        void import("@/lib/tg").then(({ sendTg }) => {
+          sendTg(owner, text);
+          sendTg(partner, text);
+        });
+        const payload = JSON.stringify({ title: `${kindEmoji} ${when}: ${ev.title}`, body: "Не потеряйте этот день.", url: "/today" });
+        for (const m of [owner, partner]) {
+          for (const sub of (m.pushSubs as PushSub[] | null) ?? []) {
+            try {
+              await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+              sent++;
+            } catch {}
+          }
+        }
+        await prisma.coupleEvent.update({ where: { id: ev.id }, data: { remindedAt: new Date() } });
+        void import("@/lib/analytics").then(({ track }) => track("event_remind", { coupleId: couple.id }));
+      }
+    }
 
     // ==== Пуш ОЛЕ: напоминание отметить настроение (если ещё не отметила сегодня) ====
     const ownerHour = owner.pushPromptTime ? Number(owner.pushPromptTime) : null;

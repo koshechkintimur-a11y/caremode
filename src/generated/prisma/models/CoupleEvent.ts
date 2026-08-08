@@ -32,6 +32,7 @@ export type CoupleEventMinAggregateOutputType = {
   kind: string | null
   createdById: string | null
   confirmed: boolean | null
+  remindedAt: Date | null
   createdAt: Date | null
 }
 
@@ -43,6 +44,7 @@ export type CoupleEventMaxAggregateOutputType = {
   kind: string | null
   createdById: string | null
   confirmed: boolean | null
+  remindedAt: Date | null
   createdAt: Date | null
 }
 
@@ -54,6 +56,7 @@ export type CoupleEventCountAggregateOutputType = {
   kind: number
   createdById: number
   confirmed: number
+  remindedAt: number
   createdAt: number
   _all: number
 }
@@ -67,6 +70,7 @@ export type CoupleEventMinAggregateInputType = {
   kind?: true
   createdById?: true
   confirmed?: true
+  remindedAt?: true
   createdAt?: true
 }
 
@@ -78,6 +82,7 @@ export type CoupleEventMaxAggregateInputType = {
   kind?: true
   createdById?: true
   confirmed?: true
+  remindedAt?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type CoupleEventCountAggregateInputType = {
   kind?: true
   createdById?: true
   confirmed?: true
+  remindedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -173,6 +179,7 @@ export type CoupleEventGroupByOutputType = {
   kind: string
   createdById: string
   confirmed: boolean
+  remindedAt: Date | null
   createdAt: Date
   _count: CoupleEventCountAggregateOutputType | null
   _min: CoupleEventMinAggregateOutputType | null
@@ -205,6 +212,7 @@ export type CoupleEventWhereInput = {
   kind?: Prisma.StringFilter<"CoupleEvent"> | string
   createdById?: Prisma.StringFilter<"CoupleEvent"> | string
   confirmed?: Prisma.BoolFilter<"CoupleEvent"> | boolean
+  remindedAt?: Prisma.DateTimeNullableFilter<"CoupleEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CoupleEvent"> | Date | string
 }
 
@@ -216,6 +224,7 @@ export type CoupleEventOrderByWithRelationInput = {
   kind?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   confirmed?: Prisma.SortOrder
+  remindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -230,6 +239,7 @@ export type CoupleEventWhereUniqueInput = Prisma.AtLeast<{
   kind?: Prisma.StringFilter<"CoupleEvent"> | string
   createdById?: Prisma.StringFilter<"CoupleEvent"> | string
   confirmed?: Prisma.BoolFilter<"CoupleEvent"> | boolean
+  remindedAt?: Prisma.DateTimeNullableFilter<"CoupleEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CoupleEvent"> | Date | string
 }, "id">
 
@@ -241,6 +251,7 @@ export type CoupleEventOrderByWithAggregationInput = {
   kind?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   confirmed?: Prisma.SortOrder
+  remindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CoupleEventCountOrderByAggregateInput
   _max?: Prisma.CoupleEventMaxOrderByAggregateInput
@@ -258,6 +269,7 @@ export type CoupleEventScalarWhereWithAggregatesInput = {
   kind?: Prisma.StringWithAggregatesFilter<"CoupleEvent"> | string
   createdById?: Prisma.StringWithAggregatesFilter<"CoupleEvent"> | string
   confirmed?: Prisma.BoolWithAggregatesFilter<"CoupleEvent"> | boolean
+  remindedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CoupleEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CoupleEvent"> | Date | string
 }
 
@@ -269,6 +281,7 @@ export type CoupleEventCreateInput = {
   kind?: string
   createdById: string
   confirmed?: boolean
+  remindedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -280,6 +293,7 @@ export type CoupleEventUncheckedCreateInput = {
   kind?: string
   createdById: string
   confirmed?: boolean
+  remindedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -291,6 +305,7 @@ export type CoupleEventUpdateInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  remindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -302,6 +317,7 @@ export type CoupleEventUncheckedUpdateInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  remindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -313,6 +329,7 @@ export type CoupleEventCreateManyInput = {
   kind?: string
   createdById: string
   confirmed?: boolean
+  remindedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -324,6 +341,7 @@ export type CoupleEventUpdateManyMutationInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  remindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -335,6 +353,7 @@ export type CoupleEventUncheckedUpdateManyInput = {
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   confirmed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  remindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -346,6 +365,7 @@ export type CoupleEventCountOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   confirmed?: Prisma.SortOrder
+  remindedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -357,6 +377,7 @@ export type CoupleEventMaxOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   confirmed?: Prisma.SortOrder
+  remindedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -368,6 +389,7 @@ export type CoupleEventMinOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   confirmed?: Prisma.SortOrder
+  remindedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -381,6 +403,7 @@ export type CoupleEventSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   kind?: boolean
   createdById?: boolean
   confirmed?: boolean
+  remindedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["coupleEvent"]>
 
@@ -392,6 +415,7 @@ export type CoupleEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   kind?: boolean
   createdById?: boolean
   confirmed?: boolean
+  remindedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["coupleEvent"]>
 
@@ -403,6 +427,7 @@ export type CoupleEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   kind?: boolean
   createdById?: boolean
   confirmed?: boolean
+  remindedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["coupleEvent"]>
 
@@ -414,10 +439,11 @@ export type CoupleEventSelectScalar = {
   kind?: boolean
   createdById?: boolean
   confirmed?: boolean
+  remindedAt?: boolean
   createdAt?: boolean
 }
 
-export type CoupleEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coupleId" | "date" | "title" | "kind" | "createdById" | "confirmed" | "createdAt", ExtArgs["result"]["coupleEvent"]>
+export type CoupleEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coupleId" | "date" | "title" | "kind" | "createdById" | "confirmed" | "remindedAt" | "createdAt", ExtArgs["result"]["coupleEvent"]>
 
 export type $CoupleEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CoupleEvent"
@@ -430,6 +456,7 @@ export type $CoupleEventPayload<ExtArgs extends runtime.Types.Extensions.Interna
     kind: string
     createdById: string
     confirmed: boolean
+    remindedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["coupleEvent"]>
   composites: {}
@@ -861,6 +888,7 @@ export interface CoupleEventFieldRefs {
   readonly kind: Prisma.FieldRef<"CoupleEvent", 'String'>
   readonly createdById: Prisma.FieldRef<"CoupleEvent", 'String'>
   readonly confirmed: Prisma.FieldRef<"CoupleEvent", 'Boolean'>
+  readonly remindedAt: Prisma.FieldRef<"CoupleEvent", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CoupleEvent", 'DateTime'>
 }
     

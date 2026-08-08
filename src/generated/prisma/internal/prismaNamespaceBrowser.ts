@@ -175,6 +175,7 @@ export const CoupleEventScalarFieldEnum = {
   kind: 'kind',
   createdById: 'createdById',
   confirmed: 'confirmed',
+  remindedAt: 'remindedAt',
   createdAt: 'createdAt'
 } as const
 

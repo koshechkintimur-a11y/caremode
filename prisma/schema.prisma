@@ -111,6 +111,7 @@ model CoupleEvent {
   kind        String   @default("date") // date | anniversary | appointment
   createdById String
   confirmed   Boolean  @default(false) // партнёр подтвердил
+  remindedAt  DateTime? // напоминание отправлено (за день/в день) — антидубль
   createdAt   DateTime @default(now())
   @@index([coupleId, date])
 }

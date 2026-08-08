@@ -72,6 +72,7 @@ export async function GET() {
           detail: (couple.requestDetail as { text?: string; photo?: string } | null) ?? null,
           done: couple.requestDone,
           thanked: couple.requestThanked,
+          answer: couple.requestAnswer ?? null,
         }
       : null,
   });

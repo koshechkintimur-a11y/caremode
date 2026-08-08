@@ -44,7 +44,7 @@ interface TodayData {
   cozy: string[];
   firstName: string | null;
   partnerFirstName: string | null;
-  request: { need: string; detail: { text?: string; photo?: string } | null; done: boolean; thanked: boolean } | null;
+  request: { need: string; detail: { text?: string; photo?: string } | null; done: boolean; thanked: boolean; answer: string | null } | null;
   supplies: { at: string; done: boolean } | null;
 }
 
@@ -94,6 +94,9 @@ export default function TodayPage() {
   const [detailText, setDetailText] = useState("");
   const [detailPhoto, setDetailPhoto] = useState<string | null>(null);
   const [detailBusy, setDetailBusy] = useState(false);
+  const [movieOpen, setMovieOpen] = useState(false);
+  const [movieTitle, setMovieTitle] = useState("");
+  const [movieBusy, setMovieBusy] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -624,12 +627,16 @@ export default function TodayPage() {
                 <div className="text-[13px] font-extrabold text-ink">
                   {data.request.need === "alone"
                     ? `${data.partnerFirstName ?? "Он"} понял — не пристаёт 💛`
-                    : `${data.partnerFirstName ?? "Он"} взял это на себя 💛`}
+                    : data.request.need === "movie" && data.request.answer
+                      ? `${data.partnerFirstName ?? "Он"} выбрал: ${data.request.answer} 🍿`
+                      : `${data.partnerFirstName ?? "Он"} взял это на себя 💛`}
                 </div>
                 <div className="text-[11px] font-semibold text-muted mt-0.5">
                   {data.request.need === "alone"
                     ? "он увидел, что тебе нужно пространство — и уважает это"
-                    : `${needLabel(data.request.need)}${data.request.detail?.text ? ` — ${data.request.detail.text}` : ""} · можно не напоминать`}
+                    : data.request.need === "movie" && data.request.answer
+                      ? "можно готовить попкорн — он уже в деле"
+                      : `${needLabel(data.request.need)}${data.request.detail?.text ? ` — ${data.request.detail.text}` : ""} · можно не напоминать`}
                 </div>
                 <button
                   onClick={async () => {
@@ -1345,19 +1352,37 @@ export default function TodayPage() {
                       className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
                     />
                   )}
-                  <button
-                    onClick={async () => {
-                      const res = await fetch("/api/request/done", { method: "POST" });
-                      if (res.ok) {
-                        setData((d) => (d?.request ? { ...d, request: { ...d.request, done: true } } : d));
-                        setToast(data.request?.need === "alone" ? "Она узнает — ты понял 💛" : "Она узнает — ты взял на себя 💛");
-                        setTimeout(() => setToast(""), 2600);
-                      }
-                    }}
-                    className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
-                  >
-                    {data.request.need === "alone" ? "Понял, не пристаю" : "Сделаю ✓"}
-                  </button>
+                  {data.request.need === "movie" &&
+                  (data.request.detail?.text ?? "").startsWith("Пусть выберет") ? (
+                    <>
+                      <div className="mt-2 text-[11px] font-semibold text-muted leading-snug">
+                        🎲 Выбор за тобой — она ждёт, что именно ты предложишь
+                      </div>
+                      <button
+                        onClick={() => {
+                          setMovieTitle("");
+                          setMovieOpen(true);
+                        }}
+                        className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                      >
+                        Предложить фильм 🎬
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        const res = await fetch("/api/request/done", { method: "POST" });
+                        if (res.ok) {
+                          setData((d) => (d?.request ? { ...d, request: { ...d.request, done: true } } : d));
+                          setToast(data.request?.need === "alone" ? "Она узнает — ты понял 💛" : "Она узнает — ты взял на себя 💛");
+                          setTimeout(() => setToast(""), 2600);
+                        }
+                      }}
+                      className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                    >
+                      {data.request.need === "alone" ? "Понял, не пристаю" : "Сделаю ✓"}
+                    </button>
+                  )}
                 </div>
               )}
               {data.request?.done && (
@@ -1717,6 +1742,69 @@ export default function TodayPage() {
           </>
         )}
       </AnimatePresence>
+
+      {/* МОДАЛКА: предложить фильм (ответ на «Пусть выберет он») */}
+      {movieOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-40 bg-black/50 flex items-end justify-center p-4"
+          onClick={() => setMovieOpen(false)}
+        >
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-[24px] bg-surface p-5 shadow-[0_16px_48px_rgba(0,0,0,.3)]"
+          >
+            <div className="text-[15px] font-extrabold text-ink">Какой фильм предложишь? 🎬</div>
+            <div className="text-[12px] font-semibold text-muted mt-0.5">
+              она узнает сразу — и сможет поблагодарить
+            </div>
+            <input
+              value={movieTitle}
+              onChange={(e) => setMovieTitle(e.target.value)}
+              placeholder="Например: «Властелин колец», или что-то лёгкое…"
+              maxLength={100}
+              autoFocus
+              className="mt-3 w-full h-[46px] rounded-2xl bg-surface border border-line px-3 text-[13px] font-semibold text-ink outline-none focus:border-primary"
+            />
+            <button
+              onClick={async () => {
+                if (!movieTitle.trim() || movieBusy) return;
+                setMovieBusy(true);
+                try {
+                  const res = await fetch("/api/request/movie", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title: movieTitle.trim() }),
+                  });
+                  if (res.ok) {
+                    setData((d) =>
+                      d?.request ? { ...d, request: { ...d.request, done: true, answer: movieTitle.trim() } } : d
+                    );
+                    setMovieOpen(false);
+                    setToast("Она узнает — вечер спасён 🍿");
+                    setTimeout(() => setToast(""), 2600);
+                  }
+                } finally {
+                  setMovieBusy(false);
+                }
+              }}
+              disabled={!movieTitle.trim() || movieBusy}
+              className="mt-3 w-full h-[46px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
+            >
+              {movieBusy ? "…" : "Отправить"}
+            </button>
+            <button
+              onClick={() => setMovieOpen(false)}
+              className="mt-2 w-full h-[40px] rounded-full text-[12px] font-bold text-muted active:scale-[.97] transition"
+            >
+              Отмена
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* тост через portal: fixed внутри transform-контейнера (framer) на iOS не виден */}
       {typeof document !== "undefined" &&

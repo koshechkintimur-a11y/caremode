@@ -25,6 +25,7 @@ export type EventType =
   | "event_confirm"
   | "request_done"
   | "request_thank"
+  | "request_movie"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

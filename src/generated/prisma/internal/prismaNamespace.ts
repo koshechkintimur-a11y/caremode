@@ -960,6 +960,7 @@ export const CoupleProfileScalarFieldEnum = {
   requestAt: 'requestAt',
   requestDone: 'requestDone',
   requestThanked: 'requestThanked',
+  requestAnswer: 'requestAnswer',
   ownerId: 'ownerId',
   partnerId: 'partnerId',
   startDate: 'startDate'

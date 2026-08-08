@@ -67,6 +67,7 @@ model CoupleProfile {
   requestAt      DateTime?
   requestDone    Boolean  @default(false) // партнёр нажал «Сделаю ✓»
   requestThanked Boolean  @default(false) // она поблагодарила 💛
+  requestAnswer  String? // ответ партнёра на просьбу (напр. выбранный фильм)
   ownerId    String   @unique // скалярные FK: связи обрабатываются в коде
   partnerId  String?  @unique
   startDate  DateTime @default(now())

@@ -47,12 +47,16 @@ export default function SettingsPage() {
   const [cozyBusy, setCozyBusy] = useState(false);
   const [pause, setPause] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [myName, setMyName] = useState("");
+  const [partnerName, setPartnerName] = useState<string | null>(null);
+  const [nameBusy, setNameBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      const [a, b] = await Promise.all([
+      const [a, b, p] = await Promise.all([
         fetch("/api/achievements").then((r) => r.json()),
         fetch("/api/prompt/today").then((r) => r.json()),
+        fetch("/api/profile").then((r) => r.json()),
       ]);
       setAchievements(a.achievements ?? []);
       setPerk(a.perk ?? null);
@@ -67,6 +71,8 @@ export default function SettingsPage() {
       });
       setPause(Boolean(b.pausePartner));
       setPromptTime(b.promptTime ?? null);
+      setMyName(p.firstName ?? "");
+      setPartnerName(p.partnerFirstName ?? null);
     } catch {}
   }, []);
 
@@ -199,6 +205,52 @@ export default function SettingsPage() {
       className="w-full max-w-md flex flex-col gap-4"
     >
       <h1 className="font-pixel text-[18px] text-ink leading-relaxed">Настройки</h1>
+
+      {/* Моя пара: имена — «Привет, Оля!» и «Пара: Оля + Дима» */}
+      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="text-[16px] font-extrabold text-ink">Моя пара</div>
+        <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
+          как вас зовут — для приветствий и профиля пары
+        </div>
+        <div className="flex gap-2">
+          <input
+            value={myName}
+            onChange={(e) => setMyName(e.target.value)}
+            placeholder="Твоё имя"
+            maxLength={30}
+            className="flex-1 h-[44px] rounded-2xl bg-surface border border-line px-4 text-[14px] font-semibold text-ink outline-none focus:border-primary"
+          />
+          <button
+            onClick={async () => {
+              if (!myName.trim() || nameBusy) return;
+              setNameBusy(true);
+              try {
+                await fetch("/api/profile/name", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ name: myName.trim() }),
+                });
+              } finally {
+                setNameBusy(false);
+              }
+            }}
+            disabled={!myName.trim() || nameBusy}
+            className="h-[44px] px-5 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
+          >
+            {nameBusy ? "…" : "Сохранить"}
+          </button>
+        </div>
+        {myName.trim() && partnerName && (
+          <div className="mt-4 rounded-2xl border border-line bg-surface/70 px-4 py-3 text-[14px] font-extrabold text-ink">
+            Пара: {myName.trim()} + {partnerName} 💛
+          </div>
+        )}
+        {!partnerName && (
+          <div className="mt-3 text-[12px] font-semibold text-muted">
+            Партнёр ещё не указал имя — блок пары появится, когда оба будут заполнены.
+          </div>
+        )}
+      </div>
 
       {/* Тема — у обоих */}
       <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">

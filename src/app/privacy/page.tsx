@@ -134,6 +134,11 @@ export default function PrivacyPage() {
         </div>
 
         <div className="mt-10 pb-8 text-center">
+          <p className="text-[11px] font-semibold text-muted max-w-md mx-auto leading-relaxed">
+            Приложение носит информационно-развлекательный характер и не является медицинской
+            консультацией, диагностикой или средством контрацепции. При вопросах о здоровье
+            обращайтесь к врачу.
+          </p>
           <Link href="/login" className="text-[14px] font-extrabold text-primary">
             ← Вернуться ко входу
           </Link>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Eye, Gift, Medal, Send, Siren, X, MessageCircleHeart, Sparkles, Check } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { PauseCard } from "@/components/PauseCard";
@@ -37,6 +38,7 @@ interface TodayData {
   emptyOwner: boolean;
   cycleDayStates: Record<string, string>;
   cozy: string[];
+  firstName: string | null;
 }
 
 interface CashbackData {
@@ -78,6 +80,7 @@ export default function TodayPage() {
   const [rewardClosed, setRewardClosed] = useState(false);
   const [needNowUI, setNeedNowUI] = useState<string | null | "loading">("loading");
   const [periodStartOpen, setPeriodStartOpen] = useState(false);
+  const [suppliesBusy, setSuppliesBusy] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -442,7 +445,14 @@ export default function TodayPage() {
 
         {/* ПУЛЬС: быстрое обновление настроения — карточка партнёра меняется */}
         <div className="rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-          <div className="text-[15px] font-extrabold text-ink">Как ты сейчас?</div>
+          <div className="text-[15px] font-extrabold text-ink">
+            {data.firstName ? `Привет, ${data.firstName}!` : "Привет!"} Как ты сейчас?
+          </div>
+          {!data.firstName && (
+            <Link href="/settings" className="text-[11px] font-bold text-primary mt-0.5 inline-block">
+              Как тебя зовут? Добавить имя →
+            </Link>
+          )}
           <div className="text-[12px] font-semibold text-muted mt-0.5 mb-3">
             Он увидит это как новую подсказку — моментально
           </div>
@@ -553,6 +563,17 @@ export default function TodayPage() {
                 className="w-full h-[52px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(232,131,127,.4)] active:scale-[.97] transition"
               >
                 {periodStartOpen ? "Отмена" : "Месячные начались"}
+              </button>
+            )}
+
+            {/* запас прокладок: только во время месячных — пуш партнёру на опережение */}
+            {inPeriod && (
+              <button
+                onClick={reportSupplies}
+                disabled={suppliesBusy}
+                className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-50"
+              >
+                {suppliesBusy ? "Отправляем…" : "Закончились прокладки 🩸"}
               </button>
             )}
 
@@ -887,6 +908,22 @@ export default function TodayPage() {
     const days: number[] = [];
     for (let d = first; d <= store.cycleDay; d++) days.push(d);
     selectPeriodDays(days);
+  }
+
+  // «Закончились прокладки»: пуш партнёру — он успеет заехать в магазин
+  async function reportSupplies() {
+    if (suppliesBusy) return;
+    setSuppliesBusy(true);
+    try {
+      const res = await fetch("/api/cycle/supplies", { method: "POST" });
+      if (!res.ok) throw new Error();
+      setToast("Он уже знает — самое время заехать в магазин 🩸");
+    } catch {
+      setToast("Не получилось отправить — попробуй ещё раз");
+    } finally {
+      setSuppliesBusy(false);
+      setTimeout(() => setToast(""), 2600);
+    }
   }
 
   function formatDate(iso: string): string {

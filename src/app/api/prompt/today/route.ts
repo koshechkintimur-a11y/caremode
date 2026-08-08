@@ -58,5 +58,6 @@ export async function GET() {
       ? ((owner?.dayStates as Record<string, string> | null) ?? {})
       : {},
     cozy: ((owner?.careProfile as Record<string, unknown> | null)?.cozy ?? []) as string[],
+    firstName: user.firstName,
   });
 }

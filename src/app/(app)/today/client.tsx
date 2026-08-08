@@ -131,6 +131,18 @@ export default function TodayPage() {
     }
   }, [hydrated, load]);
 
+  // «Злой режим»: плохое настроение/«не трогать» — темнеет ВСЁ окружение (карточки,
+  // шрифт, акценты), не только океан. Класс .storm на <html> → CSS-переменные в globals.css.
+  useEffect(() => {
+    const stormy =
+      data?.role === "OWNER"
+        ? store.mood === "TERRIBLE" || store.needsSpace
+        : Boolean(data?.ownerMood === "TERRIBLE" || data?.ownerNeedsSpace);
+    const el = document.documentElement;
+    el.classList.toggle("storm", stormy);
+    return () => el.classList.remove("storm");
+  }, [data?.ownerMood, data?.ownerNeedsSpace, data?.role, store.mood, store.needsSpace]);
+
   // кэшбэк: состояние награды
   useEffect(() => {
     if (!hydrated) return;

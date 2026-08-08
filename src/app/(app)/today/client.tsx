@@ -726,6 +726,12 @@ export default function TodayPage() {
                   <div className="text-[11px] font-semibold text-muted mt-0.5">
                     Он взял это на себя — спасибо, что предупредила 💛
                   </div>
+                  <button
+                    onClick={resetSupplies}
+                    className="mt-2 w-full h-[38px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[12px] active:scale-[.97] transition"
+                  >
+                    Ок ✓
+                  </button>
                 </div>
               ) : suppliesSent || (data.supplies && !data.supplies.done) ? (
                 /* просьба отправлена (или уже была) — ждём, пока партнёр сходит */
@@ -736,6 +742,12 @@ export default function TodayPage() {
                   <div className="text-[11px] font-semibold text-muted mt-0.5">
                     Он увидит это в приложении — как только сходит в магазин, ты узнаешь.
                   </div>
+                  <button
+                    onClick={resetSupplies}
+                    className="mt-2 w-full h-[38px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[12px] active:scale-[.97] transition"
+                  >
+                    Отменить
+                  </button>
                 </div>
               ) : (
                 <button
@@ -1219,6 +1231,17 @@ export default function TodayPage() {
       setSuppliesBusy(false);
       setTimeout(() => setToast(""), 2600);
     }
+  }
+
+  // сброс статуса: блок обновляется, кнопка «Закончились прокладки» снова доступна
+  async function resetSupplies() {
+    try {
+      const res = await fetch("/api/cycle/supplies/reset", { method: "POST" });
+      if (res.ok) {
+        setData((d) => (d ? { ...d, supplies: null } : d));
+        setSuppliesSent(false);
+      }
+    } catch {}
   }
 
   function formatDate(iso: string): string {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/store/useApp";
 import { cn } from "@/lib/utils";
@@ -61,16 +60,9 @@ export default function CalendarClient() {
 
   return (
     <div className="w-full max-w-md flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Link
-          href="/settings"
-          className="w-10 h-10 rounded-full bg-surface border border-line flex items-center justify-center active:scale-95 transition"
-          aria-label="Назад"
-        >
-          <ChevronLeft size={17} className="text-muted" />
-        </Link>
+      {/* одна стрелка — в шапке (layout); тут свой back вёл в настройки — убран */}
+      <div className="flex items-center justify-center">
         <h1 className="text-[18px] font-extrabold text-ink">Календарь цикла</h1>
-        <div className="w-10" />
       </div>
 
       {/* статистика */}

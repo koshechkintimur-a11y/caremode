@@ -1217,13 +1217,15 @@ export default function TodayPage() {
     });
   }
 
-  // «Закончились сегодня» — период от старта до текущего дня, потом явно закрыт
+  // «Закончились сегодня» — период от старта до текущего дня, потом явно закрыт.
+  // ВАЖНО: не через selectPeriodDays — тот шлёт periodEnded:false (гонка запросов,
+  // «закрытие» перезаписывалось). Отмечаем дни локально + один запрос с true.
   function endToday() {
     if (store.cycleDay === null) return;
     const first = store.periodDays[0] ?? 1; // старт мог быть указан датой без отметок дней
     const days: number[] = [];
     for (let d = first; d <= store.cycleDay; d++) days.push(d);
-    selectPeriodDays(days);
+    store.setPeriodDays(days);
     store.setPeriodEnded(true); // период закрыт — кнопка станет «Месячные начались»
     void fetch("/api/profile/cycle", {
       method: "PUT",

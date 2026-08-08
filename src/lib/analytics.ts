@@ -17,6 +17,7 @@ export type EventType =
   | "mood"
   | "needs_space"
   | "period_start"
+  | "period_end"
   | "push_card"
   | "push_storm"
   | "supplies"

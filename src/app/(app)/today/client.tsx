@@ -38,6 +38,7 @@ interface TodayData {
   ownerMood: string | null;
   ownerNeedsSpace: boolean;
   ownerNeed: string | null;
+  ownerPeriodEnded: boolean;
   ownerNeedDetail: { text?: string; photo?: string } | null;
   suppliesDetail: { text?: string; photo?: string } | null;
   emptyOwner: boolean;
@@ -1202,7 +1203,7 @@ export default function TodayPage() {
     await fetch("/api/profile/cycle", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible, expectedCycleDay: expectedCycleDay() }),
+      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible, expectedCycleDay: expectedCycleDay(), periodEnded: false }),
     });
   }
 
@@ -1224,6 +1225,11 @@ export default function TodayPage() {
     for (let d = first; d <= store.cycleDay; d++) days.push(d);
     selectPeriodDays(days);
     store.setPeriodEnded(true); // период закрыт — кнопка станет «Месячные начались»
+    void fetch("/api/profile/cycle", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cycleDay: store.cycleDay, visible: store.cycleDayVisible, expectedCycleDay: expectedCycleDay(), periodEnded: true }),
+    });
     setToast("✓ Отметила: месячные закончились");
     setTimeout(() => setToast(""), 2600);
   }
@@ -1432,6 +1438,11 @@ export default function TodayPage() {
               {data.ownerNeed && !data.request && (
                 <div className="mt-2 rounded-full bg-primary-soft px-4 py-2 text-[13px] font-extrabold text-primary text-center">
                   Она хочет: {needLabel(data.ownerNeed)}
+                </div>
+              )}
+              {data.ownerPeriodEnded && (
+                <div className="mt-2 rounded-full bg-success/15 px-4 py-2 text-[13px] font-extrabold text-success text-center">
+                  🌤 Месячные закончились — она снова в строю
                 </div>
               )}
               {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто — тёмная карточка как тост */}

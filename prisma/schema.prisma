@@ -26,6 +26,7 @@ model User {
   needDetail Json? // OWNER: детали просьбы: { text?, photo? } (dataURL)
   lastStormDate String? // антидубль штормового пуша (YYYY-MM-DD)
   cycleDayVisible Boolean    @default(false) // показывать партнёру навигатор цикла
+  periodEnded    Boolean    @default(false) // «месячные закончились» — отметила явно
   cycleVaultKey String? // AES-ключ vault (base64) — генерируется один раз на аккаунт
   cycleVault    Json? // зашифрованный блоб данных цикла (даты только в шифре)
   coupleId      String?

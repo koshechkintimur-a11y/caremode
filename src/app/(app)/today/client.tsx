@@ -1387,7 +1387,11 @@ export default function TodayPage() {
               )}
               {data.request?.done && (
                 <div className="mt-2 rounded-full bg-success/15 px-4 py-2 text-[13px] font-extrabold text-ink text-center">
-                  {data.request.need === "alone" ? "✓ Понял — не пристаю" : "✓ Ты взял это на себя"}
+                  {data.request.need === "alone"
+                    ? "✓ Понял — не пристаю"
+                    : data.request.need === "movie" && data.request.answer
+                      ? `✓ Ты предложил: ${data.request.answer} 🍿`
+                      : "✓ Ты взял это на себя"}
                   {data.request.thanked && <span className="text-success"> · она поблагодарила ✨</span>}
                 </div>
               )}

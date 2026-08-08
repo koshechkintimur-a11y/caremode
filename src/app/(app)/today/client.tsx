@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Eye, Gift, Medal, Send, Siren, X, MessageCircleHeart, Sparkles, Check } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
 import { EventsBlock } from "@/components/EventsBlock";
+import { PhotoView } from "@/components/PhotoView";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
 import { Tamagotchi, stageOf, STAGE_LABEL } from "@/components/Tamagotchi";
@@ -719,32 +720,32 @@ export default function TodayPage() {
             {inPeriod &&
               (data.supplies?.done ? (
                 /* партнёр нажал «Сделаю ✓» — она видит, что он взял на себя */
-                <div className="w-full rounded-2xl border-2 border-primary/50 bg-primary-soft/60 px-4 py-3">
-                  <div className="text-[13px] font-extrabold text-ink">
+                <div className="w-full rounded-2xl bg-[#1B1626] px-4 py-3.5 shadow-lg">
+                  <div className="text-[13px] font-extrabold text-white">
                     {data.partnerFirstName ?? "Он"} уже в магазине 🛒
                   </div>
-                  <div className="text-[11px] font-semibold text-muted mt-0.5">
+                  <div className="text-[11px] font-semibold text-white/70 mt-0.5">
                     Он взял это на себя — спасибо, что предупредила 💛
                   </div>
                   <button
                     onClick={resetSupplies}
-                    className="mt-2 w-full h-[38px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[12px] active:scale-[.97] transition"
+                    className="mt-2 w-full h-[38px] rounded-full border-2 border-white/30 text-white font-extrabold text-[12px] active:scale-[.97] transition"
                   >
                     Ок ✓
                   </button>
                 </div>
               ) : suppliesSent || (data.supplies && !data.supplies.done) ? (
                 /* просьба отправлена (или уже была) — ждём, пока партнёр сходит */
-                <div className="w-full rounded-2xl border-2 border-primary/40 bg-primary-soft/60 px-4 py-3">
-                  <div className="text-[13px] font-extrabold text-primary">
+                <div className="w-full rounded-2xl bg-[#1B1626] px-4 py-3.5 shadow-lg">
+                  <div className="text-[13px] font-extrabold text-white">
                     {data.partnerFirstName ?? "Он"} уже знает 🛒
                   </div>
-                  <div className="text-[11px] font-semibold text-muted mt-0.5">
+                  <div className="text-[11px] font-semibold text-white/70 mt-0.5">
                     Он увидит это в приложении — как только сходит в магазин, ты узнаешь.
                   </div>
                   <button
                     onClick={resetSupplies}
-                    className="mt-2 w-full h-[38px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[12px] active:scale-[.97] transition"
+                    className="mt-2 w-full h-[38px] rounded-full border-2 border-white/30 text-white font-extrabold text-[12px] active:scale-[.97] transition"
                   >
                     Отменить
                   </button>
@@ -757,7 +758,7 @@ export default function TodayPage() {
                     setDetailOpen("supplies");
                   }}
                   disabled={suppliesBusy}
-                  className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
+                  className="w-full h-[46px] rounded-full bg-[#1B1626] text-white font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
                 >
                   {suppliesBusy ? "Отправляем…" : "Закончились прокладки 🩸"}
                 </button>
@@ -1367,11 +1368,7 @@ export default function TodayPage() {
                     <div className="mt-1 text-[12px] font-bold text-ink">{data.request.detail.text}</div>
                   )}
                   {data.request.detail?.photo && (
-                    <img
-                      src={data.request.detail.photo}
-                      alt="что она хочет"
-                      className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
-                    />
+                    <PhotoView src={data.request.detail.photo} alt="что она хочет" className="relative mt-2" />
                   )}
                   {data.request.need === "movie" &&
                   (data.request.detail?.text ?? "").toLowerCase().includes("пусть выберет") ? (
@@ -1421,24 +1418,20 @@ export default function TodayPage() {
                   Она хочет: {needLabel(data.ownerNeed)}
                 </div>
               )}
-              {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто */}
+              {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто — тёмная карточка как тост */}
               {data.supplies && !data.supplies.done && !suppliesDone && (
-                <div className="mt-3 rounded-2xl border-2 border-primary/50 bg-primary-soft/70 px-4 py-3">
-                  <div className="text-[13px] font-extrabold text-primary">Закончились прокладки 🩸</div>
-                  <div className="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
+                <div className="mt-3 rounded-2xl bg-[#1B1626] px-4 py-3.5 shadow-lg">
+                  <div className="text-[13px] font-extrabold text-white">Закончились прокладки 🩸</div>
+                  <div className="text-[11px] font-semibold text-white/70 mt-0.5 leading-snug">
                     Заехать в магазин? На опережение — пока она не попросила дважды.
                   </div>
                   {data.suppliesDetail?.text && (
-                    <div className="mt-1.5 text-[12px] font-bold text-ink">
+                    <div className="mt-1.5 text-[12px] font-bold text-white/90">
                       Какие нужны: {data.suppliesDetail.text}
                     </div>
                   )}
                   {data.suppliesDetail?.photo && (
-                    <img
-                      src={data.suppliesDetail.photo}
-                      alt="упаковка"
-                      className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
-                    />
+                    <PhotoView src={data.suppliesDetail.photo} alt="упаковка" className="relative mt-2" />
                   )}
                   <button
                     onClick={async () => {

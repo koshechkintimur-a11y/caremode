@@ -40,6 +40,7 @@ export async function GET() {
 
   const couples = await prisma.coupleProfile.findMany({ include: { members: true } });
   let sent = 0;
+  let eventFound = 0;
 
   for (const couple of couples) {
     const partner = couple.members.find((m) => m.role === "PARTNER");
@@ -53,6 +54,10 @@ export async function GET() {
       const events = await prisma.coupleEvent.findMany({
         where: { coupleId: couple.id, date: { in: [eventDate, eventNext] }, remindedAt: null },
       });
+      eventFound += events.length;
+      if (events.length > 0) {
+        console.log(`[tick] couple=${couple.id} dates=${eventDate},${eventNext} events=${events.length}`);
+      }
       for (const ev of events) {
         const when = ev.date === eventDate ? "Сегодня" : "Завтра";
         const kindEmoji = { date: "💞", anniversary: "🎂", appointment: "🩺" }[ev.kind] ?? "📅";
@@ -216,5 +221,5 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ ok: true, sent });
+  return NextResponse.json({ ok: true, sent, eventFound });
 }

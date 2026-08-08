@@ -12,7 +12,8 @@ export interface TgUser {
 
 export async function sendTg(
   user: TgUser | null | undefined,
-  text: string
+  text: string,
+  photo?: string // dataURL (jpeg/png) — уйдёт как sendPhoto с подписью
 ): Promise<boolean> {
   if (!user?.tgChatId) return false;
   if (user.pausePartner) return false;
@@ -20,6 +21,18 @@ export async function sendTg(
   if (!token) return false;
 
   try {
+    if (photo) {
+      // sendPhoto принимает файл multipart'ом (Node 22: FormData + Blob)
+      const [meta, b64] = photo.split(",");
+      const mime = meta?.includes("image/png") ? "image/png" : "image/jpeg";
+      const form = new FormData();
+      form.append("chat_id", String(user.tgChatId));
+      form.append("photo", new Blob([Buffer.from(b64 ?? photo, "base64")], { type: mime }), "photo.jpg");
+      form.append("caption", text);
+      form.append("parse_mode", "HTML");
+      const res = await fetch(`${API}/bot${token}/sendPhoto`, { method: "POST", body: form });
+      return res.ok;
+    }
     const res = await fetch(`${API}/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

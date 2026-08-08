@@ -112,7 +112,8 @@ export async function PUT(req: Request) {
           partner,
           TG_MSGS.sheNeeds(
             `${NEED_LABELS[needNow] ?? String(needNow)}${needDetail?.text ? ` — ${needDetail.text}` : ""}`
-          )
+          ),
+          needDetail?.photo
         )
       );
     }

@@ -36,7 +36,8 @@ export async function POST(req: Request) {
   });
   void sendTg(
     partner,
-    `${TG_MSGS.supplies}${detail?.text ? `\n\n<b>Какие нужны:</b> ${detail.text}` : ""}`
+    `${TG_MSGS.supplies}${detail?.text ? `\n\n<b>Какие нужны:</b> ${detail.text}` : ""}`,
+    detail?.photo
   );
 
   const subs = (partner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];

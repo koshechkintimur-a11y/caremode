@@ -41,6 +41,7 @@ interface TodayData {
   cycleDayStates: Record<string, string>;
   cozy: string[];
   firstName: string | null;
+  partnerFirstName: string | null;
   supplies: { at: string; done: boolean } | null;
 }
 
@@ -592,20 +593,20 @@ export default function TodayPage() {
             {/* запас прокладок: только во время месячных — полный цикл: просьба → «Сделаю» → статус */}
             {inPeriod &&
               (data.supplies?.done ? (
-                /* Дима нажал «Сделаю ✓» — она видит, что он взял на себя */
-                <div className="w-full rounded-2xl border-2 border-success/40 bg-success/10 px-4 py-3">
-                  <div className="text-[13px] font-extrabold text-success">
-                    Дима уже в магазине 🛒
+                /* партнёр нажал «Сделаю ✓» — она видит, что он взял на себя */
+                <div className="w-full rounded-2xl border-2 border-primary/50 bg-primary-soft/60 px-4 py-3">
+                  <div className="text-[13px] font-extrabold text-ink">
+                    {data.partnerFirstName ?? "Он"} уже в магазине 🛒
                   </div>
                   <div className="text-[11px] font-semibold text-muted mt-0.5">
                     Он взял это на себя — спасибо, что предупредила 💛
                   </div>
                 </div>
               ) : suppliesSent || (data.supplies && !data.supplies.done) ? (
-                /* просьба отправлена (или уже была) — ждём, пока Дима сходит */
+                /* просьба отправлена (или уже была) — ждём, пока партнёр сходит */
                 <div className="w-full rounded-2xl border-2 border-primary/40 bg-primary-soft/60 px-4 py-3">
                   <div className="text-[13px] font-extrabold text-primary">
-                    Дима уже знает 🛒
+                    {data.partnerFirstName ?? "Он"} уже знает 🛒
                   </div>
                   <div className="text-[11px] font-semibold text-muted mt-0.5">
                     Он увидит это в приложении — как только сходит в магазин, ты узнаешь.

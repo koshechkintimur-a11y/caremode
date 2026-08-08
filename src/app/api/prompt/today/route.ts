@@ -62,5 +62,7 @@ export async function GET() {
     supplies: couple?.suppliesAt
       ? { at: couple.suppliesAt.toISOString(), done: couple.suppliesDone }
       : null,
+    partnerFirstName:
+      couple?.members.find((m) => m.id !== user.id)?.firstName ?? null,
   });
 }

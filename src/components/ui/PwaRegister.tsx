@@ -34,6 +34,14 @@ export function PwaRegister() {
 
     navigator.serviceWorker.register("/sw.js").catch(() => {});
 
+    // Принудительная проверка обновления SW при каждом заходе и возврате на вкладку:
+    // без этого PWA-ярлык держит старый SW и «не видит» новые версии (фиксы/фичи).
+    const updater = () => {
+      navigator.serviceWorker?.getRegistration?.().then((reg) => reg?.update?.().catch(() => {}));
+    };
+    updater();
+    document.addEventListener("visibilitychange", updater);
+
     // iOS: показываем подсказку установки один раз, с задержкой (не в первую секунду)
     if (isIosPwaCandidate()) {
       let dismissed = false;

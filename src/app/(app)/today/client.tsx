@@ -44,6 +44,7 @@ interface TodayData {
   cozy: string[];
   firstName: string | null;
   partnerFirstName: string | null;
+  request: { need: string; detail: { text?: string; photo?: string } | null; done: boolean; thanked: boolean } | null;
   supplies: { at: string; done: boolean } | null;
 }
 
@@ -604,8 +605,51 @@ export default function TodayPage() {
               })}
             </div>
             <div className="text-[11px] font-semibold text-muted mt-1.5">
-              {needNowUI ? "он уже знает — и получит уведомление" : "он перестанет гадать"}
+              он перестанет гадать
             </div>
+
+            {/* Активная просьба: статус для Оли — увидел / взял / поблагодарила */}
+            {data.request && !data.request.done && (
+              <div className="mt-3 rounded-2xl border-2 border-primary/40 bg-primary-soft/60 px-4 py-3">
+                <div className="text-[13px] font-extrabold text-primary">
+                  {data.partnerFirstName ?? "Он"} ещё не видел…
+                </div>
+                <div className="text-[11px] font-semibold text-muted mt-0.5">
+                  Как только увидит — возьмёт на себя, и ты узнаешь.
+                </div>
+              </div>
+            )}
+            {data.request?.done && !data.request.thanked && (
+              <div className="mt-3 rounded-2xl border-2 border-success/40 bg-success/10 px-4 py-3">
+                <div className="text-[13px] font-extrabold text-ink">
+                  {data.partnerFirstName ?? "Он"} взял это на себя 💛
+                </div>
+                <div className="text-[11px] font-semibold text-muted mt-0.5">
+                  {needLabel(data.request.need)}
+                  {data.request.detail?.text ? ` — ${data.request.detail.text}` : ""} · можно не напоминать
+                </div>
+                <button
+                  onClick={async () => {
+                    const res = await fetch("/api/request/thank", { method: "POST" });
+                    if (res.ok) {
+                      setData((d) => (d?.request ? { ...d, request: { ...d.request, thanked: true } } : d));
+                      setToast("Он увидит твою благодарность ✨");
+                      setTimeout(() => setToast(""), 2600);
+                    }
+                  }}
+                  className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                >
+                  Спасибо 💛
+                </button>
+              </div>
+            )}
+            {data.request?.done && data.request.thanked && (
+              <div className="mt-3 rounded-2xl border border-line bg-surface/70 px-4 py-3">
+                <div className="text-[13px] font-extrabold text-success">
+                  ✨ Ты поблагодарила — он счастлив
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1280,23 +1324,47 @@ export default function TodayPage() {
                   Ей нужна тишина — но она знает, что ты рядом
                 </div>
               )}
-              {/* «Она хочет» — прямая подсказка вместо угадывания */}
-              {needLabel(data.ownerNeed) && (
-                <div className="mt-2 rounded-full bg-primary-soft px-4 py-2 text-[13px] font-extrabold text-primary text-center">
-                  Она хочет: {needLabel(data.ownerNeed)}
-                  {data.ownerNeedDetail?.text && (
-                    <span className="block text-[12px] font-bold text-ink mt-0.5">
-                      {data.ownerNeedDetail.text}
-                    </span>
+              {/* «Она хочет» — активная просьба с полным циклом: взял → она поблагодарила */}
+              {data.request && !data.request.done && (
+                <div className="mt-3 rounded-2xl border-2 border-primary/50 bg-primary-soft/70 px-4 py-3">
+                  <div className="text-[13px] font-extrabold text-primary">
+                    Она хочет: {needLabel(data.request.need)}
+                  </div>
+                  {data.request.detail?.text && (
+                    <div className="mt-1 text-[12px] font-bold text-ink">{data.request.detail.text}</div>
                   )}
+                  {data.request.detail?.photo && (
+                    <img
+                      src={data.request.detail.photo}
+                      alt="что она хочет"
+                      className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
+                    />
+                  )}
+                  <button
+                    onClick={async () => {
+                      const res = await fetch("/api/request/done", { method: "POST" });
+                      if (res.ok) {
+                        setData((d) => (d?.request ? { ...d, request: { ...d.request, done: true } } : d));
+                        setToast("Она узнает — ты взял на себя 💛");
+                        setTimeout(() => setToast(""), 2600);
+                      }
+                    }}
+                    className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                  >
+                    Сделаю ✓
+                  </button>
                 </div>
               )}
-              {data.ownerNeedDetail?.photo && (
-                <img
-                  src={data.ownerNeedDetail.photo}
-                  alt="что она хочет"
-                  className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
-                />
+              {data.request?.done && (
+                <div className="mt-2 rounded-full bg-success/15 px-4 py-2 text-[13px] font-extrabold text-ink text-center">
+                  ✓ Ты взял это на себя
+                  {data.request.thanked && <span className="text-success"> · она поблагодарила ✨</span>}
+                </div>
+              )}
+              {data.ownerNeed && !data.request && (
+                <div className="mt-2 rounded-full bg-primary-soft px-4 py-2 text-[13px] font-extrabold text-primary text-center">
+                  Она хочет: {needLabel(data.ownerNeed)}
+                </div>
               )}
               {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто */}
               {data.supplies && !data.supplies.done && !suppliesDone && (

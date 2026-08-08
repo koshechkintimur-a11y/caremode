@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import webpush from "web-push";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { track } from "@/lib/analytics";
 import { Phase, Mood } from "@/generated/prisma/enums";
 
@@ -76,6 +77,28 @@ export async function PUT(req: Request) {
       include: { couple: { include: { members: true } } },
     });
     const partner = u2?.couple?.members.find((m) => m.id !== session.user.id);
+
+    // активная просьба: полный цикл «выбрала → он взял → она поблагодарила»
+    if (u2?.coupleId) {
+      if (needNow) {
+        await prisma.coupleProfile.update({
+          where: { id: u2.coupleId },
+          data: {
+            requestNeed: needNow,
+            requestDetail: needDetail as never,
+            requestAt: new Date(),
+            requestDone: false,
+            requestThanked: false,
+          },
+        });
+      } else if (!body.phase && !body.mood) {
+        // сняла просьбу — закрываем цикл
+        await prisma.coupleProfile.update({
+          where: { id: u2.coupleId },
+          data: { requestNeed: null, requestDetail: Prisma.JsonNull, requestAt: null, requestDone: false, requestThanked: false },
+        });
+      }
+    }
     if (body.mood) {
       const label =
         ({ TERRIBLE: "Всё бесит", MEH: "Так себе", OKAY: "Нормально", GREAT: "Отлично" } as Record<string, string>)[

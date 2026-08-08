@@ -66,5 +66,13 @@ export async function GET() {
       : null,
     partnerFirstName:
       couple?.members.find((m) => m.id !== user.id)?.firstName ?? null,
+    request: couple?.requestNeed
+      ? {
+          need: couple.requestNeed,
+          detail: (couple.requestDetail as { text?: string; photo?: string } | null) ?? null,
+          done: couple.requestDone,
+          thanked: couple.requestThanked,
+        }
+      : null,
   });
 }

@@ -23,6 +23,8 @@ export type EventType =
   | "supplies_done"
   | "event_add"
   | "event_confirm"
+  | "request_done"
+  | "request_thank"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

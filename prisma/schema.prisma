@@ -61,6 +61,12 @@ model CoupleProfile {
   suppliesAt    DateTime? // «закончились прокладки» — когда попросила
   suppliesDone  Boolean  @default(false) // партнёр отметил «Сделаю ✓»
   suppliesDetail Json? // детали: { text?, photo? } — какие именно нужны
+  // активная просьба «что нужно» — полный цикл: выбрала → он взял → она поблагодарила
+  requestNeed    String? // needNow активного запроса (hug|food|talk|alone|movie)
+  requestDetail  Json? // детали запроса: { text?, photo? }
+  requestAt      DateTime?
+  requestDone    Boolean  @default(false) // партнёр нажал «Сделаю ✓»
+  requestThanked Boolean  @default(false) // она поблагодарила 💛
   ownerId    String   @unique // скалярные FK: связи обрабатываются в коде
   partnerId  String?  @unique
   startDate  DateTime @default(now())

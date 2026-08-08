@@ -1134,11 +1134,20 @@ export default function TodayPage() {
                     />
                   </label>
                   {detailPhoto && (
-                    <img
-                      src={detailPhoto}
-                      alt="фото упаковки"
-                      className="h-[52px] w-[52px] rounded-xl object-cover border border-line"
-                    />
+                    <div className="relative">
+                      <img
+                        src={detailPhoto}
+                        alt="фото упаковки"
+                        className="h-[52px] w-[52px] rounded-xl object-cover border border-line"
+                      />
+                      <button
+                        onClick={() => setDetailPhoto(null)}
+                        aria-label="Удалить фото"
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#E05C5C] text-white flex items-center justify-center shadow-md active:scale-90 transition"
+                      >
+                        <X size={11} strokeWidth={3} />
+                      </button>
+                    </div>
                   )}
                 </div>
               )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -83,6 +84,7 @@ export default function TodayPage() {
   const [periodStartOpen, setPeriodStartOpen] = useState(false);
   const [suppliesBusy, setSuppliesBusy] = useState(false);
   const [suppliesDone, setSuppliesDone] = useState(false);
+  const [suppliesSent, setSuppliesSent] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -578,10 +580,14 @@ export default function TodayPage() {
             {inPeriod && (
               <button
                 onClick={reportSupplies}
-                disabled={suppliesBusy}
-                className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-50"
+                disabled={suppliesBusy || suppliesSent}
+                className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
               >
-                {suppliesBusy ? "Отправляем…" : "Закончились прокладки 🩸"}
+                {suppliesSent
+                  ? "✓ Дима уже знает"
+                  : suppliesBusy
+                    ? "Отправляем…"
+                    : "Закончились прокладки 🩸"}
               </button>
             )}
 
@@ -920,11 +926,12 @@ export default function TodayPage() {
 
   // «Закончились прокладки»: пуш партнёру — он успеет заехать в магазин
   async function reportSupplies() {
-    if (suppliesBusy) return;
+    if (suppliesBusy || suppliesSent) return;
     setSuppliesBusy(true);
     try {
       const res = await fetch("/api/cycle/supplies", { method: "POST" });
       if (!res.ok) throw new Error();
+      setSuppliesSent(true); // явная реакция: кнопка гаснет, повторный тап невозможен
       setToast("Он уже знает — самое время заехать в магазин 🩸");
     } catch {
       setToast("Не получилось отправить — попробуй ещё раз");
@@ -1386,15 +1393,19 @@ export default function TodayPage() {
         )}
       </AnimatePresence>
 
-      {toast && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-ink text-white text-[13px] font-bold px-5 py-3 rounded-full shadow-lg z-50"
-        >
-          {toast}
-        </motion.div>
-      )}
+      {/* тост через portal: fixed внутри transform-контейнера (framer) на iOS не виден */}
+      {typeof document !== "undefined" &&
+        toast &&
+        createPortal(
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-ink text-white text-[13px] font-bold px-5 py-3 rounded-full shadow-lg z-50"
+          >
+            {toast}
+          </motion.div>,
+          document.body
+        )}
     </div>
   );
 }

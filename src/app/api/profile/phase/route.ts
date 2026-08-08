@@ -75,7 +75,9 @@ export async function PUT(req: Request) {
       void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.sheMood(label)));
     }
     if (needNow) {
-      void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.sheNeeds(String(needNow))));
+      void import("@/lib/tg").then(({ sendTg, TG_MSGS }) =>
+        sendTg(partner, TG_MSGS.sheNeeds(NEED_LABELS[needNow] ?? String(needNow)))
+      );
     }
   }
 

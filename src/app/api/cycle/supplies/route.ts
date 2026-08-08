@@ -5,9 +5,18 @@ import { prisma } from "@/lib/prisma";
 import { track } from "@/lib/analytics";
 import { sendTg, TG_MSGS } from "@/lib/tg";
 
-// POST /api/cycle/supplies — Оля: «закончились прокладки» → мгновенный пуш партнёру
+// POST /api/cycle/supplies — Оля: «закончились прокладки» (+ какие именно) → пуш партнёру
 // (он успевает среагировать на опережение — заехать в магазин до вечера).
-export async function POST() {
+export async function POST(req: Request) {
+  let detail: { text?: string; photo?: string } | null = null;
+  try {
+    const body = (await req.json()) as { detail?: { text?: string; photo?: string } };
+    if (body.detail) {
+      const text = String(body.detail.text ?? "").trim().slice(0, 200);
+      const photo = typeof body.detail.photo === "string" && body.detail.photo.startsWith("data:image/") && body.detail.photo.length < 500_000 ? body.detail.photo : undefined;
+      if (text || photo) detail = { ...(text ? { text } : {}), ...(photo ? { photo } : {}) };
+    }
+  } catch {}
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -23,9 +32,12 @@ export async function POST() {
   // фиксируем запрос — партнёр увидит карточку в приложении даже без пушей
   await prisma.coupleProfile.update({
     where: { id: user.coupleId },
-    data: { suppliesAt: new Date(), suppliesDone: false },
+    data: { suppliesAt: new Date(), suppliesDone: false, suppliesDetail: detail as never },
   });
-  void sendTg(partner, TG_MSGS.supplies);
+  void sendTg(
+    partner,
+    `${TG_MSGS.supplies}${detail?.text ? `\n\n<b>Какие нужны:</b> ${detail.text}` : ""}`
+  );
 
   const subs = (partner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
   let sent = 0;

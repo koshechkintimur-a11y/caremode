@@ -916,6 +916,7 @@ export const UserScalarFieldEnum = {
   cycleDay: 'cycleDay',
   expectedCycleDay: 'expectedCycleDay',
   needNow: 'needNow',
+  needDetail: 'needDetail',
   lastStormDate: 'lastStormDate',
   cycleDayVisible: 'cycleDayVisible',
   cycleVaultKey: 'cycleVaultKey',
@@ -953,6 +954,7 @@ export const CoupleProfileScalarFieldEnum = {
   locale: 'locale',
   suppliesAt: 'suppliesAt',
   suppliesDone: 'suppliesDone',
+  suppliesDetail: 'suppliesDetail',
   ownerId: 'ownerId',
   partnerId: 'partnerId',
   startDate: 'startDate'

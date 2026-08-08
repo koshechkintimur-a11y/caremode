@@ -43,6 +43,14 @@ export async function PUT(req: Request) {
   }
 
   const needNow = body.needNow ?? null;
+  // детали просьбы: { text?: string (≤200), photo?: dataURL jpeg ≤ ~400KB }
+  let needDetail: { text?: string; photo?: string } | null = null;
+  if (needNow && (body as { needDetail?: unknown }).needDetail) {
+    const d = (body as { needDetail?: { text?: string; photo?: string } }).needDetail!;
+    const text = String(d.text ?? "").trim().slice(0, 200);
+    const photo = typeof d.photo === "string" && d.photo.startsWith("data:image/") && d.photo.length < 500_000 ? d.photo : undefined;
+    if (text || photo) needDetail = { ...(text ? { text } : {}), ...(photo ? { photo } : {}) };
+  }
 
   await prisma.user.update({
     where: { id: session.user.id },
@@ -53,6 +61,7 @@ export async function PUT(req: Request) {
       moodUpdatedAt: new Date(),
       needsSpace: Boolean(body.needsSpace),
       needNow,
+      needDetail: needDetail as never,
     },
   });
 
@@ -76,7 +85,12 @@ export async function PUT(req: Request) {
     }
     if (needNow) {
       void import("@/lib/tg").then(({ sendTg, TG_MSGS }) =>
-        sendTg(partner, TG_MSGS.sheNeeds(NEED_LABELS[needNow] ?? String(needNow)))
+        sendTg(
+          partner,
+          TG_MSGS.sheNeeds(
+            `${NEED_LABELS[needNow] ?? String(needNow)}${needDetail?.text ? ` — ${needDetail.text}` : ""}`
+          )
+        )
       );
     }
   }

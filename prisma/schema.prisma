@@ -22,7 +22,8 @@ model User {
   pausePartner  Boolean       @default(false) // режим инкогнито
   cycleDay      Int? // день цикла (1..40) — БЕЗ дат, только число, с согласия
   expectedCycleDay Int? // ожидаемый день старта (число) — «штормовое предупреждение»
-  needNow       String? // «что ей нужно сейчас»: hug|food|talk|alone|movie
+  needNow    String? // OWNER: что нужно: hug|food|talk|alone|movie
+  needDetail Json? // OWNER: детали просьбы: { text?, photo? } (dataURL)
   lastStormDate String? // антидубль штормового пуша (YYYY-MM-DD)
   cycleDayVisible Boolean    @default(false) // показывать партнёру навигатор цикла
   cycleVaultKey String? // AES-ключ vault (base64) — генерируется один раз на аккаунт
@@ -59,6 +60,7 @@ model CoupleProfile {
   locale    String   @default("ru")
   suppliesAt    DateTime? // «закончились прокладки» — когда попросила
   suppliesDone  Boolean  @default(false) // партнёр отметил «Сделаю ✓»
+  suppliesDetail Json? // детали: { text?, photo? } — какие именно нужны
   ownerId    String   @unique // скалярные FK: связи обрабатываются в коде
   partnerId  String?  @unique
   startDate  DateTime @default(now())

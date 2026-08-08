@@ -37,6 +37,8 @@ interface TodayData {
   ownerMood: string | null;
   ownerNeedsSpace: boolean;
   ownerNeed: string | null;
+  ownerNeedDetail: { text?: string; photo?: string } | null;
+  suppliesDetail: { text?: string; photo?: string } | null;
   emptyOwner: boolean;
   cycleDayStates: Record<string, string>;
   cozy: string[];
@@ -87,6 +89,10 @@ export default function TodayPage() {
   const [suppliesBusy, setSuppliesBusy] = useState(false);
   const [suppliesDone, setSuppliesDone] = useState(false);
   const [suppliesSent, setSuppliesSent] = useState(false);
+  const [detailOpen, setDetailOpen] = useState<"supplies" | "food" | "movie" | "talk" | null>(null);
+  const [detailText, setDetailText] = useState("");
+  const [detailPhoto, setDetailPhoto] = useState<string | null>(null);
+  const [detailBusy, setDetailBusy] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -304,6 +310,13 @@ export default function TodayPage() {
   }, [data?.ownerNeed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function setNeed(id: string | null) {
+    // «Еду», «Фильм», «Поговорить» — сначала детали (модалка), отправка после
+    if (id && (id === "food" || id === "movie" || id === "talk")) {
+      setDetailText("");
+      setDetailPhoto(null);
+      setDetailOpen(id as "food" | "movie" | "talk");
+      return;
+    }
     setNeedNowUI(id);
     try {
       await fetch("/api/profile/phase", {
@@ -313,6 +326,62 @@ export default function TodayPage() {
       });
     } catch {
       /* не критично — отметка останется на сервере при следующем действии */
+    }
+  }
+
+  // сжатие фото на клиенте: максимум 700px, JPEG 0.6 — чтобы dataURL был лёгким
+  function compressPhoto(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, 700 / Math.max(img.width, img.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return reject(new Error("no ctx"));
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", 0.6));
+        };
+        img.onerror = reject;
+        img.src = String(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // отправка деталей из модалки
+  async function sendDetail() {
+    if (detailBusy || !detailOpen) return;
+    if (detailOpen === "supplies") {
+      await reportSupplies({ text: detailText.trim() || undefined, photo: detailPhoto ?? undefined });
+      return;
+    }
+    setDetailBusy(true);
+    setNeedNowUI(detailOpen);
+    try {
+      await fetch("/api/profile/phase", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          needNow: detailOpen,
+          needDetail: {
+            ...(detailText.trim() ? { text: detailText.trim() } : {}),
+            ...(detailPhoto ? { photo: detailPhoto } : {}),
+          },
+        }),
+      });
+      setToast("Он уже знает, что именно ты хочешь 💛");
+      setTimeout(() => setToast(""), 2600);
+    } catch {
+      setToast("Не получилось — попробуй ещё раз");
+      setTimeout(() => setToast(""), 2600);
+    } finally {
+      setDetailBusy(false);
+      setDetailOpen(null);
     }
   }
 
@@ -614,7 +683,11 @@ export default function TodayPage() {
                 </div>
               ) : (
                 <button
-                  onClick={reportSupplies}
+                  onClick={() => {
+                    setDetailText("");
+                    setDetailPhoto(null);
+                    setDetailOpen("supplies");
+                  }}
                   disabled={suppliesBusy}
                   className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
                 >
@@ -916,6 +989,122 @@ export default function TodayPage() {
             )}
           </div>
         )}
+
+        {/* МОДАЛКА ДЕТАЛЕЙ: прокладки / еда / фильм / поговорить */}
+        {detailOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-40 bg-black/50 flex items-end justify-center p-4"
+            onClick={() => setDetailOpen(null)}
+          >
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-[24px] bg-surface p-5 shadow-[0_16px_48px_rgba(0,0,0,.3)]"
+            >
+              <div className="text-[15px] font-extrabold text-ink">
+                {detailOpen === "supplies" && "Какие нужны прокладки? 🩸"}
+                {detailOpen === "food" && "Что именно хочешь поесть? 🍫"}
+                {detailOpen === "movie" && "Что посмотреть? 🎬"}
+                {detailOpen === "talk" && "О чём хочешь поговорить? 💬"}
+              </div>
+              <div className="text-[12px] font-semibold text-muted mt-0.5">
+                {detailOpen === "movie"
+                  ? "напиши фильм — или пусть выберет он"
+                  : "он увидит это сразу — и сделает ровно то, что нужно"}
+              </div>
+              <textarea
+                value={detailText}
+                onChange={(e) => setDetailText(e.target.value)}
+                placeholder={
+                  detailOpen === "supplies"
+                    ? "Например: Always Ultra 3 ночные, 8 шт…"
+                    : detailOpen === "food"
+                      ? "Например: борщ с хлебом и сметаной…"
+                      : detailOpen === "movie"
+                        ? "Например: что-то лёгкое, комедию…"
+                        : "Например: просто послушай меня, без советов…"
+                }
+                maxLength={200}
+                rows={2}
+                className="mt-3 w-full rounded-2xl bg-surface border border-line px-3 py-2.5 text-[13px] font-semibold text-ink outline-none focus:border-primary resize-none"
+              />
+
+              {detailOpen === "supplies" && (
+                <div className="mt-2 flex items-center gap-3">
+                  <label className="inline-flex items-center gap-2 h-[38px] px-4 rounded-full border border-line text-[12px] font-bold text-ink active:scale-[.97] transition cursor-pointer">
+                    📷 Фото упаковки
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        try {
+                          const url = await compressPhoto(f);
+                          setDetailPhoto(url);
+                        } catch {}
+                      }}
+                    />
+                  </label>
+                  {detailPhoto && (
+                    <img
+                      src={detailPhoto}
+                      alt="фото упаковки"
+                      className="h-[52px] w-[52px] rounded-xl object-cover border border-line"
+                    />
+                  )}
+                </div>
+              )}
+
+              <div className="flex gap-2 mt-4">
+                {detailOpen === "movie" && (
+                  <button
+                    onClick={async () => {
+                      setDetailText("Пусть выберет он 🎲");
+                      await new Promise((r) => setTimeout(r, 0));
+                      sendDetail();
+                    }}
+                    disabled={detailBusy}
+                    className="flex-1 h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-50"
+                  >
+                    🎲 Пусть выберет он
+                  </button>
+                )}
+                <button
+                  onClick={sendDetail}
+                  disabled={detailBusy || (!detailText.trim() && !detailPhoto && detailOpen !== "supplies")}
+                  className="flex-1 h-[46px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
+                >
+                  {detailBusy ? "…" : "Отправить"}
+                </button>
+              </div>
+              <button
+                onClick={() => setDetailOpen(null)}
+                className="mt-2 w-full h-[40px] rounded-full text-[12px] font-bold text-muted active:scale-[.97] transition"
+              >
+                Отмена
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* тост для OWNER (рендер через portal — виден поверх всего) */}
+        {typeof document !== "undefined" &&
+          toast &&
+          createPortal(
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#3B2E3A] dark:bg-[#1B1626] text-white text-[13px] font-bold px-5 py-3 rounded-full shadow-lg z-50"
+            >
+              {toast}
+            </motion.div>,
+            document.body
+          )}
       </motion.div>
     );
   }
@@ -958,14 +1147,19 @@ export default function TodayPage() {
     selectPeriodDays(days);
   }
 
-  // «Закончились прокладки»: пуш партнёру — он успеет заехать в магазин
-  async function reportSupplies() {
+  // «Закончились прокладки» (+ какие именно): пуш партнёру — он успеет заехать в магазин
+  async function reportSupplies(detail?: { text?: string; photo?: string }) {
     if (suppliesBusy || suppliesSent) return;
     setSuppliesBusy(true);
     try {
-      const res = await fetch("/api/cycle/supplies", { method: "POST" });
+      const res = await fetch("/api/cycle/supplies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ detail: detail ?? null }),
+      });
       if (!res.ok) throw new Error();
       setSuppliesSent(true); // явная реакция: кнопка гаснет, повторный тап невозможен
+      setDetailOpen(null);
       setToast("Он уже знает — самое время заехать в магазин 🩸");
     } catch {
       setToast("Не получилось отправить — попробуй ещё раз");
@@ -1090,7 +1284,19 @@ export default function TodayPage() {
               {needLabel(data.ownerNeed) && (
                 <div className="mt-2 rounded-full bg-primary-soft px-4 py-2 text-[13px] font-extrabold text-primary text-center">
                   Она хочет: {needLabel(data.ownerNeed)}
+                  {data.ownerNeedDetail?.text && (
+                    <span className="block text-[12px] font-bold text-ink mt-0.5">
+                      {data.ownerNeedDetail.text}
+                    </span>
+                  )}
                 </div>
+              )}
+              {data.ownerNeedDetail?.photo && (
+                <img
+                  src={data.ownerNeedDetail.photo}
+                  alt="что она хочет"
+                  className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
+                />
               )}
               {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто */}
               {data.supplies && !data.supplies.done && !suppliesDone && (
@@ -1099,6 +1305,18 @@ export default function TodayPage() {
                   <div className="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
                     Заехать в магазин? На опережение — пока она не попросила дважды.
                   </div>
+                  {data.suppliesDetail?.text && (
+                    <div className="mt-1.5 text-[12px] font-bold text-ink">
+                      Какие нужны: {data.suppliesDetail.text}
+                    </div>
+                  )}
+                  {data.suppliesDetail?.photo && (
+                    <img
+                      src={data.suppliesDetail.photo}
+                      alt="упаковка"
+                      className="mt-2 w-full max-h-[180px] rounded-2xl object-cover border border-line"
+                    />
+                  )}
                   <button
                     onClick={async () => {
                       const res = await fetch("/api/cycle/supplies/done", { method: "POST" });

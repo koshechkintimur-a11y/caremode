@@ -54,6 +54,8 @@ export async function GET() {
     ownerMood: owner?.mood ?? null,
     ownerNeedsSpace: owner?.needsSpace ?? false,
     ownerNeed: owner?.needNow ?? null,
+    ownerNeedDetail: ((owner?.needDetail as { text?: string; photo?: string } | null) ?? null),
+    suppliesDetail: ((couple?.suppliesDetail as { text?: string; photo?: string } | null) ?? null),
     cycleDayStates: owner?.cycleDayVisible
       ? ((owner?.dayStates as Record<string, string> | null) ?? {})
       : {},

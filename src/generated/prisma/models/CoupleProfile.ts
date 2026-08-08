@@ -28,6 +28,8 @@ export type CoupleProfileMinAggregateOutputType = {
   id: string | null
   inviteCode: string | null
   locale: string | null
+  suppliesAt: Date | null
+  suppliesDone: boolean | null
   ownerId: string | null
   partnerId: string | null
   startDate: Date | null
@@ -37,6 +39,8 @@ export type CoupleProfileMaxAggregateOutputType = {
   id: string | null
   inviteCode: string | null
   locale: string | null
+  suppliesAt: Date | null
+  suppliesDone: boolean | null
   ownerId: string | null
   partnerId: string | null
   startDate: Date | null
@@ -46,6 +50,8 @@ export type CoupleProfileCountAggregateOutputType = {
   id: number
   inviteCode: number
   locale: number
+  suppliesAt: number
+  suppliesDone: number
   ownerId: number
   partnerId: number
   startDate: number
@@ -57,6 +63,8 @@ export type CoupleProfileMinAggregateInputType = {
   id?: true
   inviteCode?: true
   locale?: true
+  suppliesAt?: true
+  suppliesDone?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -66,6 +74,8 @@ export type CoupleProfileMaxAggregateInputType = {
   id?: true
   inviteCode?: true
   locale?: true
+  suppliesAt?: true
+  suppliesDone?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -75,6 +85,8 @@ export type CoupleProfileCountAggregateInputType = {
   id?: true
   inviteCode?: true
   locale?: true
+  suppliesAt?: true
+  suppliesDone?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -157,6 +169,8 @@ export type CoupleProfileGroupByOutputType = {
   id: string
   inviteCode: string
   locale: string
+  suppliesAt: Date | null
+  suppliesDone: boolean
   ownerId: string
   partnerId: string | null
   startDate: Date
@@ -187,6 +201,8 @@ export type CoupleProfileWhereInput = {
   id?: Prisma.StringFilter<"CoupleProfile"> | string
   inviteCode?: Prisma.StringFilter<"CoupleProfile"> | string
   locale?: Prisma.StringFilter<"CoupleProfile"> | string
+  suppliesAt?: Prisma.DateTimeNullableFilter<"CoupleProfile"> | Date | string | null
+  suppliesDone?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   ownerId?: Prisma.StringFilter<"CoupleProfile"> | string
   partnerId?: Prisma.StringNullableFilter<"CoupleProfile"> | string | null
   startDate?: Prisma.DateTimeFilter<"CoupleProfile"> | Date | string
@@ -198,6 +214,8 @@ export type CoupleProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   inviteCode?: Prisma.SortOrder
   locale?: Prisma.SortOrder
+  suppliesAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  suppliesDone?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -214,6 +232,8 @@ export type CoupleProfileWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CoupleProfileWhereInput[]
   NOT?: Prisma.CoupleProfileWhereInput | Prisma.CoupleProfileWhereInput[]
   locale?: Prisma.StringFilter<"CoupleProfile"> | string
+  suppliesAt?: Prisma.DateTimeNullableFilter<"CoupleProfile"> | Date | string | null
+  suppliesDone?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   startDate?: Prisma.DateTimeFilter<"CoupleProfile"> | Date | string
   members?: Prisma.UserListRelationFilter
   prompts?: Prisma.DailyPromptListRelationFilter
@@ -223,6 +243,8 @@ export type CoupleProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   inviteCode?: Prisma.SortOrder
   locale?: Prisma.SortOrder
+  suppliesAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  suppliesDone?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -238,6 +260,8 @@ export type CoupleProfileScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"CoupleProfile"> | string
   inviteCode?: Prisma.StringWithAggregatesFilter<"CoupleProfile"> | string
   locale?: Prisma.StringWithAggregatesFilter<"CoupleProfile"> | string
+  suppliesAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CoupleProfile"> | Date | string | null
+  suppliesDone?: Prisma.BoolWithAggregatesFilter<"CoupleProfile"> | boolean
   ownerId?: Prisma.StringWithAggregatesFilter<"CoupleProfile"> | string
   partnerId?: Prisma.StringNullableWithAggregatesFilter<"CoupleProfile"> | string | null
   startDate?: Prisma.DateTimeWithAggregatesFilter<"CoupleProfile"> | Date | string
@@ -247,6 +271,8 @@ export type CoupleProfileCreateInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -258,6 +284,8 @@ export type CoupleProfileUncheckedCreateInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -269,6 +297,8 @@ export type CoupleProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +310,8 @@ export type CoupleProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -291,6 +323,8 @@ export type CoupleProfileCreateManyInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -300,6 +334,8 @@ export type CoupleProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -309,6 +345,8 @@ export type CoupleProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,6 +361,8 @@ export type CoupleProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   inviteCode?: Prisma.SortOrder
   locale?: Prisma.SortOrder
+  suppliesAt?: Prisma.SortOrder
+  suppliesDone?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -332,6 +372,8 @@ export type CoupleProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   inviteCode?: Prisma.SortOrder
   locale?: Prisma.SortOrder
+  suppliesAt?: Prisma.SortOrder
+  suppliesDone?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -341,6 +383,8 @@ export type CoupleProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   inviteCode?: Prisma.SortOrder
   locale?: Prisma.SortOrder
+  suppliesAt?: Prisma.SortOrder
+  suppliesDone?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -385,6 +429,8 @@ export type CoupleProfileCreateWithoutMembersInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -395,6 +441,8 @@ export type CoupleProfileUncheckedCreateWithoutMembersInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -421,6 +469,8 @@ export type CoupleProfileUpdateWithoutMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -431,6 +481,8 @@ export type CoupleProfileUncheckedUpdateWithoutMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -441,6 +493,8 @@ export type CoupleProfileCreateWithoutPromptsInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -451,6 +505,8 @@ export type CoupleProfileUncheckedCreateWithoutPromptsInput = {
   id?: string
   inviteCode: string
   locale?: string
+  suppliesAt?: Date | string | null
+  suppliesDone?: boolean
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -477,6 +533,8 @@ export type CoupleProfileUpdateWithoutPromptsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -487,6 +545,8 @@ export type CoupleProfileUncheckedUpdateWithoutPromptsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   inviteCode?: Prisma.StringFieldUpdateOperationsInput | string
   locale?: Prisma.StringFieldUpdateOperationsInput | string
+  suppliesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  suppliesDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -537,6 +597,8 @@ export type CoupleProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   inviteCode?: boolean
   locale?: boolean
+  suppliesAt?: boolean
+  suppliesDone?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -549,6 +611,8 @@ export type CoupleProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   inviteCode?: boolean
   locale?: boolean
+  suppliesAt?: boolean
+  suppliesDone?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -558,6 +622,8 @@ export type CoupleProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   inviteCode?: boolean
   locale?: boolean
+  suppliesAt?: boolean
+  suppliesDone?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -567,12 +633,14 @@ export type CoupleProfileSelectScalar = {
   id?: boolean
   inviteCode?: boolean
   locale?: boolean
+  suppliesAt?: boolean
+  suppliesDone?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
 }
 
-export type CoupleProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inviteCode" | "locale" | "ownerId" | "partnerId" | "startDate", ExtArgs["result"]["coupleProfile"]>
+export type CoupleProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inviteCode" | "locale" | "suppliesAt" | "suppliesDone" | "ownerId" | "partnerId" | "startDate", ExtArgs["result"]["coupleProfile"]>
 export type CoupleProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   members?: boolean | Prisma.CoupleProfile$membersArgs<ExtArgs>
   prompts?: boolean | Prisma.CoupleProfile$promptsArgs<ExtArgs>
@@ -591,6 +659,8 @@ export type $CoupleProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     inviteCode: string
     locale: string
+    suppliesAt: Date | null
+    suppliesDone: boolean
     ownerId: string
     partnerId: string | null
     startDate: Date
@@ -1022,6 +1092,8 @@ export interface CoupleProfileFieldRefs {
   readonly id: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly inviteCode: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly locale: Prisma.FieldRef<"CoupleProfile", 'String'>
+  readonly suppliesAt: Prisma.FieldRef<"CoupleProfile", 'DateTime'>
+  readonly suppliesDone: Prisma.FieldRef<"CoupleProfile", 'Boolean'>
   readonly ownerId: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly partnerId: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly startDate: Prisma.FieldRef<"CoupleProfile", 'DateTime'>

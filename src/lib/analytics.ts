@@ -20,6 +20,7 @@ export type EventType =
   | "push_card"
   | "push_storm"
   | "supplies"
+  | "supplies_done"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

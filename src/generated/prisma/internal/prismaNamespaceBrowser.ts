@@ -117,6 +117,8 @@ export const CoupleProfileScalarFieldEnum = {
   id: 'id',
   inviteCode: 'inviteCode',
   locale: 'locale',
+  suppliesAt: 'suppliesAt',
+  suppliesDone: 'suppliesDone',
   ownerId: 'ownerId',
   partnerId: 'partnerId',
   startDate: 'startDate'

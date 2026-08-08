@@ -39,6 +39,7 @@ interface TodayData {
   cycleDayStates: Record<string, string>;
   cozy: string[];
   firstName: string | null;
+  supplies: { at: string; done: boolean } | null;
 }
 
 interface CashbackData {
@@ -81,6 +82,7 @@ export default function TodayPage() {
   const [needNowUI, setNeedNowUI] = useState<string | null | "loading">("loading");
   const [periodStartOpen, setPeriodStartOpen] = useState(false);
   const [suppliesBusy, setSuppliesBusy] = useState(false);
+  const [suppliesDone, setSuppliesDone] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -1144,6 +1146,33 @@ export default function TodayPage() {
                 },
               ]}
             />
+
+            {/* ПРОСЬБА О ПРОКЛАДКАХ: карточка партнёру — видна в приложении даже без пушей */}
+            {data.supplies && !data.supplies.done && !suppliesDone && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]"
+              >
+                <div className="text-[15px] font-extrabold text-ink">Она просит о помощи 🩸</div>
+                <div className="text-[12px] font-semibold text-muted mt-0.5 leading-snug">
+                  Закончились прокладки — заехать в магазин? Это можно сделать на опережение, пока она не попросила дважды.
+                </div>
+                <button
+                  onClick={async () => {
+                    const res = await fetch("/api/cycle/supplies/done", { method: "POST" });
+                    if (res.ok) {
+                      setSuppliesDone(true);
+                      setToast("Она узнает — ты уже в пути 💛");
+                      setTimeout(() => setToast(""), 2600);
+                    }
+                  }}
+                  className="mt-3 w-full h-[46px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[14px] active:scale-[.97] transition"
+                >
+                  Сделаю ✓
+                </button>
+              </motion.div>
+            )}
 
             {/* XP: один компактный блок (перк + GOOD + стадия + прогресс) */}
             {cashback && (

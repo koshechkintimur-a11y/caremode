@@ -59,5 +59,8 @@ export async function GET() {
       : {},
     cozy: ((owner?.careProfile as Record<string, unknown> | null)?.cozy ?? []) as string[],
     firstName: user.firstName,
+    supplies: couple?.suppliesAt
+      ? { at: couple.suppliesAt.toISOString(), done: couple.suppliesDone }
+      : null,
   });
 }

@@ -4,8 +4,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { track } from "@/lib/analytics";
 
-// POST /api/cycle/supplies — Оля: «закончились прокладки» → мгновенный пуш партнёру
-// (он успевает среагировать на опережение — заехать в магазин до вечера).
+// POST /api/cycle/supplies/done — партнёр отметил «Сделаю ✓»:
+// карточка у него гаснет, Оле уходит пуш «он уже в магазине 💛».
 export async function POST() {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -16,21 +16,19 @@ export async function POST() {
   });
   if (!user?.coupleId || !user.couple) return NextResponse.json({ error: "no couple" }, { status: 409 });
 
-  const partner = user.couple.members.find((m) => m.role === "PARTNER");
-  track("supplies", { userId: user.id, coupleId: user.coupleId });
-
-  // фиксируем запрос — партнёр увидит карточку в приложении даже без пушей
   await prisma.coupleProfile.update({
     where: { id: user.coupleId },
-    data: { suppliesAt: new Date(), suppliesDone: false },
+    data: { suppliesDone: true },
   });
+  track("supplies_done", { userId: user.id, coupleId: user.coupleId });
 
-  const subs = (partner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
+  const owner = user.couple.members.find((m) => m.role === "OWNER");
+  const subs = (owner?.pushSubs ?? []) as { endpoint: string; keys: { p256dh: string; auth: string } }[];
   let sent = 0;
-  if (partner && subs.length > 0 && !partner.pausePartner) {
+  if (owner && subs.length > 0 && !owner.pausePartner) {
     const payload = JSON.stringify({
-      title: "Она просит о помощи 🩸",
-      body: "Закончились прокладки — заехать в магазин? Она будет рада.",
+      title: "Он уже в магазине 💛",
+      body: "Ты попросила — он поехал за прокладками. Бережно и на опережение.",
       url: "/today",
     });
     for (const sub of subs) {

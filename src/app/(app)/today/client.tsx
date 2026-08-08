@@ -1395,7 +1395,7 @@ export default function TodayPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#1B1626] text-white text-[13px] font-bold px-5 py-3 rounded-full shadow-lg z-50"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#3B2E3A] dark:bg-[#1B1626] text-white text-[13px] font-bold px-5 py-3 rounded-full shadow-lg z-50"
           >
             {toast}
           </motion.div>,

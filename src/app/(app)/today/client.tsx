@@ -357,11 +357,13 @@ export default function TodayPage() {
     });
   }
 
-  // отправка деталей из модалки
-  async function sendDetail() {
+  // отправка деталей из модалки (textOverride — для кнопок с фиксированным текстом,
+  // state не успевает обновиться до вызова — классический баг замыкания)
+  async function sendDetail(textOverride?: string) {
     if (detailBusy || !detailOpen) return;
+    const text = (textOverride ?? detailText).trim();
     if (detailOpen === "supplies") {
-      await reportSupplies({ text: detailText.trim() || undefined, photo: detailPhoto ?? undefined });
+      await reportSupplies({ text: text || undefined, photo: detailPhoto ?? undefined });
       return;
     }
     setDetailBusy(true);
@@ -373,7 +375,7 @@ export default function TodayPage() {
         body: JSON.stringify({
           needNow: detailOpen,
           needDetail: {
-            ...(detailText.trim() ? { text: detailText.trim() } : {}),
+            ...(text ? { text } : {}),
             ...(detailPhoto ? { photo: detailPhoto } : {}),
           },
         }),
@@ -1117,11 +1119,7 @@ export default function TodayPage() {
               <div className="flex gap-2 mt-4">
                 {detailOpen === "movie" && (
                   <button
-                    onClick={async () => {
-                      setDetailText("Пусть выберет он 🎲");
-                      await new Promise((r) => setTimeout(r, 0));
-                      sendDetail();
-                    }}
+                    onClick={() => sendDetail("Пусть выберет он 🎲")}
                     disabled={detailBusy}
                     className="flex-1 h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-50"
                   >
@@ -1129,7 +1127,7 @@ export default function TodayPage() {
                   </button>
                 )}
                 <button
-                  onClick={sendDetail}
+                  onClick={() => sendDetail()}
                   disabled={detailBusy || (!detailText.trim() && !detailPhoto && detailOpen !== "supplies")}
                   className="flex-1 h-[46px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
                 >
@@ -1353,7 +1351,7 @@ export default function TodayPage() {
                     />
                   )}
                   {data.request.need === "movie" &&
-                  (data.request.detail?.text ?? "").startsWith("Пусть выберет") ? (
+                  (data.request.detail?.text ?? "").toLowerCase().includes("пусть выберет") ? (
                     <>
                       <div className="mt-2 text-[11px] font-semibold text-muted leading-snug">
                         🎲 Выбор за тобой — она ждёт, что именно ты предложишь

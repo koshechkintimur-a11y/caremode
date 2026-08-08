@@ -700,13 +700,25 @@ export default function TodayPage() {
 
           {/* кнопки отметки — всегда видны */}
           <div className="mt-3 flex flex-col gap-2.5">
-            {inPeriod ? (
+            {inPeriod && !store.periodEnded ? (
               <button
                 onClick={endToday}
                 className="w-full h-[52px] rounded-full bg-success text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(127,169,143,.35)] active:scale-[.97] transition"
               >
                 Закончились сегодня
               </button>
+            ) : inPeriod && store.periodEnded ? (
+              <>
+                <div className="w-full rounded-full bg-success/15 px-4 py-3 text-center text-[14px] font-extrabold text-ink">
+                  ✓ Закончились сегодня{store.periodDays.length > 0 && ` (${store.periodDays[0]}–${store.periodDays[store.periodDays.length - 1]})`}
+                </div>
+                <button
+                  onClick={() => setPeriodStartOpen((v) => !v)}
+                  className="w-full h-[52px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[15px] shadow-[0_8px_24px_rgba(232,131,127,.4)] active:scale-[.97] transition"
+                >
+                  {periodStartOpen ? "Отмена" : "Месячные начались"}
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => setPeriodStartOpen((v) => !v)}
@@ -1177,6 +1189,7 @@ export default function TodayPage() {
   async function selectPeriodDays(days: number[]) {
     if (!days.length) return;
     store.setPeriodDays(days);
+    store.setPeriodEnded(false); // новый/продолжающийся период — снова открыт
     // первый отмеченный день = день 1 цикла → пересчёт даты старта
     const start = new Date();
     start.setDate(start.getDate() - (days[0] - 1));
@@ -1203,13 +1216,16 @@ export default function TodayPage() {
     });
   }
 
-  // «Закончились сегодня» — период от старта до текущего дня
+  // «Закончились сегодня» — период от старта до текущего дня, потом явно закрыт
   function endToday() {
     if (store.cycleDay === null) return;
     const first = store.periodDays[0] ?? 1; // старт мог быть указан датой без отметок дней
     const days: number[] = [];
     for (let d = first; d <= store.cycleDay; d++) days.push(d);
     selectPeriodDays(days);
+    store.setPeriodEnded(true); // период закрыт — кнопка станет «Месячные начались»
+    setToast("✓ Отметила: месячные закончились");
+    setTimeout(() => setToast(""), 2600);
   }
 
   // «Закончились прокладки» (+ какие именно): пуш партнёру — он успеет заехать в магазин

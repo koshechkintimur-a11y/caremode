@@ -20,6 +20,8 @@ interface AppState {
   cycleDayVisible: boolean; // согласие: показывать партнёру навигатор
   periodDays: number[]; // отмеченные дни месячных (приливный круг, только на устройстве)
   setPeriodDays: (days: number[]) => void;
+  periodEnded: boolean; // «закончились сегодня» — период закрыт явно
+  setPeriodEnded: (v: boolean) => void;
   cycleHistory: string[]; // история стартов (ISO) — только на устройстве
   recordCycleStart: (iso: string) => void;
   needsSpace: boolean; // «не трогать» — отметка на сегодня
@@ -54,6 +56,7 @@ export const useApp = create<AppState>()(
       cycleDay: null,
       cycleDayVisible: false,
       periodDays: [],
+      periodEnded: false,
       cycleHistory: [],
       needsSpace: false,
       dayStates: {},
@@ -74,6 +77,7 @@ export const useApp = create<AppState>()(
       setCycleDayVisible: (v) => set({ cycleDayVisible: v }),
 
       setPeriodDays: (days) => set({ periodDays: [...new Set(days)].sort((a, b) => a - b) }),
+      setPeriodEnded: (v) => set({ periodEnded: v }),
 
       recordCycleStart: (iso) =>
         set((s) => {

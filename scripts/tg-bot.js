@@ -46,12 +46,13 @@ async function handle(msg) {
     return;
   }
 
-  // код связки: 6 символов (без 0/O/1/I)
-  if (/^[A-Z0-9]{6}$/.test(lower)) {
+  // код связки: 6 символов (без 0/O/1/I) — регистр не важен
+  const code = text.toUpperCase();
+  if (/^[A-Z0-9]{6}$/.test(code)) {
     const res = await fetch(`${APP}/api/tg/link`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: lower, chatId }),
+      body: JSON.stringify({ code, chatId }),
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.ok) {

@@ -54,6 +54,7 @@ export default function SettingsPage() {
   const [tgBot, setTgBot] = useState<string | null>(null);
   const [tgCode, setTgCode] = useState<string | null>(null);
   const [tgBusy, setTgBusy] = useState(false);
+  const [tgCopied, setTgCopied] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -285,10 +286,34 @@ export default function SettingsPage() {
           <div className="rounded-2xl border border-line bg-surface/70 p-4">
             <div className="text-[12px] font-bold text-muted">
               Отправь этот код боту{" "}
-              <span className="text-primary">{tgBot ? `@${tgBot}` : "в Telegram"}</span>:
+              {tgBot ? (
+                <a
+                  href={`https://t.me/${tgBot}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2"
+                >
+                  @{tgBot}
+                </a>
+              ) : (
+                "в Telegram"
+              )}
+              :
             </div>
-            <div className="mt-2 text-center font-pixel text-[22px] text-ink tracking-[0.3em]">
-              {tgCode}
+            <div className="mt-2 flex items-center justify-center gap-3">
+              <span className="font-pixel text-[22px] text-ink tracking-[0.3em]">{tgCode}</span>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(tgCode ?? "");
+                    setTgCopied(true);
+                    setTimeout(() => setTgCopied(false), 1600);
+                  } catch {}
+                }}
+                className="h-[34px] px-4 rounded-full bg-primary-soft text-primary text-[12px] font-extrabold active:scale-[.95] transition"
+              >
+                {tgCopied ? "Скопировано ✓" : "Копировать"}
+              </button>
             </div>
             <div className="mt-2 text-[11px] font-semibold text-muted text-center">
               ждём подтверждения… (код живёт 10 минут)

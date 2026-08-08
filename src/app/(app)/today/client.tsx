@@ -410,6 +410,12 @@ export default function TodayPage() {
                       body: JSON.stringify({ promptId: data.prompt!.id }),
                     });
                     if (res.ok) {
+                      // мгновенно: «Ты заметила ✨» без поллинга
+                      setData((d) =>
+                        d?.prompt
+                          ? { ...d, prompt: { ...d.prompt, thankedAt: new Date().toISOString() } }
+                          : d
+                      );
                       setToast("Он увидит, что ты заметила 💛");
                       setTimeout(() => setToast(""), 2600);
                     }
@@ -1116,6 +1122,12 @@ export default function TodayPage() {
                         body: JSON.stringify({ promptId: data.prompt!.id }),
                       });
                       if (res.ok) {
+                        // мгновенно: «Ты заметила ✨» без поллинга
+                        setData((d) =>
+                          d?.prompt
+                            ? { ...d, prompt: { ...d.prompt, thankedAt: new Date().toISOString() } }
+                            : d
+                        );
                         setToast("Он увидит, что ты заметила 💛");
                         setTimeout(() => setToast(""), 2600);
                       }

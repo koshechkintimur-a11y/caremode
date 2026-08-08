@@ -1051,7 +1051,7 @@ export default function TodayPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-40 bg-black/50 flex items-end justify-center p-4"
+            className="fixed inset-0 z-40 bg-black/50 flex items-center justify-center p-4"
             onClick={() => setDetailOpen(null)}
           >
             <motion.div
@@ -1750,7 +1750,7 @@ export default function TodayPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-40 bg-black/50 flex items-end justify-center p-4"
+          className="fixed inset-0 z-40 bg-black/50 flex items-center justify-center p-4"
           onClick={() => setMovieOpen(false)}
         >
           <motion.div
@@ -1768,7 +1768,6 @@ export default function TodayPage() {
               onChange={(e) => setMovieTitle(e.target.value)}
               placeholder="Например: «Властелин колец», или что-то лёгкое…"
               maxLength={100}
-              autoFocus
               className="mt-3 w-full h-[46px] rounded-2xl bg-surface border border-line px-3 text-[13px] font-semibold text-ink outline-none focus:border-primary"
             />
             <button

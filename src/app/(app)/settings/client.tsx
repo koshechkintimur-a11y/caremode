@@ -235,11 +235,14 @@ export default function SettingsPage() {
               if (!myName.trim() || nameBusy) return;
               setNameBusy(true);
               try {
-                await fetch("/api/profile/name", {
+                const res = await fetch("/api/profile", {
                   method: "PATCH",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ name: myName.trim() }),
                 });
+                if (!res.ok) throw new Error();
+              } catch {
+                alert("Не получилось сохранить — попробуй ещё раз");
               } finally {
                 setNameBusy(false);
               }

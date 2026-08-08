@@ -33,9 +33,12 @@ export async function POST() {
 
   const partner = user.couple.members.find((m) => m.id !== user.id);
   const need = NEED_LABELS[user.couple.requestNeed] ?? user.couple.requestNeed;
+  const isAlone = user.couple.requestNeed === "alone";
   void sendTg(
     partner,
-    `✨ <b>Она поблагодарила!</b>\n\n«${need}» — ты сделал это, и она это оценила 💛\n\nТы — тот самый.`
+    isAlone
+      ? `✨ <b>Она поблагодарила!</b>\n\n«Спасибо, что понял» — ты уважаешь её пространство, и она это ценит 💛`
+      : `✨ <b>Она поблагодарила!</b>\n\n«${need}» — ты сделал это, и она это оценила 💛\n\nТы — тот самый.`
   );
 
   return NextResponse.json({ ok: true });

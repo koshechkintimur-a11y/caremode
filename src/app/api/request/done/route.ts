@@ -34,9 +34,12 @@ export async function POST() {
   const owner = user.couple.members.find((m) => m.role === "OWNER");
   const detail = (user.couple.requestDetail as { text?: string } | null)?.text;
   const need = NEED_LABELS[user.couple.requestNeed] ?? user.couple.requestNeed;
+  const isAlone = user.couple.requestNeed === "alone";
   void sendTg(
     owner,
-    `💛 <b>Он взял это на себя!</b>\n\n${need}${detail ? ` — ${detail}` : ""}\n\nМожно не напоминать — он уже в деле.`
+    isAlone
+      ? `💛 <b>Он понял — не пристаёт.</b>\n\nОн увидел, что тебе нужно пространство, и уважает это.`
+      : `💛 <b>Он взял это на себя!</b>\n\n${need}${detail ? ` — ${detail}` : ""}\n\nМожно не напоминать — он уже в деле.`
   );
 
   return NextResponse.json({ ok: true });

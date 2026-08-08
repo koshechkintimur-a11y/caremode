@@ -622,11 +622,14 @@ export default function TodayPage() {
             {data.request?.done && !data.request.thanked && (
               <div className="mt-3 rounded-2xl border-2 border-success/40 bg-success/10 px-4 py-3">
                 <div className="text-[13px] font-extrabold text-ink">
-                  {data.partnerFirstName ?? "Он"} взял это на себя 💛
+                  {data.request.need === "alone"
+                    ? `${data.partnerFirstName ?? "Он"} понял — не пристаёт 💛`
+                    : `${data.partnerFirstName ?? "Он"} взял это на себя 💛`}
                 </div>
                 <div className="text-[11px] font-semibold text-muted mt-0.5">
-                  {needLabel(data.request.need)}
-                  {data.request.detail?.text ? ` — ${data.request.detail.text}` : ""} · можно не напоминать
+                  {data.request.need === "alone"
+                    ? "он увидел, что тебе нужно пространство — и уважает это"
+                    : `${needLabel(data.request.need)}${data.request.detail?.text ? ` — ${data.request.detail.text}` : ""} · можно не напоминать`}
                 </div>
                 <button
                   onClick={async () => {
@@ -639,7 +642,7 @@ export default function TodayPage() {
                   }}
                   className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
                 >
-                  Спасибо 💛
+                  {data.request.need === "alone" ? "Спасибо, что понял 💛" : "Спасибо 💛"}
                 </button>
               </div>
             )}
@@ -1328,7 +1331,9 @@ export default function TodayPage() {
               {data.request && !data.request.done && (
                 <div className="mt-3 rounded-2xl border-2 border-primary/50 bg-primary-soft/70 px-4 py-3">
                   <div className="text-[13px] font-extrabold text-primary">
-                    Она хочет: {needLabel(data.request.need)}
+                    {data.request.need === "alone"
+                      ? "Ей нужно побыть одной"
+                      : `Она хочет: ${needLabel(data.request.need)}`}
                   </div>
                   {data.request.detail?.text && (
                     <div className="mt-1 text-[12px] font-bold text-ink">{data.request.detail.text}</div>
@@ -1345,19 +1350,19 @@ export default function TodayPage() {
                       const res = await fetch("/api/request/done", { method: "POST" });
                       if (res.ok) {
                         setData((d) => (d?.request ? { ...d, request: { ...d.request, done: true } } : d));
-                        setToast("Она узнает — ты взял на себя 💛");
+                        setToast(data.request?.need === "alone" ? "Она узнает — ты понял 💛" : "Она узнает — ты взял на себя 💛");
                         setTimeout(() => setToast(""), 2600);
                       }
                     }}
                     className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
                   >
-                    Сделаю ✓
+                    {data.request.need === "alone" ? "Понял, не пристаю" : "Сделаю ✓"}
                   </button>
                 </div>
               )}
               {data.request?.done && (
                 <div className="mt-2 rounded-full bg-success/15 px-4 py-2 text-[13px] font-extrabold text-ink text-center">
-                  ✓ Ты взял это на себя
+                  {data.request.need === "alone" ? "✓ Понял — не пристаю" : "✓ Ты взял это на себя"}
                   {data.request.thanked && <span className="text-success"> · она поблагодарила ✨</span>}
                 </div>
               )}

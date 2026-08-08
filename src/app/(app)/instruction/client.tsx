@@ -88,7 +88,7 @@ export function InstructionPage({ role }: { role: "OWNER" | "PARTNER" }) {
   }
 
   if (!hydrated || !data) {
-    return <div className="w-full max-w-md h-96 rounded-[28px] bg-surface/60 animate-pulse" />;
+    return <div className="w-full max-w-md h-96 rounded-[28px] bg-surface/45 animate-pulse" />;
   }
 
   const ins = data.instruction;

@@ -204,7 +204,7 @@ export default function SettingsPage() {
   }
 
   if (!hydrated) {
-    return <div className="w-full max-w-md h-64 rounded-[28px] bg-surface/60 animate-pulse" />;
+    return <div className="w-full max-w-md h-64 rounded-[28px] bg-surface/45 animate-pulse" />;
   }
 
   return (
@@ -251,7 +251,7 @@ export default function SettingsPage() {
           </button>
         </div>
         {myName.trim() && partnerName && (
-          <div className="mt-4 rounded-2xl border border-line bg-surface/70 px-4 py-3 text-[14px] font-extrabold text-ink">
+          <div className="mt-4 rounded-2xl border border-line bg-surface/55 px-4 py-3 text-[14px] font-extrabold text-ink">
             Пара: {myName.trim()} + {partnerName} 💛
           </div>
         )}
@@ -283,7 +283,7 @@ export default function SettingsPage() {
             </button>
           </div>
         ) : tgCode ? (
-          <div className="rounded-2xl border border-line bg-surface/70 p-4">
+          <div className="rounded-2xl border border-line bg-surface/55 p-4">
             <div className="text-[12px] font-bold text-muted">
               Отправь этот код боту{" "}
               {tgBot ? (

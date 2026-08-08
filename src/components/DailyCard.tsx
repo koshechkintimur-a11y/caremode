@@ -29,7 +29,7 @@ export function DailyCard({
         initial={{ opacity: 0, scale: 0.94, y: 14 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 22 }}
-        className="relative w-full max-w-md overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/80 via-[#E98F8B]/75 to-accent/80 p-7 pt-6 text-white shadow-[0_16px_48px_rgba(232,131,127,.3)] backdrop-blur-[2px]"
+        className="relative w-full max-w-md overflow-hidden rounded-[28px] bg-gradient-to-br from-primary/80 via-[#E98F8B]/75 to-accent/80 p-7 pt-6 text-white shadow-[0_16px_48px_rgba(232,131,127,.3)] backdrop-blur-[16px]"
       >
         {/* мягкие блики */}
         <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/15 blur-2xl" />

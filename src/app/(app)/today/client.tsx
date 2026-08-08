@@ -1058,6 +1058,28 @@ export default function TodayPage() {
                   Она хочет: {needLabel(data.ownerNeed)}
                 </div>
               )}
+              {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто */}
+              {data.supplies && !data.supplies.done && !suppliesDone && (
+                <div className="mt-3 rounded-2xl border-2 border-primary/50 bg-primary-soft/70 px-4 py-3">
+                  <div className="text-[13px] font-extrabold text-primary">Закончились прокладки 🩸</div>
+                  <div className="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
+                    Заехать в магазин? На опережение — пока она не попросила дважды.
+                  </div>
+                  <button
+                    onClick={async () => {
+                      const res = await fetch("/api/cycle/supplies/done", { method: "POST" });
+                      if (res.ok) {
+                        setSuppliesDone(true);
+                        setToast("Она узнает — ты уже в пути 💛");
+                        setTimeout(() => setToast(""), 2600);
+                      }
+                    }}
+                    className="mt-2.5 w-full h-[42px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] active:scale-[.97] transition"
+                  >
+                    Сделаю ✓
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Обучалка: маскот (встроенный блок после маскота) */}
@@ -1165,33 +1187,6 @@ export default function TodayPage() {
                 },
               ]}
             />
-
-            {/* ПРОСЬБА О ПРОКЛАДКАХ: карточка партнёру — видна в приложении даже без пушей */}
-            {data.supplies && !data.supplies.done && !suppliesDone && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full rounded-[24px] bg-surface/70 backdrop-blur-[2px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]"
-              >
-                <div className="text-[15px] font-extrabold text-ink">Она просит о помощи 🩸</div>
-                <div className="text-[12px] font-semibold text-muted mt-0.5 leading-snug">
-                  Закончились прокладки — заехать в магазин? Это можно сделать на опережение, пока она не попросила дважды.
-                </div>
-                <button
-                  onClick={async () => {
-                    const res = await fetch("/api/cycle/supplies/done", { method: "POST" });
-                    if (res.ok) {
-                      setSuppliesDone(true);
-                      setToast("Она узнает — ты уже в пути 💛");
-                      setTimeout(() => setToast(""), 2600);
-                    }
-                  }}
-                  className="mt-3 w-full h-[46px] rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[14px] active:scale-[.97] transition"
-                >
-                  Сделаю ✓
-                </button>
-              </motion.div>
-            )}
 
             {/* XP: один компактный блок (перк + GOOD + стадия + прогресс) */}
             {cashback && (

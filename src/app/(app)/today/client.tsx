@@ -20,7 +20,7 @@ import { MOODS, NEEDS, needLabel } from "@/lib/careOptions";
 import { computeCycleStats } from "@/lib/cycle";
 import { useApp } from "@/store/useApp";
 import { useWeather, MOOD_WEATHER, PHASE_WEATHER } from "@/store/uiStore";
-import { PHASE_LABEL, dayOfCycle, phaseFromStartDate, phaseOfDay } from "@/lib/phase";
+import { PHASE_LABEL, PHASE_HINT, PHASE_RANGES, dayOfCycle, phaseFromStartDate, phaseOfDay } from "@/lib/phase";
 import { getPerk, nextPerk } from "@/lib/perks";
 import { cn } from "@/lib/utils";
 
@@ -99,6 +99,7 @@ export default function TodayPage() {
   const [movieOpen, setMovieOpen] = useState(false);
   const [movieTitle, setMovieTitle] = useState("");
   const [movieBusy, setMovieBusy] = useState(false);
+  const [cycleInfoOpen, setCycleInfoOpen] = useState(false);
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -1443,8 +1444,11 @@ export default function TodayPage() {
                 </div>
               )}
               {data.ownerPeriodEnded && (
-                <div className="mt-2 rounded-full bg-success/15 px-4 py-2 text-[13px] font-extrabold text-success text-center">
-                  🌤 Месячные закончились — она снова в строю
+                <div className="mt-3 rounded-2xl border-2 border-success/50 bg-success/15 px-4 py-4">
+                  <div className="text-[16px] font-extrabold text-success">🌤 Месячные закончились</div>
+                  <div className="text-[12px] font-semibold text-muted mt-1 leading-snug">
+                    Она снова в строю — впереди лучшие дни для свидания и комплиментов.
+                  </div>
                 </div>
               )}
               {/* ВАЖНЫЕ УВЕДОМЛЕНИЯ: под маскотом, где пусто — тёмная карточка как тост */}
@@ -1480,6 +1484,52 @@ export default function TodayPage() {
 
               {/* События пары: она отметила — подтверди */}
               <div className="mt-3 w-full">
+              {/* ЦИКЛ ПРОСТЫМИ СЛОВАМИ: что с ней происходит и что делать */}
+              <div className="mt-3 rounded-2xl bg-surface/55 backdrop-blur-[16px] border border-line p-4">
+                <div className="text-[12px] font-bold uppercase tracking-wider text-muted">
+                  {data.cycleVisible && data.cycleDay ? "Её цикл простыми словами" : "Как устроен её цикл"}
+                </div>
+                {data.cycleVisible && data.cycleDay && (
+                  <>
+                    <div className="mt-1.5 text-[15px] font-extrabold text-ink">
+                      Сейчас: {PHASE_LABEL[phaseOfDay(data.cycleDay)]}
+                    </div>
+                    <div className="text-[12px] font-semibold text-muted mt-0.5">
+                      {PHASE_HINT[phaseOfDay(data.cycleDay)]}
+                    </div>
+                  </>
+                )}
+                <button
+                  onClick={() => setCycleInfoOpen((v) => !v)}
+                  className="mt-2 text-[12px] font-bold text-primary"
+                >
+                  {cycleInfoOpen ? "Скрыть фазы" : "Что происходит по фазам →"}
+                </button>
+                {cycleInfoOpen && (
+                  <div className="mt-2 flex flex-col gap-2">
+                    {PHASE_RANGES.map((r) => (
+                      <div
+                        key={r.phase}
+                        className={cn(
+                          "rounded-xl px-3 py-2",
+                          data.cycleVisible && data.cycleDay && phaseOfDay(data.cycleDay) === r.phase
+                            ? "bg-primary-soft"
+                            : "bg-bg/60"
+                        )}
+                      >
+                        <div className="text-[12px] font-extrabold text-ink">
+                          {PHASE_LABEL[r.phase]} · дни {r.from}–{r.to}
+                        </div>
+                        <div className="text-[11px] font-semibold text-muted">{PHASE_HINT[r.phase]}</div>
+                      </div>
+                    ))}
+                    <div className="text-[10px] font-semibold text-muted mt-0.5">
+                      У каждой девушки цикл свой — это средняя схема, не медицина.
+                    </div>
+                  </div>
+                )}
+              </div>
+
                 <EventsBlock role="PARTNER" toast={(t) => { setToast(t); setTimeout(() => setToast(""), 2600); }} />
               </div>
             </div>

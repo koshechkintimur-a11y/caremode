@@ -23,7 +23,7 @@
 /* Светлая (дефолт, OWNER) */
 :root {
   --bg: #fff8f4;
-  --surface: #ffffff;
+  --surface: #f6eee2; /* бежевые карточки в светлой теме (коралловый читается лучше) */
   --primary: #e8837f;
   --primary-soft: #fde8e4;
   --accent: #f0a08c;

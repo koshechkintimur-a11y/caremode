@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, Gift, Medal, Send, Siren, X, MessageCircleHeart, Sparkles, Check } from "lucide-react";
 import { DailyCard } from "@/components/DailyCard";
+import { EventsBlock } from "@/components/EventsBlock";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
 import { Tamagotchi, stageOf, STAGE_LABEL } from "@/components/Tamagotchi";
@@ -776,6 +777,9 @@ export default function TodayPage() {
             </div>
         </div>
 
+        {/* События пары: отметила — он увидел и подтвердил */}
+        <EventsBlock role="OWNER" toast={(t) => { setToast(t); setTimeout(() => setToast(""), 2600); }} />
+
         {/* Кэшбэк: он прошёл цикл на отлично — вручить награду (редкий блок — ниже ежедневных) */}
         {cashback?.canReward && (
           <div className="rounded-[24px] bg-surface/55 backdrop-blur-[16px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
@@ -1109,6 +1113,11 @@ export default function TodayPage() {
                   </button>
                 </div>
               )}
+
+              {/* События пары: она отметила — подтверди */}
+              <div className="mt-3 w-full">
+                <EventsBlock role="PARTNER" toast={(t) => { setToast(t); setTimeout(() => setToast(""), 2600); }} />
+              </div>
             </div>
 
             {/* Обучалка: маскот (встроенный блок после маскота) */}

@@ -69,7 +69,7 @@ export async function PUT(req: Request) {
     const partner = u2?.couple?.members.find((m) => m.id !== session.user.id);
     if (body.mood) {
       const label =
-        ({ BAD: "Всё бесит", LOW: "Так себе", GREAT: "Отлично" } as Record<string, string>)[
+        ({ TERRIBLE: "Всё бесит", MEH: "Так себе", OKAY: "Нормально", GREAT: "Отлично" } as Record<string, string>)[
           String(body.mood)
         ] ?? String(body.mood);
       void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.sheMood(label)));

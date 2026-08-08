@@ -21,6 +21,8 @@ export type EventType =
   | "push_storm"
   | "supplies"
   | "supplies_done"
+  | "event_add"
+  | "event_confirm"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

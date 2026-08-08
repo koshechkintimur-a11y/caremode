@@ -94,6 +94,18 @@ model Event {
   @@index([userId, type])
 }
 
+model CoupleEvent {
+  id          String   @id @default(cuid())
+  coupleId    String // скалярный FK (стиль проекта: связи в коде)
+  date        String // YYYY-MM-DD
+  title       String
+  kind        String   @default("date") // date | anniversary | appointment
+  createdById String
+  confirmed   Boolean  @default(false) // партнёр подтвердил
+  createdAt   DateTime @default(now())
+  @@index([coupleId, date])
+}
+
 model Achievement {
   id         String   @id @default(cuid())
   userId     String

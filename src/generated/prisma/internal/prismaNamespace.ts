@@ -401,6 +401,7 @@ export const ModelName = {
   CoupleProfile: 'CoupleProfile',
   DailyPrompt: 'DailyPrompt',
   Event: 'Event',
+  CoupleEvent: 'CoupleEvent',
   Achievement: 'Achievement'
 } as const
 
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "coupleProfile" | "dailyPrompt" | "event" | "achievement"
+    modelProps: "user" | "coupleProfile" | "dailyPrompt" | "event" | "coupleEvent" | "achievement"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -717,6 +718,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CoupleEvent: {
+      payload: Prisma.$CoupleEventPayload<ExtArgs>
+      fields: Prisma.CoupleEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CoupleEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CoupleEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        findFirst: {
+          args: Prisma.CoupleEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CoupleEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        findMany: {
+          args: Prisma.CoupleEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>[]
+        }
+        create: {
+          args: Prisma.CoupleEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        createMany: {
+          args: Prisma.CoupleEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CoupleEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>[]
+        }
+        delete: {
+          args: Prisma.CoupleEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        update: {
+          args: Prisma.CoupleEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.CoupleEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CoupleEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CoupleEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.CoupleEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoupleEventPayload>
+        }
+        aggregate: {
+          args: Prisma.CoupleEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCoupleEvent>
+        }
+        groupBy: {
+          args: Prisma.CoupleEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoupleEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CoupleEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoupleEventCountAggregateOutputType> | number
+        }
+      }
+    }
     Achievement: {
       payload: Prisma.$AchievementPayload<ExtArgs>
       fields: Prisma.AchievementFieldRefs
@@ -912,6 +987,20 @@ export const EventScalarFieldEnum = {
 } as const
 
 export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const CoupleEventScalarFieldEnum = {
+  id: 'id',
+  coupleId: 'coupleId',
+  date: 'date',
+  title: 'title',
+  kind: 'kind',
+  createdById: 'createdById',
+  confirmed: 'confirmed',
+  createdAt: 'createdAt'
+} as const
+
+export type CoupleEventScalarFieldEnum = (typeof CoupleEventScalarFieldEnum)[keyof typeof CoupleEventScalarFieldEnum]
 
 
 export const AchievementScalarFieldEnum = {
@@ -1217,6 +1306,7 @@ export type GlobalOmitConfig = {
   coupleProfile?: Prisma.CoupleProfileOmit
   dailyPrompt?: Prisma.DailyPromptOmit
   event?: Prisma.EventOmit
+  coupleEvent?: Prisma.CoupleEventOmit
   achievement?: Prisma.AchievementOmit
 }
 

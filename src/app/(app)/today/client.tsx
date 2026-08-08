@@ -576,20 +576,37 @@ export default function TodayPage() {
               </button>
             )}
 
-            {/* запас прокладок: только во время месячных — пуш партнёру на опережение */}
-            {inPeriod && (
-              <button
-                onClick={reportSupplies}
-                disabled={suppliesBusy || suppliesSent}
-                className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
-              >
-                {suppliesSent
-                  ? "✓ Дима уже знает"
-                  : suppliesBusy
-                    ? "Отправляем…"
-                    : "Закончились прокладки 🩸"}
-              </button>
-            )}
+            {/* запас прокладок: только во время месячных — полный цикл: просьба → «Сделаю» → статус */}
+            {inPeriod &&
+              (data.supplies?.done ? (
+                /* Дима нажал «Сделаю ✓» — она видит, что он взял на себя */
+                <div className="w-full rounded-2xl border-2 border-success/40 bg-success/10 px-4 py-3">
+                  <div className="text-[13px] font-extrabold text-success">
+                    Дима уже в магазине 🛒
+                  </div>
+                  <div className="text-[11px] font-semibold text-muted mt-0.5">
+                    Он взял это на себя — спасибо, что предупредила 💛
+                  </div>
+                </div>
+              ) : suppliesSent || (data.supplies && !data.supplies.done) ? (
+                /* просьба отправлена (или уже была) — ждём, пока Дима сходит */
+                <div className="w-full rounded-2xl border-2 border-primary/40 bg-primary-soft/60 px-4 py-3">
+                  <div className="text-[13px] font-extrabold text-primary">
+                    Дима уже знает 🛒
+                  </div>
+                  <div className="text-[11px] font-semibold text-muted mt-0.5">
+                    Он увидит это в приложении — как только сходит в магазин, ты узнаешь.
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={reportSupplies}
+                  disabled={suppliesBusy}
+                  className="w-full h-[46px] rounded-full border-2 border-primary/40 text-primary font-extrabold text-[13px] active:scale-[.97] transition disabled:opacity-60"
+                >
+                  {suppliesBusy ? "Отправляем…" : "Закончились прокладки 🩸"}
+                </button>
+              ))}
 
             {/* Когда начались? — не сбрасываем на сегодня, если начало было раньше */}
             {periodStartOpen && (

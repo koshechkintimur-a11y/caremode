@@ -40,6 +40,14 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [me, setMe] = useState<MeData | null>(null);
   const [tab, setTab] = useState<"profile" | "notify" | "cycle" | "care" | "more">("profile");
+  // пиксельный навигатор: порядок вкладок
+  const TABS = [
+    ["profile", "👤 Профиль"],
+    ["notify", "🔔 Уведомления"],
+    ["cycle", "🌸 Цикл"],
+    ["care", "💛 Забота"],
+    ["more", "⚙️ Ещё"],
+  ] as const;
   const [promptTime, setPromptTime] = useState<string | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [perk, setPerk] = useState<Perk | null>(null);
@@ -218,39 +226,71 @@ export default function SettingsPage() {
     >
       <h1 className="font-pixel text-[18px] text-ink leading-relaxed">Настройки</h1>
 
-      {/* Вкладки разделов */}
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4">
-        {([
-          ["profile", "👤 Профиль"],
-          ["notify", "🔔 Уведомления"],
-          ["cycle", "🌸 Цикл"],
-          ["care", "💛 Забота"],
-          ["more", "⚙️ Ещё"],
-        ] as const).map(([id, label]) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={cn(
-              "h-[36px] px-4 rounded-full text-[13px] font-extrabold whitespace-nowrap transition-colors border shrink-0",
-              tab === id
-                ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
-                : "bg-surface text-muted border-line"
-            )}
+      {/* Пиксельный навигатор вкладок: пульсирующие стрелки */}
+      <div className="rounded-[6px] bg-[#1B1626] px-3 py-3.5 flex items-center justify-between shadow-[4px_4px_0_rgba(27,22,38,.25)] select-none">
+        <button
+          onClick={() => setTab(TABS[(TABS.findIndex((t) => t[0] === tab) + TABS.length - 1) % TABS.length][0])}
+          aria-label="Предыдущий раздел"
+          className="w-11 h-11 flex items-center justify-center text-white active:scale-90 transition"
+        >
+          <motion.span
+            animate={{ opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="font-pixel text-[20px] leading-none"
           >
-            {label}
-          </button>
-        ))}
+            ◀
+          </motion.span>
+        </button>
+
+        <div className="flex-1 text-center">
+          <div className="font-pixel text-[15px] text-white tracking-wider">
+            {TABS.find((t) => t[0] === tab)?.[1]}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 mt-2">
+            {TABS.map((t) => (
+              <button
+                key={t[0]}
+                onClick={() => setTab(t[0])}
+                aria-label={t[1]}
+                className={cn(
+                  "w-[8px] h-[8px] active:scale-75 transition",
+                  tab === t[0] ? "bg-[#F0A08C]" : "bg-white/25"
+                )}
+              />
+            ))}
+          </div>
+        </div>
+
+        <button
+          onClick={() => setTab(TABS[(TABS.findIndex((t) => t[0] === tab) + 1) % TABS.length][0])}
+          aria-label="Следующий раздел"
+          className="w-11 h-11 flex items-center justify-center text-white active:scale-90 transition"
+        >
+          <motion.span
+            animate={{ opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+            className="font-pixel text-[20px] leading-none"
+          >
+            ▶
+          </motion.span>
+        </button>
+      </div>
+
+      {/* Название активного раздела пиксельным шрифтом */}
+      <div className="font-pixel text-[16px] text-ink tracking-wider -mt-1">
+        {TABS.find((t) => t[0] === tab)?.[1]}
       </div>
 
       <div className={tab === "profile" ? "" : "hidden"}>
       {/* ===== Раздел: Профиль и пара ===== */}
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">👤 Профиль и пара</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 👤 Профиль и пара</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Моя пара: имена — «Привет, Оля!» и «Пара: Оля + Дима» */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+      <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
         <div className="text-[16px] font-extrabold text-ink">Моя пара</div>
         <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
           как вас зовут — для приветствий и профиля пары
@@ -281,7 +321,7 @@ export default function SettingsPage() {
               }
             }}
             disabled={!myName.trim() || nameBusy}
-            className="h-[44px] px-5 rounded-full bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
+            className="h-[44px] px-5 rounded-[6px] bg-gradient-to-br from-primary to-accent text-white font-extrabold text-[13px] disabled:opacity-40 active:scale-[.97] transition"
           >
             {nameBusy ? "…" : "Сохранить"}
           </button>
@@ -302,13 +342,14 @@ export default function SettingsPage() {
 
       <div className={tab === "notify" ? "" : "hidden"}>
       {/* ===== Раздел: Уведомления ===== */}
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔔 Уведомления</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 🔔 Уведомления</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Telegram-уведомления: надёжные пуши на каждое действие (работают на iOS без ярлыка) */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+      <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
         <div className="text-[16px] font-extrabold text-ink">Telegram-уведомления</div>
         <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
           пуш на каждое действие: он сделал · она поблагодарила · закончились прокладки и др.
@@ -322,7 +363,7 @@ export default function SettingsPage() {
                 await fetch("/api/tg/status", { method: "DELETE" });
                 setTgConnected(false);
               }}
-              className="h-[40px] px-5 rounded-full border border-line text-[12px] font-bold text-muted active:scale-[.97] transition"
+              className="h-[40px] px-5 rounded-[6px] border border-line text-[12px] font-bold text-muted active:scale-[.97] transition"
             >
               Отключить
             </button>
@@ -355,7 +396,7 @@ export default function SettingsPage() {
                     setTimeout(() => setTgCopied(false), 1600);
                   } catch {}
                 }}
-                className="h-[34px] px-4 rounded-full bg-primary-soft text-primary text-[12px] font-extrabold active:scale-[.95] transition"
+                className="h-[34px] px-4 rounded-[6px] bg-primary-soft text-primary text-[12px] font-extrabold active:scale-[.95] transition"
               >
                 {tgCopied ? "Скопировано ✓" : "Копировать"}
               </button>
@@ -392,7 +433,7 @@ export default function SettingsPage() {
               }
             }}
             disabled={tgBusy || !tgBot}
-            className="w-full h-[46px] rounded-full bg-gradient-to-br from-[#2AABEE] to-[#229ED9] text-white font-extrabold text-[14px] disabled:opacity-40 active:scale-[.97] transition"
+            className="w-full h-[46px] rounded-[6px] bg-gradient-to-br from-[#2AABEE] to-[#229ED9] text-white font-extrabold text-[14px] disabled:opacity-40 active:scale-[.97] transition"
           >
             {tgBusy ? "…" : "Подключить Telegram"}
           </button>
@@ -407,7 +448,7 @@ export default function SettingsPage() {
 
       {/* Напоминание отметить настроение — только OWNER */}
       {me?.role === "OWNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
           <div className="text-[16px] font-extrabold text-ink">Напоминать мне</div>
           <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
             пуш «Как ты сегодня?» — если ещё не отметила настроение
@@ -425,12 +466,12 @@ export default function SettingsPage() {
                   body: JSON.stringify({ enabled: next, time: me.pushPromptTime }),
                 });
               }}
-              className={`w-[52px] h-[30px] rounded-full transition-colors relative ${me.pushEnabled ? "bg-primary" : "bg-line"}`}
+              className={`w-[52px] h-[30px] rounded-[6px] transition-colors relative ${me.pushEnabled ? "bg-primary" : "bg-line"}`}
             >
               <motion.span
                 layout
                 transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className={`absolute top-[3px] w-6 h-6 rounded-full bg-surface shadow ${me.pushEnabled ? "left-[24px]" : "left-[3px]"}`}
+                className={`absolute top-[3px] w-6 h-6 rounded-[6px] bg-surface shadow ${me.pushEnabled ? "left-[24px]" : "left-[3px]"}`}
               />
             </button>
           </div>
@@ -478,7 +519,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Тема — у обоих */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+      <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
         <div className="text-[16px] font-extrabold text-ink">Оформление</div>
         <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
           светлая / тёмная / как в системе
@@ -510,16 +551,17 @@ export default function SettingsPage() {
       </div>
 
       <div className={tab === "more" ? "" : "hidden"}>
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔒 Приватность</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 🔒 Приватность</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Приватность — только OWNER */}
       {me?.role === "OWNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center">
               <ShieldCheck size={20} className="text-primary" />
             </div>
             <div>
@@ -538,12 +580,12 @@ export default function SettingsPage() {
             <button
               onClick={togglePause}
               disabled={busy}
-              className={`w-[52px] h-[30px] rounded-full transition-colors relative ${pause ? "bg-primary" : "bg-line"}`}
+              className={`w-[52px] h-[30px] rounded-[6px] transition-colors relative ${pause ? "bg-primary" : "bg-line"}`}
             >
               <motion.span
                 layout
                 transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className={`absolute top-[3px] w-6 h-6 rounded-full bg-surface shadow ${pause ? "left-[24px]" : "left-[3px]"}`}
+                className={`absolute top-[3px] w-6 h-6 rounded-[6px] bg-surface shadow ${pause ? "left-[24px]" : "left-[3px]"}`}
               />
             </button>
           </div>
@@ -570,18 +612,19 @@ export default function SettingsPage() {
       </div>
 
       <div className={tab === "profile" ? "" : "hidden"}>
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">✉️ Моё послание</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># ✉️ Моё послание</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Моя инструкция — только OWNER */}
       {me?.role === "OWNER" && (
         <button
           onClick={() => router.push("/instruction")}
-          className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3 text-left"
+          className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5 flex items-center gap-3 text-left"
         >
-          <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center shrink-0">
             <FlaskConical size={20} className="text-primary" />
           </div>
           <div className="flex-1">
@@ -597,18 +640,19 @@ export default function SettingsPage() {
       </div>
 
       <div className={tab === "cycle" ? "" : "hidden"}>
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🌸 Цикл</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 🌸 Цикл</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Календарь цикла — только OWNER (история на устройстве) */}
       {me?.role === "OWNER" && (
         <button
           onClick={() => router.push("/calendar")}
-          className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3 text-left"
+          className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5 flex items-center gap-3 text-left"
         >
-          <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center shrink-0">
             <CalendarDays size={20} className="text-primary" />
           </div>
           <div className="flex-1">
@@ -623,9 +667,9 @@ export default function SettingsPage() {
 
       {/* Подписка — только PARTNER */}
       {me?.role === "PARTNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center">
               <CreditCard size={20} className="text-primary" />
             </div>
             <div>
@@ -643,9 +687,9 @@ export default function SettingsPage() {
 
       {/* Данные цикла — только OWNER */}
       {me?.role === "OWNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+            <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center">
               <RefreshCw size={18} className="text-primary" />
             </div>
             <div>
@@ -692,14 +736,15 @@ export default function SettingsPage() {
       </div>
 
       <div className={tab === "care" ? "" : "hidden"}>
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">💛 Забота</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 💛 Забота</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Список уютного — только OWNER */}
       {me?.role === "OWNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
           <div className="text-[16px] font-extrabold text-ink">Список уютного</div>
           <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
             не покупки, а действия и состояния: «тёплый плед и сериал», «борщ», «не спрашивать про дела»
@@ -733,7 +778,7 @@ export default function SettingsPage() {
               {store.careProfile.cozy!.map((c) => (
                 <span
                   key={c}
-                  className="rounded-full bg-primary-soft px-3.5 h-[34px] flex items-center gap-1.5 text-[12px] font-bold text-primary"
+                  className="rounded-[6px] bg-primary-soft px-3.5 h-[34px] flex items-center gap-1.5 text-[12px] font-bold text-primary"
                 >
                   {c}
                   <button
@@ -762,7 +807,7 @@ export default function SettingsPage() {
                 setCozyBusy(false);
               }
             }}
-            className="mt-4 h-[44px] w-full rounded-full bg-surface border border-line text-ink font-bold text-[14px] active:scale-[.97] transition"
+            className="mt-4 h-[44px] w-full rounded-[6px] bg-surface border border-line text-ink font-bold text-[14px] active:scale-[.97] transition"
           >
             {cozyBusy ? "Сохраняю…" : "Сохранить список"}
           </button>
@@ -774,9 +819,9 @@ export default function SettingsPage() {
         <>
           <button
             onClick={() => router.push("/onboarding/partner")}
-            className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3 text-left"
+            className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5 flex items-center gap-3 text-left"
           >
-            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center shrink-0">
               <FlaskConical size={20} className="text-primary" />
             </div>
             <div className="flex-1">
@@ -788,9 +833,9 @@ export default function SettingsPage() {
             <ChevronRight size={18} className="text-muted" />
           </button>
 
-          <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center">
                 <Clock size={20} className="text-primary" />
               </div>
               <div>
@@ -839,7 +884,7 @@ export default function SettingsPage() {
                   onClick={pushOn ? disablePush : enablePush}
                   disabled={pushBusy}
                   className={cn(
-                    "h-[38px] px-4 rounded-full text-[12px] font-extrabold transition active:scale-[.97]",
+                    "h-[38px] px-4 rounded-[6px] text-[12px] font-extrabold transition active:scale-[.97]",
                     pushOn
                       ? "bg-surface border border-line text-ink"
                       : "bg-gradient-to-br from-primary to-accent text-white shadow-[0_4px_14px_rgba(232,131,127,.4)]"
@@ -860,9 +905,9 @@ export default function SettingsPage() {
       )}
 
       {/* Ачивки */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+      <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center">
             <Trophy size={20} className="text-primary" />
           </div>
           <div>
@@ -877,9 +922,9 @@ export default function SettingsPage() {
                 Статус: {perk.title}
               </div>
               <div className="mt-0.5 text-[12px] font-bold text-muted">{perk.desc}</div>
-              <div className="mt-2.5 h-1.5 rounded-full bg-primary/15 overflow-hidden">
+              <div className="mt-2.5 h-1.5 rounded-[6px] bg-primary/15 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                  className="h-full rounded-[6px] bg-gradient-to-r from-primary to-accent"
                   style={{
                     width: `${Math.min(100, (totalGood / (nextPerk?.at ?? totalGood + 1)) * 100)}%`,
                   }}
@@ -913,9 +958,9 @@ export default function SettingsPage() {
 
       <div className={tab === "more" ? "" : "hidden"}>
       {/* Опасная зона */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+      <div className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-danger/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-[6px] bg-danger/10 flex items-center justify-center">
             <Trash2 size={20} className="text-danger" />
           </div>
           <div>
@@ -936,9 +981,10 @@ export default function SettingsPage() {
 
       <div className={tab === "more" ? "" : "hidden"}>
       {/* ===== Раздел: О CareMode ===== */}
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">📣 О CareMode</div>
-        <div className="flex-1 h-px bg-line" />
+      <div className="mt-4 flex items-center gap-2 px-1">
+        <div className="font-pixel text-[13px] text-ink tracking-wider"># 📣 О CareMode</div>
+        <div className="flex-1 h-[3px] bg-[#1B1626]/15" />
+        <div className="w-[7px] h-[7px] bg-[#1B1626]/25 shrink-0" />
       </div>
 
       {/* Telegram-канал: новости, идеи, розыгрыши */}
@@ -946,9 +992,9 @@ export default function SettingsPage() {
         href="https://t.me/caremode_app"
         target="_blank"
         rel="noreferrer"
-        className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3"
+        className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5 flex items-center gap-3"
       >
-        <div className="w-10 h-10 rounded-full bg-[#2AABEE]/15 flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 rounded-[6px] bg-[#2AABEE]/15 flex items-center justify-center shrink-0">
           <Send size={20} className="text-[#2AABEE]" />
         </div>
         <div className="flex-1">
@@ -957,7 +1003,7 @@ export default function SettingsPage() {
             фичи, истории пар и розыгрыши — t.me/caremode_app
           </div>
         </div>
-        <button className="h-[36px] px-4 rounded-full bg-[#2AABEE] text-white text-[12px] font-extrabold active:scale-95 transition shrink-0">
+        <button className="h-[36px] px-4 rounded-[6px] bg-[#2AABEE] text-white text-[12px] font-extrabold active:scale-95 transition shrink-0">
           Подписаться
         </button>
       </a>
@@ -967,9 +1013,9 @@ export default function SettingsPage() {
         onClick={() => {
           window.dispatchEvent(new CustomEvent("cm-open-rate"));
         }}
-        className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3 text-left"
+        className="rounded-[6px] bg-surface border-2 border-[#1B1626]/10 shadow-[4px_4px_0_rgba(27,22,38,.1)] p-5 flex items-center gap-3 text-left"
       >
-        <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 rounded-[6px] bg-primary-soft flex items-center justify-center shrink-0">
           <Heart size={20} className="text-primary" />
         </div>
         <div className="flex-1">

@@ -253,8 +253,8 @@ export default function SettingsPage() {
                 onClick={() => setTab(t[0])}
                 aria-label={t[1]}
                 className={cn(
-                  "w-[8px] h-[8px] active:scale-75 transition",
-                  tab === t[0] ? "bg-primary" : "bg-line"
+                  "w-[9px] h-[9px] active:scale-75 transition",
+                  tab === t[0] ? "bg-primary" : "bg-muted/60"
                 )}
               />
             ))}
@@ -274,11 +274,6 @@ export default function SettingsPage() {
             ▶
           </motion.span>
         </button>
-      </div>
-
-      {/* Название активного раздела пиксельным шрифтом */}
-      <div className="font-pixel text-[16px] text-ink tracking-wider -mt-1">
-        {TABS.find((t) => t[0] === tab)?.[1]}
       </div>
 
       <div className={tab === "profile" ? "flex flex-col gap-4" : "hidden"}>
@@ -428,12 +423,6 @@ export default function SettingsPage() {
         )}
       </div>
 
-      </div>
-
-      <div className={tab === "more" ? "flex flex-col gap-4" : "hidden"}>
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🎨 Оформление</div>
-
       {/* Напоминание отметить настроение — только OWNER */}
       {me?.role === "OWNER" && (
         <div className="rounded-[24px] bg-surface/55 backdrop-blur-[16px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
@@ -467,9 +456,9 @@ export default function SettingsPage() {
           <div className="grid grid-cols-3 gap-2">
             {(
               [
-                ["9", "Утром · 9:00"],
-                ["10", "В 10:00"],
-                ["20", "Вечером · 20:00"],
+                ["9", "Утром 9:00"],
+                ["10", "10:00"],
+                ["20", "Вечером 20:00"],
               ] as [string, string][]
             ).map(([t, label]) => (
               <button
@@ -483,7 +472,7 @@ export default function SettingsPage() {
                   });
                 }}
                 className={cn(
-                  "rounded-2xl h-[42px] text-[12px] font-bold border transition-colors",
+                  "rounded-full h-[46px] text-[12px] font-bold border transition-colors px-1",
                   me.pushPromptTime === t
                     ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
                     : "bg-surface text-ink border-line"
@@ -502,9 +491,10 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
-
-        <div className="flex-1 h-px bg-line" />
       </div>
+
+      <div className={tab === "more" ? "flex flex-col gap-4" : "hidden"}>
+
 
       {/* Тема — у обоих */}
       <div className="rounded-[24px] bg-surface/55 backdrop-blur-[16px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
@@ -946,25 +936,27 @@ export default function SettingsPage() {
       <div className={tab === "more" ? "flex flex-col gap-4" : "hidden"}>
       {/* ===== Раздел: О CareMode ===== */}
       {/* Telegram-канал: новости, идеи, розыгрыши */}
-      <a
-        href="https://t.me/caremode_app"
-        target="_blank"
-        rel="noreferrer"
-        className="w-full rounded-[24px] bg-surface/55 backdrop-blur-[16px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3"
-      >
-        <div className="w-10 h-10 rounded-full bg-[#2AABEE]/15 flex items-center justify-center shrink-0">
-          <Send size={20} className="text-[#2AABEE]" />
-        </div>
-        <div className="flex-1">
-          <div className="text-[16px] font-extrabold text-ink">Наш канал в Telegram ✈️</div>
-          <div className="text-[12px] font-semibold text-muted mt-0.5">
-            фичи, истории пар и розыгрыши — t.me/caremode_app
+      <div className="w-full rounded-[24px] bg-surface/55 backdrop-blur-[16px] p-5 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#2AABEE] flex items-center justify-center shrink-0">
+            <Send size={20} className="text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="text-[16px] font-extrabold text-ink">Наш канал в Telegram ✈️</div>
+            <div className="text-[12px] font-semibold text-muted mt-0.5">
+              фичи, истории пар и розыгрыши
+            </div>
           </div>
         </div>
-        <button className="h-[36px] px-4 rounded-full bg-[#2AABEE] text-white text-[12px] font-extrabold active:scale-95 transition shrink-0">
-          Подписаться
-        </button>
-      </a>
+        <a
+          href="https://t.me/caremode_app"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 w-full h-[44px] rounded-full bg-[#2AABEE] text-white font-extrabold text-[13px] flex items-center justify-center active:scale-[.97] transition"
+        >
+          Подписаться ✈️
+        </a>
+      </div>
 
       {/* Оценить приложение — 5 пиксельных сердечек */}
       <button

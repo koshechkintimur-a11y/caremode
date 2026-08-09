@@ -101,6 +101,7 @@ export default function TodayPage() {
   const [movieTitle, setMovieTitle] = useState("");
   const [movieBusy, setMovieBusy] = useState(false);
   const [cycleInfoOpen, setCycleInfoOpen] = useState(false);
+  const [showAllCare, setShowAllCare] = useState(false); // «Его забота»: все поступки
   const [care, setCare] = useState<{
     goodCount: number;
     streak: number;
@@ -1029,7 +1030,7 @@ export default function TodayPage() {
               <div className="mt-3 rounded-2xl bg-bg px-4 py-3">
                 <div className="text-[11px] font-bold uppercase tracking-wider text-muted">Недавние поступки</div>
                 <div className="mt-1.5 flex flex-col gap-1.5">
-                  {care.recent.map((r) => (
+                  {care.recent.slice(0, showAllCare ? undefined : 3).map((r) => (
                     <div key={r.id} className="flex items-center justify-between gap-2 text-[12px] font-semibold text-ink leading-snug">
                       <span>
                         {r.day} · {r.text.length > 90 ? r.text.slice(0, 90) + "…" : r.text}
@@ -1069,6 +1070,14 @@ export default function TodayPage() {
                     </div>
                   ))}
                 </div>
+                {care.recent.length > 3 && (
+                  <button
+                    onClick={() => setShowAllCare((v) => !v)}
+                    className="mt-2 w-full h-[32px] rounded-full bg-surface text-muted text-[12px] font-bold flex items-center justify-center gap-1 active:scale-[.97] transition"
+                  >
+                    {showAllCare ? "Свернуть ▲" : `Показать ещё ${care.recent.length - 3} ▼`}
+                  </button>
+                )}
               </div>
             )}
           </div>

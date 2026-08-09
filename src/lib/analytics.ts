@@ -30,6 +30,7 @@ export type EventType =
   | "supplies_reset"
   | "event_remind"
   | "invite_remind"
+  | "rate"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

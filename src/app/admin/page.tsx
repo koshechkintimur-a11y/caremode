@@ -32,6 +32,7 @@ const TYPE_LABELS: Record<string, string> = {
   push_done: "Пуш: он сделал",
   push_thank: "Пуш: она заметила",
   remind_owner: "«Напомнить ей»",
+  rate: "Оценки ⭐",
 };
 
 export default async function AdminPage({
@@ -50,7 +51,7 @@ export default async function AdminPage({
   const weekStart = new Date(todayStart.getTime() - 6 * DAY);
   const monthStart = new Date(todayStart.getTime() - 29 * DAY);
 
-  const [usersTotal, pairsTotal, pairsWithPartner, activeToday, activeWeek, regs, goodCouples, byType, byDay, prompts] =
+  const [usersTotal, pairsTotal, pairsWithPartner, activeToday, activeWeek, regs, goodCouples, byType, byDay, prompts, rateEvents] =
     await Promise.all([
       prisma.user.count(),
       prisma.coupleProfile.count(),
@@ -63,6 +64,11 @@ export default async function AdminPage({
       prisma.event.groupBy({ by: ["type"], _count: { _all: true } }),
       prisma.event.findMany({ where: { createdAt: { gte: weekStart } }, select: { type: true, createdAt: true } }),
       prisma.dailyPrompt.groupBy({ by: ["source", "feedback"], _count: { _all: true } }),
+      prisma.event.findMany({
+        where: { type: "rate" },
+        select: { meta: true, createdAt: true },
+        orderBy: { createdAt: "desc" },
+      }),
     ]);
 
   const regByDay: Record<string, number> = {};
@@ -169,6 +175,58 @@ export default async function AdminPage({
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Оценки приложения */}
+        <div className="rounded-2xl bg-[#1A2332] border border-[#2A3A52] p-5 mt-4">
+          <h2 className="text-[15px] font-extrabold text-white">Оценки приложения ⭐</h2>
+          {rateEvents.length === 0 ? (
+            <p className="text-[12px] font-bold text-slate-400 mt-3">Пока нет оценок — модалка появится у пар через сутки</p>
+          ) : (
+            <>
+              {(() => {
+                const dist = [0, 0, 0, 0, 0];
+                for (const e of rateEvents) {
+                  const s = Number((e.meta as { stars?: number } | null)?.stars ?? 0);
+                  if (s >= 1 && s <= 5) dist[s - 1]++;
+                }
+                const total = dist.reduce((a, b) => a + b, 0);
+                const avg = total ? (dist.reduce((a, b, i) => a + b * (i + 1), 0) / total).toFixed(2) : "—";
+                return (
+                  <div className="mt-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-[24px] font-extrabold text-white">{avg}</span>
+                      <span className="text-[12px] font-bold text-slate-400">средняя · {total} оценок</span>
+                    </div>
+                    <div className="mt-2 flex flex-col gap-1">
+                      {[5, 4, 3, 2, 1].map((s) => (
+                        <div key={s} className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+                          <span className="w-3">{s}⭐</span>
+                          <div className="flex-1 h-[10px] rounded-full bg-[#0F1520] overflow-hidden">
+                            <div
+                              className="h-full bg-[#F2C94C]"
+                              style={{ width: `${total ? (dist[s - 1] / total) * 100 : 0}%` }}
+                            />
+                          </div>
+                          <span className="w-6 text-right text-white">{dist[s - 1]}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 text-[11px] font-bold text-slate-400">
+                      Последние:{" "}
+                      {rateEvents.slice(0, 5).map((e, i) => (
+                        <span key={i}>
+                          {i > 0 && " · "}
+                          <span className="text-[#F2C94C]">{"⭐".repeat(Number((e.meta as { stars?: number })?.stars ?? 0)) || "—"}</span>{" "}
+                          <span className="text-slate-500">{e.createdAt.toISOString().slice(5, 10)}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+            </>
+          )}
         </div>
 
         {/* По дням */}

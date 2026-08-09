@@ -44,13 +44,13 @@ export function RateModal() {
     const seen = localStorage.getItem(KEY_SEEN);
     if (seen === "never" || seen === "rated") return;
     if (seen?.startsWith("later-") && now - Number(seen.slice(6)) < 7 * 86_400_000) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- отложенный показ модалки
     if (now - Number(mark) >= 86_400_000) setOpen(true);
 
     // ручной вызов из Настроек («Оценить приложение»)
     const onOpen = () => setOpen(true);
     window.addEventListener("cm-open-rate", onOpen);
     return () => window.removeEventListener("cm-open-rate", onOpen);
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- отложенный показ модалки
   }, []);
 
   if (!open) return null;
@@ -58,6 +58,12 @@ export function RateModal() {
   const submit = (stars: number) => {
     localStorage.setItem(KEY_SEEN, stars >= 5 ? "rated" : String(stars));
     setRating(stars);
+    // оценка уходит на сервер (аналитика/админка)
+    void fetch("/api/rate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ stars }),
+    });
   };
 
   return (

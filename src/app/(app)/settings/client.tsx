@@ -39,6 +39,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [me, setMe] = useState<MeData | null>(null);
+  const [tab, setTab] = useState<"profile" | "notify" | "cycle" | "care" | "more">("profile");
   const [promptTime, setPromptTime] = useState<string | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [perk, setPerk] = useState<Perk | null>(null);
@@ -217,6 +218,31 @@ export default function SettingsPage() {
     >
       <h1 className="font-pixel text-[18px] text-ink leading-relaxed">Настройки</h1>
 
+      {/* Вкладки разделов */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4">
+        {([
+          ["profile", "👤 Профиль"],
+          ["notify", "🔔 Уведомления"],
+          ["cycle", "🌸 Цикл"],
+          ["care", "💛 Забота"],
+          ["more", "⚙️ Ещё"],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            className={cn(
+              "h-[36px] px-4 rounded-full text-[13px] font-extrabold whitespace-nowrap transition-colors border shrink-0",
+              tab === id
+                ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
+                : "bg-surface text-muted border-line"
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className={tab === "profile" ? "" : "hidden"}>
       {/* ===== Раздел: Профиль и пара ===== */}
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">👤 Профиль и пара</div>
@@ -272,6 +298,9 @@ export default function SettingsPage() {
         )}
       </div>
 
+      </div>
+
+      <div className={tab === "notify" ? "" : "hidden"}>
       {/* ===== Раздел: Уведомления ===== */}
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔔 Уведомления</div>
@@ -370,96 +399,11 @@ export default function SettingsPage() {
         )}
       </div>
 
+      </div>
+
+      <div className={tab === "more" ? "" : "hidden"}>
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🎨 Оформление</div>
-        <div className="flex-1 h-px bg-line" />
-      </div>
-
-      {/* Тема — у обоих */}
-      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-        <div className="text-[16px] font-extrabold text-ink">Оформление</div>
-        <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
-          светлая / тёмная / как в системе
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {(
-            [
-              ["light", "Светлая"],
-              ["dark", "Тёмная"],
-              ["system", "Система"],
-            ] as [Theme, string][]
-          ).map(([t, label]) => (
-            <button
-              key={t}
-              onClick={() => setTheme(t)}
-              className={cn(
-                "rounded-2xl h-[44px] text-[13px] font-bold border transition-colors",
-                theme === t
-                  ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
-                  : "bg-surface text-ink border-line"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-2 flex items-center gap-3 px-1">
-        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔒 Приватность</div>
-        <div className="flex-1 h-px bg-line" />
-      </div>
-
-      {/* Приватность — только OWNER */}
-      {me?.role === "OWNER" && (
-        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
-              <ShieldCheck size={20} className="text-primary" />
-            </div>
-            <div>
-              <div className="text-[16px] font-extrabold text-ink">Приватность</div>
-              <div className="text-[12px] font-semibold text-muted">только для тебя</div>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between">
-            <div>
-              <div className="text-[14px] font-extrabold text-ink">Режим инкогнито</div>
-              <div className="text-[12px] font-semibold text-muted mt-0.5">
-                {pause ? "партнёр видит только «паузу»" : "подсказки включены"}
-              </div>
-            </div>
-            <button
-              onClick={togglePause}
-              disabled={busy}
-              className={`w-[52px] h-[30px] rounded-full transition-colors relative ${pause ? "bg-primary" : "bg-line"}`}
-            >
-              <motion.span
-                layout
-                transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className={`absolute top-[3px] w-6 h-6 rounded-full bg-surface shadow ${pause ? "left-[24px]" : "left-[3px]"}`}
-              />
-            </button>
-          </div>
-
-          <div className="mt-4 rounded-2xl bg-bg p-4 flex items-start gap-3">
-            <Lock size={16} className="text-muted mt-0.5 shrink-0" />
-            <p className="text-[12px] font-semibold text-muted leading-relaxed">
-              Данные цикла хранятся только на этом устройстве. На сервере — лишь
-              общая «фаза», и только с твоего согласия.
-            </p>
-          </div>
-
-          <button
-            onClick={resetDevice}
-            className="mt-4 inline-flex items-center gap-2 text-[13px] font-bold text-muted"
-          >
-            <RefreshCw size={14} />
-            Сбросить данные устройства (фаза, настроение)
-          </button>
-        </div>
-      )}
 
       {/* Напоминание отметить настроение — только OWNER */}
       {me?.role === "OWNER" && (
@@ -530,6 +474,102 @@ export default function SettingsPage() {
         </div>
       )}
 
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
+      {/* Тема — у обоих */}
+      <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+        <div className="text-[16px] font-extrabold text-ink">Оформление</div>
+        <div className="text-[12px] font-semibold text-muted mt-0.5 mb-4">
+          светлая / тёмная / как в системе
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {(
+            [
+              ["light", "Светлая"],
+              ["dark", "Тёмная"],
+              ["system", "Система"],
+            ] as [Theme, string][]
+          ).map(([t, label]) => (
+            <button
+              key={t}
+              onClick={() => setTheme(t)}
+              className={cn(
+                "rounded-2xl h-[44px] text-[13px] font-bold border transition-colors",
+                theme === t
+                  ? "bg-gradient-to-br from-primary to-accent text-white border-transparent"
+                  : "bg-surface text-ink border-line"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      </div>
+
+      <div className={tab === "more" ? "" : "hidden"}>
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔒 Приватность</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
+      {/* Приватность — только OWNER */}
+      {me?.role === "OWNER" && (
+        <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center">
+              <ShieldCheck size={20} className="text-primary" />
+            </div>
+            <div>
+              <div className="text-[16px] font-extrabold text-ink">Приватность</div>
+              <div className="text-[12px] font-semibold text-muted">только для тебя</div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
+            <div>
+              <div className="text-[14px] font-extrabold text-ink">Режим инкогнито</div>
+              <div className="text-[12px] font-semibold text-muted mt-0.5">
+                {pause ? "партнёр видит только «паузу»" : "подсказки включены"}
+              </div>
+            </div>
+            <button
+              onClick={togglePause}
+              disabled={busy}
+              className={`w-[52px] h-[30px] rounded-full transition-colors relative ${pause ? "bg-primary" : "bg-line"}`}
+            >
+              <motion.span
+                layout
+                transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                className={`absolute top-[3px] w-6 h-6 rounded-full bg-surface shadow ${pause ? "left-[24px]" : "left-[3px]"}`}
+              />
+            </button>
+          </div>
+
+          <div className="mt-4 rounded-2xl bg-bg p-4 flex items-start gap-3">
+            <Lock size={16} className="text-muted mt-0.5 shrink-0" />
+            <p className="text-[12px] font-semibold text-muted leading-relaxed">
+              Данные цикла хранятся только на этом устройстве. На сервере — лишь
+              общая «фаза», и только с твоего согласия.
+            </p>
+          </div>
+
+          <button
+            onClick={resetDevice}
+            className="mt-4 inline-flex items-center gap-2 text-[13px] font-bold text-muted"
+          >
+            <RefreshCw size={14} />
+            Сбросить данные устройства (фаза, настроение)
+          </button>
+        </div>
+      )}
+
+
+      </div>
+
+      <div className={tab === "profile" ? "" : "hidden"}>
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">✉️ Моё послание</div>
         <div className="flex-1 h-px bg-line" />
@@ -554,6 +594,9 @@ export default function SettingsPage() {
         </button>
       )}
 
+      </div>
+
+      <div className={tab === "cycle" ? "" : "hidden"}>
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🌸 Цикл</div>
         <div className="flex-1 h-px bg-line" />
@@ -646,6 +689,9 @@ export default function SettingsPage() {
         </div>
       )}
 
+      </div>
+
+      <div className={tab === "care" ? "" : "hidden"}>
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">💛 Забота</div>
         <div className="flex-1 h-px bg-line" />
@@ -863,6 +909,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      </div>
+
+      <div className={tab === "more" ? "" : "hidden"}>
       {/* Опасная зона */}
       <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
         <div className="flex items-center gap-3">
@@ -883,6 +932,9 @@ export default function SettingsPage() {
         </button>
       </div>
 
+      </div>
+
+      <div className={tab === "more" ? "" : "hidden"}>
       {/* ===== Раздел: О CareMode ===== */}
       <div className="mt-2 flex items-center gap-3 px-1">
         <div className="text-[12px] font-bold uppercase tracking-wider text-muted">📣 О CareMode</div>
@@ -946,6 +998,8 @@ export default function SettingsPage() {
           Политика конфиденциальности
         </a>
       </p>
+
+      </div>
 
       <RateModal />
     </motion.div>

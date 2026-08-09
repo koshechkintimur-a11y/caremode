@@ -1,7 +1,7 @@
 // SYNC service worker — CacheFirst для статики, network-only для API/навигации.
 // v4: Web Push + инвалидация статики. ВАЖНО: бампать CACHE при каждом деплое,
 // иначе браузер вечно отдаёт старые чанки (пользователь «не видит изменений»).
-const CACHE = "sync-v39"; // ⚠️ БАМПАТЬ ПРИ КАЖДОМ ДЕПЛОЕ, иначе PWA-ярлык отдаёт старые чанки
+const CACHE = "sync-v40"; // ⚠️ БАМПАТЬ ПРИ КАЖДОМ ДЕПЛОЕ, иначе PWA-ярлык отдаёт старые чанки
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
@@ -21,6 +21,12 @@ self.addEventListener("activate", (e) => {
       .keys()
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
+      // говорим всем открытым вкладкам: вышла новая версия — покажи баннер «Обновить»
+      .then(() =>
+        self.clients.matchAll({ type: "window" }).then((clients) => {
+          for (const c of clients) c.postMessage({ type: "CM_UPDATE" });
+        })
+      )
   );
 });
 

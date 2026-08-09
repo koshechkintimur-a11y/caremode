@@ -5,6 +5,7 @@ import { PwaRegister } from "@/components/ui/PwaRegister";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PixelBackground } from "@/components/PixelBackground";
+import { UpdateBanner } from "@/components/UpdateBanner";
 
 const nunito = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -54,6 +55,7 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="relative z-10">
             <ErrorBoundary>{children}</ErrorBoundary>
+            <UpdateBanner />
           </div>
         </ThemeProvider>
       </body>

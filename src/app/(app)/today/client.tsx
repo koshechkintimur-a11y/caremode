@@ -9,6 +9,7 @@ import { Eye, Gift, Medal, Send, Siren, X, MessageCircleHeart, Sparkles, Check }
 import { DailyCard } from "@/components/DailyCard";
 import { EventsBlock } from "@/components/EventsBlock";
 import { PhotoView } from "@/components/PhotoView";
+import { RateModal } from "@/components/RateModal";
 import { PauseCard } from "@/components/PauseCard";
 import { PaywallCard } from "@/components/PaywallCard";
 import { Tamagotchi, stageOf, STAGE_LABEL } from "@/components/Tamagotchi";
@@ -1193,6 +1194,9 @@ export default function TodayPage() {
             </motion.div>,
             document.body
           )}
+
+        {/* Оцените приложение: через сутки после первого захода */}
+        <RateModal />
       </motion.div>
     );
   }
@@ -1927,6 +1931,9 @@ export default function TodayPage() {
           </motion.div>,
           document.body
         )}
+
+        {/* Оцените приложение: через сутки после первого захода */}
+        <RateModal />
     </div>
   );
 }

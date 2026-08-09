@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
-  ShieldCheck, Lock, Trash2, Trophy, CreditCard, RefreshCw, ChevronRight, Plus, X, FlaskConical, Clock, CalendarDays,
+  ShieldCheck, Lock, Trash2, Trophy, CreditCard, RefreshCw, ChevronRight, Plus, X, FlaskConical, Clock, CalendarDays, Heart, Send,
 } from "lucide-react";
 import { useApp } from "@/store/useApp";
 import { useTheme, type Theme } from "@/components/ThemeProvider";
+import { RateModal } from "@/components/RateModal";
 import { cn } from "@/lib/utils";
 import { dayOfCycle, phaseFromStartDate, PHASE_LABEL } from "@/lib/phase";
 
@@ -216,6 +217,12 @@ export default function SettingsPage() {
     >
       <h1 className="font-pixel text-[18px] text-ink leading-relaxed">Настройки</h1>
 
+      {/* ===== Раздел: Профиль и пара ===== */}
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">👤 Профиль и пара</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
       {/* Моя пара: имена — «Привет, Оля!» и «Пара: Оля + Дима» */}
       <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
         <div className="text-[16px] font-extrabold text-ink">Моя пара</div>
@@ -263,6 +270,12 @@ export default function SettingsPage() {
             Партнёр ещё не указал имя — блок пары появится, когда оба будут заполнены.
           </div>
         )}
+      </div>
+
+      {/* ===== Раздел: Уведомления ===== */}
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔔 Уведомления</div>
+        <div className="flex-1 h-px bg-line" />
       </div>
 
       {/* Telegram-уведомления: надёжные пуши на каждое действие (работают на iOS без ярлыка) */}
@@ -357,6 +370,11 @@ export default function SettingsPage() {
         )}
       </div>
 
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🎨 Оформление</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
       {/* Тема — у обоих */}
       <div className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)]">
         <div className="text-[16px] font-extrabold text-ink">Оформление</div>
@@ -385,6 +403,11 @@ export default function SettingsPage() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🔒 Приватность</div>
+        <div className="flex-1 h-px bg-line" />
       </div>
 
       {/* Приватность — только OWNER */}
@@ -507,6 +530,11 @@ export default function SettingsPage() {
         </div>
       )}
 
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">✉️ Моё послание</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
       {/* Моя инструкция — только OWNER */}
       {me?.role === "OWNER" && (
         <button
@@ -525,6 +553,11 @@ export default function SettingsPage() {
           <ChevronRight size={18} className="text-muted" />
         </button>
       )}
+
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">🌸 Цикл</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
 
       {/* Календарь цикла — только OWNER (история на устройстве) */}
       {me?.role === "OWNER" && (
@@ -612,6 +645,11 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">💛 Забота</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
 
       {/* Список уютного — только OWNER */}
       {me?.role === "OWNER" && (
@@ -845,6 +883,54 @@ export default function SettingsPage() {
         </button>
       </div>
 
+      {/* ===== Раздел: О CareMode ===== */}
+      <div className="mt-2 flex items-center gap-3 px-1">
+        <div className="text-[12px] font-bold uppercase tracking-wider text-muted">📣 О CareMode</div>
+        <div className="flex-1 h-px bg-line" />
+      </div>
+
+      {/* Telegram-канал: новости, идеи, розыгрыши */}
+      <a
+        href="https://t.me/caremode_app"
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3"
+      >
+        <div className="w-10 h-10 rounded-full bg-[#2AABEE]/15 flex items-center justify-center shrink-0">
+          <Send size={20} className="text-[#2AABEE]" />
+        </div>
+        <div className="flex-1">
+          <div className="text-[16px] font-extrabold text-ink">Наш канал в Telegram ✈️</div>
+          <div className="text-[12px] font-semibold text-muted mt-0.5">
+            фичи, истории пар и розыгрыши — t.me/caremode_app
+          </div>
+        </div>
+        <button className="h-[36px] px-4 rounded-full bg-[#2AABEE] text-white text-[12px] font-extrabold active:scale-95 transition shrink-0">
+          Подписаться
+        </button>
+      </a>
+
+      {/* Оценить приложение — 5 пиксельных сердечек */}
+      <button
+        onClick={() => {
+          window.dispatchEvent(new CustomEvent("cm-open-rate"));
+        }}
+        className="rounded-[24px] bg-surface p-6 shadow-[0_8px_30px_rgba(232,131,127,.14)] flex items-center gap-3 text-left"
+      >
+        <div className="w-10 h-10 rounded-full bg-primary-soft flex items-center justify-center shrink-0">
+          <Heart size={20} className="text-primary" />
+        </div>
+        <div className="flex-1">
+          <div className="text-[16px] font-extrabold text-ink">Оценить приложение</div>
+          <div className="text-[12px] font-semibold text-muted mt-0.5">5 пиксельных сердечек ждут 💛</div>
+        </div>
+        <ChevronRight size={16} className="text-muted shrink-0" />
+      </button>
+
+      <p className="text-center text-[12px] font-semibold text-muted">
+        CareMode v0.1 · сделано с 💛 для пар
+      </p>
+
       <button
         onClick={async () => {
           await signOut({ redirect: false });
@@ -860,6 +946,8 @@ export default function SettingsPage() {
           Политика конфиденциальности
         </a>
       </p>
+
+      <RateModal />
     </motion.div>
   );
 }

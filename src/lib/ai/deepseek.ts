@@ -30,10 +30,19 @@ export async function generateWithDeepSeek(
     .join("\n");
   const shots = [goodShots, badShots].filter(Boolean).join("\n");
 
+  // Антиповтор: тексты последних карточек (не только фидбеки) — «что уже советовали»
+  const lastCards = ctx.recentFeedback
+    .slice(-7)
+    .map((f) => f.text)
+    .filter(Boolean)
+    .map((t) => `— «${t}»`)
+    .join("\n");
+
   const system = [
     base,
     ctx.partnerContext ? `\n\n## Стиль партнёра (учитывай в совете)\n${ctx.partnerContext}` : "",
     shots ? `\n\n## Что уже пробовали (учись на этом)\n${shots}` : "",
+    lastCards ? `\n\n## Что уже советовали (НЕ повторяй эти идеи и формулировки)\n${lastCards}` : "",
   ].join("");
 
   try {
@@ -52,7 +61,7 @@ export async function generateWithDeepSeek(
           { role: "system", content: system },
           { role: "user", content: JSON.stringify(ctx) },
         ],
-        max_tokens: 180,
+        max_tokens: 240,
         temperature: 0.85,
         response_format: { type: "json_object" },
       }),

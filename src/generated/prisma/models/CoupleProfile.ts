@@ -35,6 +35,7 @@ export type CoupleProfileMinAggregateOutputType = {
   requestDone: boolean | null
   requestThanked: boolean | null
   requestAnswer: string | null
+  inviteRemindedAt: Date | null
   ownerId: string | null
   partnerId: string | null
   startDate: Date | null
@@ -51,6 +52,7 @@ export type CoupleProfileMaxAggregateOutputType = {
   requestDone: boolean | null
   requestThanked: boolean | null
   requestAnswer: string | null
+  inviteRemindedAt: Date | null
   ownerId: string | null
   partnerId: string | null
   startDate: Date | null
@@ -69,6 +71,7 @@ export type CoupleProfileCountAggregateOutputType = {
   requestDone: number
   requestThanked: number
   requestAnswer: number
+  inviteRemindedAt: number
   ownerId: number
   partnerId: number
   startDate: number
@@ -87,6 +90,7 @@ export type CoupleProfileMinAggregateInputType = {
   requestDone?: true
   requestThanked?: true
   requestAnswer?: true
+  inviteRemindedAt?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -103,6 +107,7 @@ export type CoupleProfileMaxAggregateInputType = {
   requestDone?: true
   requestThanked?: true
   requestAnswer?: true
+  inviteRemindedAt?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -121,6 +126,7 @@ export type CoupleProfileCountAggregateInputType = {
   requestDone?: true
   requestThanked?: true
   requestAnswer?: true
+  inviteRemindedAt?: true
   ownerId?: true
   partnerId?: true
   startDate?: true
@@ -212,6 +218,7 @@ export type CoupleProfileGroupByOutputType = {
   requestDone: boolean
   requestThanked: boolean
   requestAnswer: string | null
+  inviteRemindedAt: Date | null
   ownerId: string
   partnerId: string | null
   startDate: Date
@@ -251,6 +258,7 @@ export type CoupleProfileWhereInput = {
   requestDone?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   requestThanked?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   requestAnswer?: Prisma.StringNullableFilter<"CoupleProfile"> | string | null
+  inviteRemindedAt?: Prisma.DateTimeNullableFilter<"CoupleProfile"> | Date | string | null
   ownerId?: Prisma.StringFilter<"CoupleProfile"> | string
   partnerId?: Prisma.StringNullableFilter<"CoupleProfile"> | string | null
   startDate?: Prisma.DateTimeFilter<"CoupleProfile"> | Date | string
@@ -271,6 +279,7 @@ export type CoupleProfileOrderByWithRelationInput = {
   requestDone?: Prisma.SortOrder
   requestThanked?: Prisma.SortOrder
   requestAnswer?: Prisma.SortOrderInput | Prisma.SortOrder
+  inviteRemindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -296,6 +305,7 @@ export type CoupleProfileWhereUniqueInput = Prisma.AtLeast<{
   requestDone?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   requestThanked?: Prisma.BoolFilter<"CoupleProfile"> | boolean
   requestAnswer?: Prisma.StringNullableFilter<"CoupleProfile"> | string | null
+  inviteRemindedAt?: Prisma.DateTimeNullableFilter<"CoupleProfile"> | Date | string | null
   startDate?: Prisma.DateTimeFilter<"CoupleProfile"> | Date | string
   members?: Prisma.UserListRelationFilter
   prompts?: Prisma.DailyPromptListRelationFilter
@@ -314,6 +324,7 @@ export type CoupleProfileOrderByWithAggregationInput = {
   requestDone?: Prisma.SortOrder
   requestThanked?: Prisma.SortOrder
   requestAnswer?: Prisma.SortOrderInput | Prisma.SortOrder
+  inviteRemindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -338,6 +349,7 @@ export type CoupleProfileScalarWhereWithAggregatesInput = {
   requestDone?: Prisma.BoolWithAggregatesFilter<"CoupleProfile"> | boolean
   requestThanked?: Prisma.BoolWithAggregatesFilter<"CoupleProfile"> | boolean
   requestAnswer?: Prisma.StringNullableWithAggregatesFilter<"CoupleProfile"> | string | null
+  inviteRemindedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CoupleProfile"> | Date | string | null
   ownerId?: Prisma.StringWithAggregatesFilter<"CoupleProfile"> | string
   partnerId?: Prisma.StringNullableWithAggregatesFilter<"CoupleProfile"> | string | null
   startDate?: Prisma.DateTimeWithAggregatesFilter<"CoupleProfile"> | Date | string
@@ -356,6 +368,7 @@ export type CoupleProfileCreateInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -376,6 +389,7 @@ export type CoupleProfileUncheckedCreateInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -396,6 +410,7 @@ export type CoupleProfileUpdateInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -416,6 +431,7 @@ export type CoupleProfileUncheckedUpdateInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,6 +452,7 @@ export type CoupleProfileCreateManyInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -454,6 +471,7 @@ export type CoupleProfileUpdateManyMutationInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -472,6 +490,7 @@ export type CoupleProfileUncheckedUpdateManyInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,6 +514,7 @@ export type CoupleProfileCountOrderByAggregateInput = {
   requestDone?: Prisma.SortOrder
   requestThanked?: Prisma.SortOrder
   requestAnswer?: Prisma.SortOrder
+  inviteRemindedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -511,6 +531,7 @@ export type CoupleProfileMaxOrderByAggregateInput = {
   requestDone?: Prisma.SortOrder
   requestThanked?: Prisma.SortOrder
   requestAnswer?: Prisma.SortOrder
+  inviteRemindedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -527,6 +548,7 @@ export type CoupleProfileMinOrderByAggregateInput = {
   requestDone?: Prisma.SortOrder
   requestThanked?: Prisma.SortOrder
   requestAnswer?: Prisma.SortOrder
+  inviteRemindedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -580,6 +602,7 @@ export type CoupleProfileCreateWithoutMembersInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -599,6 +622,7 @@ export type CoupleProfileUncheckedCreateWithoutMembersInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -634,6 +658,7 @@ export type CoupleProfileUpdateWithoutMembersInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -653,6 +678,7 @@ export type CoupleProfileUncheckedUpdateWithoutMembersInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,6 +698,7 @@ export type CoupleProfileCreateWithoutPromptsInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -691,6 +718,7 @@ export type CoupleProfileUncheckedCreateWithoutPromptsInput = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: string | null
+  inviteRemindedAt?: Date | string | null
   ownerId: string
   partnerId?: string | null
   startDate?: Date | string
@@ -726,6 +754,7 @@ export type CoupleProfileUpdateWithoutPromptsInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -745,6 +774,7 @@ export type CoupleProfileUncheckedUpdateWithoutPromptsInput = {
   requestDone?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestThanked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requestAnswer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inviteRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -804,6 +834,7 @@ export type CoupleProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: boolean
+  inviteRemindedAt?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -825,6 +856,7 @@ export type CoupleProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: boolean
+  inviteRemindedAt?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -843,6 +875,7 @@ export type CoupleProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: boolean
+  inviteRemindedAt?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
@@ -861,12 +894,13 @@ export type CoupleProfileSelectScalar = {
   requestDone?: boolean
   requestThanked?: boolean
   requestAnswer?: boolean
+  inviteRemindedAt?: boolean
   ownerId?: boolean
   partnerId?: boolean
   startDate?: boolean
 }
 
-export type CoupleProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inviteCode" | "locale" | "suppliesAt" | "suppliesDone" | "suppliesDetail" | "requestNeed" | "requestDetail" | "requestAt" | "requestDone" | "requestThanked" | "requestAnswer" | "ownerId" | "partnerId" | "startDate", ExtArgs["result"]["coupleProfile"]>
+export type CoupleProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "inviteCode" | "locale" | "suppliesAt" | "suppliesDone" | "suppliesDetail" | "requestNeed" | "requestDetail" | "requestAt" | "requestDone" | "requestThanked" | "requestAnswer" | "inviteRemindedAt" | "ownerId" | "partnerId" | "startDate", ExtArgs["result"]["coupleProfile"]>
 export type CoupleProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   members?: boolean | Prisma.CoupleProfile$membersArgs<ExtArgs>
   prompts?: boolean | Prisma.CoupleProfile$promptsArgs<ExtArgs>
@@ -894,6 +928,7 @@ export type $CoupleProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     requestDone: boolean
     requestThanked: boolean
     requestAnswer: string | null
+    inviteRemindedAt: Date | null
     ownerId: string
     partnerId: string | null
     startDate: Date
@@ -1334,6 +1369,7 @@ export interface CoupleProfileFieldRefs {
   readonly requestDone: Prisma.FieldRef<"CoupleProfile", 'Boolean'>
   readonly requestThanked: Prisma.FieldRef<"CoupleProfile", 'Boolean'>
   readonly requestAnswer: Prisma.FieldRef<"CoupleProfile", 'String'>
+  readonly inviteRemindedAt: Prisma.FieldRef<"CoupleProfile", 'DateTime'>
   readonly ownerId: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly partnerId: Prisma.FieldRef<"CoupleProfile", 'String'>
   readonly startDate: Prisma.FieldRef<"CoupleProfile", 'DateTime'>

@@ -45,6 +45,32 @@ export async function GET() {
   for (const couple of couples) {
     const partner = couple.members.find((m) => m.role === "PARTNER");
     const owner = couple.members.find((m) => m.role === "OWNER");
+
+    // ==== НАПОМИНАНИЕ «ПРИГЛАСИ ПАРТНЁРА»: пара создана, партнёра нет — через сутки ====
+    if (!partner && owner && couple.inviteRemindedAt === null) {
+      const dayMs = 86_400_000;
+      if (Date.now() - new Date(couple.startDate).getTime() >= dayMs) {
+        const ownerSubs = (owner.pushSubs as PushSub[] | null) ?? [];
+        const text = "💛 Пара ждёт второго! Отправь инвайт-код партнёру — вдвоём интереснее.";
+        const tgChat = owner.tgChatId && !owner.pausePartner;
+        if (tgChat || ownerSubs.length > 0) {
+          if (tgChat) {
+            void import("@/lib/tg").then(({ sendTg }) => sendTg(owner, text));
+          }
+          if (ownerSubs.length > 0) {
+            const payload = JSON.stringify({ title: "Пара ждёт второго 💛", body: "Отправь инвайт-код партнёру — вдвоём интереснее.", url: "/settings" });
+            for (const sub of ownerSubs) {
+              try {
+                await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+                sent++;
+              } catch {}
+            }
+          }
+          await prisma.coupleProfile.update({ where: { id: couple.id }, data: { inviteRemindedAt: new Date() } });
+          void import("@/lib/analytics").then(({ track }) => track("invite_remind", { coupleId: couple.id }));
+        }
+      }
+    }
     if (!partner || !owner) continue;
 
     // ==== НАПОМИНАНИЯ О СОБЫТИЯХ ПАРЫ: сегодня/завтра — ТГ + Web Push обоим ====

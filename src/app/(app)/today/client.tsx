@@ -21,9 +21,25 @@ import { MOODS, NEEDS, needLabel } from "@/lib/careOptions";
 import { computeCycleStats } from "@/lib/cycle";
 import { useApp } from "@/store/useApp";
 import { useWeather, MOOD_WEATHER, PHASE_WEATHER } from "@/store/uiStore";
-import { PHASE_LABEL, PHASE_HINT, PHASE_RANGES, dayOfCycle, phaseFromStartDate, phaseOfDay } from "@/lib/phase";
+import { PHASE_LABEL, PHASE_HINT, PHASE_DETAIL, PHASE_RANGES, dayOfCycle, phaseFromStartDate, phaseOfDay } from "@/lib/phase";
 import { getPerk, nextPerk } from "@/lib/perks";
 import { cn } from "@/lib/utils";
+
+// Пиксельный график цикла: 28 дней — высота = примерный уровень энергии, цвет = фаза
+const PIXEL_CYCLE_DAYS = [
+  32, 32, 32, 32, 32, 45, 52, 58, 62, 66, 70, 74, 78, 84, 90, 96, 100,
+  62, 58, 54, 50, 47, 45, 44, 43, 42, 41, 40,
+].map((h, i) => ({
+  h,
+  color:
+    phaseOfDay(i + 1) === "MENSTRUAL"
+      ? "var(--primary)"
+      : phaseOfDay(i + 1) === "FOLLICULAR"
+        ? "var(--accent)"
+        : phaseOfDay(i + 1) === "OVULATION"
+          ? "var(--success)"
+          : "var(--lilac)",
+}));
 
 interface TodayData {
   prompt: { id: string; day: string; text: string; feedback: string | null; source?: string; seenAt: string | null; thankedAt: string | null } | null;
@@ -676,6 +692,14 @@ export default function TodayPage() {
             <div className="mt-1.5 text-[16px] font-extrabold text-ink">
               {store.phase ? PHASE_LABEL[store.phase] : "не указана"}
             </div>
+            {store.phase && store.phase !== "UNKNOWN" && (
+              <div className="mt-1 text-[11px] font-semibold text-muted leading-snug">
+                {PHASE_HINT[store.phase]}
+                {store.phase === "OVULATION" && (
+                  <span className="block mt-0.5 text-primary font-bold">🌸 фертильные дни</span>
+                )}
+              </div>
+            )}
             <div className="mt-1 text-[12px] font-semibold text-muted">
               {store.lastPeriodStart ? "рассчитано на устройстве" : "уточни в настройках"}
             </div>
@@ -1515,13 +1539,41 @@ export default function TodayPage() {
                 {data.cycleVisible && data.cycleDay && (
                   <>
                     <div className="mt-1.5 text-[15px] font-extrabold text-ink">
-                      Сейчас: {PHASE_LABEL[phaseOfDay(data.cycleDay)]}
+                      Сейчас: {PHASE_LABEL[phaseOfDay(data.cycleDay)]} · день {data.cycleDay}
                     </div>
                     <div className="text-[12px] font-semibold text-muted mt-0.5">
                       {PHASE_HINT[phaseOfDay(data.cycleDay)]}
                     </div>
                   </>
                 )}
+                {/* пиксельный график цикла: уровень энергии по дням */}
+                <div className="mt-3 flex items-end gap-[3px] h-[64px] px-1">
+                  {PIXEL_CYCLE_DAYS.map((d, i) => {
+                    const isToday = data.cycleVisible && data.cycleDay === i + 1;
+                    return (
+                      <div
+                        key={i}
+                        title={`день ${i + 1}`}
+                        className={cn(
+                          "flex-1 rounded-[2px] transition-colors",
+                          isToday && "ring-2 ring-ink/60"
+                        )}
+                        style={{
+                          height: `${d.h}%`,
+                          background: d.color,
+                          opacity: isToday ? 1 : 0.85,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="flex justify-between text-[9px] font-bold text-muted mt-1 px-0.5">
+                  <span>1 · месячные</span>
+                  <span>6 · подъём</span>
+                  <span>14 · пик</span>
+                  <span>17 · перед циклом</span>
+                  <span>28</span>
+                </div>
                 <button
                   onClick={() => setCycleInfoOpen((v) => !v)}
                   className="mt-2 text-[12px] font-bold text-primary"
@@ -1543,11 +1595,13 @@ export default function TodayPage() {
                         <div className="text-[12px] font-extrabold text-ink">
                           {PHASE_LABEL[r.phase]} · дни {r.from}–{r.to}
                         </div>
-                        <div className="text-[11px] font-semibold text-muted">{PHASE_HINT[r.phase]}</div>
+                        <div className="text-[11px] font-semibold text-muted mt-0.5 leading-snug">
+                          {PHASE_DETAIL[r.phase]}
+                        </div>
                       </div>
                     ))}
                     <div className="text-[10px] font-semibold text-muted mt-0.5">
-                      У каждой девушки цикл свой — это средняя схема, не медицина.
+                      У каждой девушки цикл свой — это средняя схема, не медицина. График показывает примерный уровень энергии.
                     </div>
                   </div>
                 )}

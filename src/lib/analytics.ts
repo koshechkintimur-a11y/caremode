@@ -31,6 +31,7 @@ export type EventType =
   | "event_remind"
   | "invite_remind"
   | "rate"
+  | "period_ask"
   | "push_owner_remind"
   | "push_done"
   | "push_thank"

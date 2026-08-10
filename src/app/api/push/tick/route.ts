@@ -161,6 +161,38 @@ export async function GET() {
       }
     }
 
+    // ==== Пуш ОЛЕ: «Месячные начались?» — в ожидаемый день цикла, утром в 9:00 ====
+    if (
+      hour === 9 &&
+      owner.cycleDay !== null &&
+      owner.expectedCycleDay !== null &&
+      owner.cycleDay >= owner.expectedCycleDay - 1 &&
+      owner.periodEnded !== true
+    ) {
+      const askedToday = await prisma.event.findFirst({
+        where: { userId: owner.id, type: "period_ask", createdAt: { gte: todayStart } },
+      });
+      if (!askedToday && (owner.tgChatId || ownerSubs.length > 0)) {
+        const msg = "🩸 Месячные начались? Отметь — и он получит подсказку, как тебя поддержать.";
+        if (owner.tgChatId) {
+          void import("@/lib/tg").then(({ sendTg }) => sendTg(owner, msg));
+        }
+        if (ownerSubs.length > 0) {
+          const p = JSON.stringify({ title: "Месячные начались? 🩸", body: "Один тап — и он будет знать, как тебя поддержать.", url: "/today" });
+          for (const sub of ownerSubs) {
+            try {
+              await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, p);
+              sent++;
+            } catch {}
+          }
+        }
+        await prisma.event.create({
+          data: { userId: owner.id, coupleId: couple.id, type: "period_ask" },
+        });
+        void import("@/lib/analytics").then(({ track }) => track("period_ask", { userId: owner.id, coupleId: couple.id }));
+      }
+    }
+
     const subs = (partner.pushSubs as PushSub[] | null) ?? [];
     if (subs.length === 0) continue;
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { effCycleDay } from "@/lib/cycle";
 import { getOrCreateTodayPrompt } from "@/lib/prompt";
 
 // GET /api/prompt/today — карточка дня (генерация при первом запросе за день)
@@ -49,7 +50,7 @@ export async function GET() {
     promptTime: user.promptTime ?? null,
     pushEnabled: user.pushEnabled ?? false,
     pushPromptTime: user.pushPromptTime ?? null,
-    cycleDay: owner?.cycleDayVisible ? owner.cycleDay : null,
+    cycleDay: owner?.cycleDayVisible ? effCycleDay(owner.cycleDay, owner.phaseUpdatedAt) : null,
     cycleVisible: owner?.cycleDayVisible ?? false,
     ownerMood: owner?.mood ?? null,
     ownerNeedsSpace: owner?.needsSpace ?? false,

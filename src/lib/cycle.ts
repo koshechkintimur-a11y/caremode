@@ -27,6 +27,20 @@ export function avgCycleLen(history: string[]): number {
   return Math.round(diffs.reduce((a, b) => a + b, 0) / diffs.length);
 }
 
+/**
+ * Экстраполяция дня цикла на сервере (приватно: только число + дата обновления).
+ * Клиент прислал cycleDay в момент phaseUpdatedAt — сервер продолжает считать
+ * динамику сам: день растёт, даже если девушка не заходит в приложение.
+ */
+export function effCycleDay(
+  cycleDay: number | null | undefined,
+  updatedAt: Date | null | undefined
+): number | null {
+  if (!cycleDay || !updatedAt) return cycleDay ?? null;
+  const elapsed = Math.floor((Date.now() - new Date(updatedAt).getTime()) / DAY);
+  return Math.max(1, cycleDay + elapsed);
+}
+
 export interface CycleStats {
   avgLen: number;
   dayNow: number | null;

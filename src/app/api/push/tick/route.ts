@@ -1,6 +1,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import webpush from "web-push";
+import { effCycleDay } from "@/lib/cycle";
 import { prisma } from "@/lib/prisma";
 import { CARE_GROUPS } from "@/lib/careOptions";
 
@@ -72,6 +73,9 @@ export async function GET() {
       }
     }
     if (!partner || !owner) continue;
+
+    // день цикла с экстраполяцией (растёт сам, даже если она не заходит)
+    const ownerDay = effCycleDay(owner.cycleDay, owner.phaseUpdatedAt);
 
     // ==== НАПОМИНАНИЯ О СОБЫТИЯХ ПАРЫ: сегодня/завтра — ТГ + Web Push обоим ====
     {
@@ -164,9 +168,9 @@ export async function GET() {
     // ==== Пуш ОЛЕ: «Месячные начались?» — в ожидаемый день цикла, утром в 9:00 ====
     if (
       hour === 9 &&
-      owner.cycleDay !== null &&
+      ownerDay !== null &&
       owner.expectedCycleDay !== null &&
-      owner.cycleDay >= owner.expectedCycleDay - 1 &&
+      ownerDay >= owner.expectedCycleDay - 1 &&
       owner.periodEnded !== true
     ) {
       const askedToday = await prisma.event.findFirst({
@@ -203,8 +207,8 @@ export async function GET() {
     // (приходит утром ВМЕСТО карточки дня — важнее, антидубль на день)
     if (
       owner.expectedCycleDay &&
-      owner.cycleDay !== null &&
-      owner.cycleDay === owner.expectedCycleDay - 2 &&
+      ownerDay !== null &&
+      ownerDay === owner.expectedCycleDay - 2 &&
       partner.lastStormDate !== today
     ) {
       // антидубль: помечаем ДО отправки, чтобы параллельный тик не задублировал

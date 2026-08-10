@@ -94,15 +94,29 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
 
   const existing = couple.prompts.find((p) => p.day === day);
 
+  // АНТИ-ФЛУД: карточка меняется не чаще раза в 10 минут (по BAD) и 5 минут (по настроению).
+  // Иначе поллинг каждые 30с + нажатия дают «карточка обновляется без перерыва».
+  const MIN_REGAP_MS = 10 * 60_000;
+  if (existing && existing.feedback === "BAD" && Date.now() - new Date(existing.createdAt).getTime() < MIN_REGAP_MS) {
+    return {
+      prompt: { id: existing.id, day: existing.day, text: existing.text, feedback: existing.feedback, source: existing.source, seenAt: existing.seenAt ? existing.seenAt.toISOString() : null, thankedAt: existing.thankedAt ? existing.thankedAt.toISOString() : null },
+      paused: false,
+      paywall: false,
+      streak,
+      aiCardsLeft,
+    };
+  }
+
   // ПУЛЬС: она обновила настроение после генерации карточки, а он ещё не ответил —
-  // перегенерируем под новое настроение (с учётом ИИ-лимита).
+  // перегенерируем под новое настроение (с учётом ИИ-лимита и анти-флуда 5 минут).
   const moodChanged =
     existing &&
     !existing.feedback &&
     owner.mood &&
     owner.moodUpdatedAt &&
     existing.moodContext !== owner.mood &&
-    new Date(owner.moodUpdatedAt).getTime() > existing.createdAt.getTime();
+    new Date(owner.moodUpdatedAt).getTime() > existing.createdAt.getTime() &&
+    Date.now() - new Date(existing.createdAt).getTime() > 5 * 60_000;
 
   if (existing && !moodChanged && existing.feedback !== "BAD") {
     return {

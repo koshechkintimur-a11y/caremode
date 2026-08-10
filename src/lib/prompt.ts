@@ -104,7 +104,7 @@ export async function getOrCreateTodayPrompt(coupleId: string): Promise<TodayRes
     existing.moodContext !== owner.mood &&
     new Date(owner.moodUpdatedAt).getTime() > existing.createdAt.getTime();
 
-  if (existing && !moodChanged) {
+  if (existing && !moodChanged && existing.feedback !== "BAD") {
     return {
       prompt: { id: existing.id, day: existing.day, text: existing.text, feedback: existing.feedback, source: existing.source, seenAt: existing.seenAt ? existing.seenAt.toISOString() : null, thankedAt: existing.thankedAt ? existing.thankedAt.toISOString() : null },
       paused: false,

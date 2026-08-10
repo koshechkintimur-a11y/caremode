@@ -7,15 +7,9 @@ const DAY = 86_400_000;
 export const CYCLE_LENGTH = 28;
 
 export function phaseFromStartDate(startISO: string, today: Date = new Date()): Phase | null {
-  const start = new Date(startISO + "T00:00:00");
-  if (isNaN(start.getTime())) return null;
-  const d = Math.floor((today.getTime() - start.getTime()) / DAY);
-  if (d < 0) return null; // дата в будущем — просим проверить
-  if (d <= 4) return "MENSTRUAL";
-  if (d <= 13) return "FOLLICULAR";
-  if (d <= 16) return "OVULATION";
-  if (d <= 35) return "LUTEAL";
-  return "UNKNOWN"; // цикл длиннее 35 дней — предложить обновить дату
+  const d = dayOfCycle(startISO, today);
+  if (d === null) return null;
+  return phaseOfDay(d);
 }
 
 /** День цикла (1 = первый день месячных). Без дат — просто число. */
@@ -60,9 +54,12 @@ export const PHASE_COLOR: Record<Phase, string> = {
   UNKNOWN: "var(--muted)",
 };
 
+// Единая функция фазы: LUTEAL без верхней границы (циклы бывают 35–45 дней —
+// это всё ещё «перед циклом», а не «без данных»).
 export function phaseOfDay(day: number): Phase {
-  for (const r of PHASE_RANGES) {
-    if (day >= r.from && day <= r.to) return r.phase;
-  }
-  return "UNKNOWN";
+  if (day <= 0) return "UNKNOWN";
+  if (day <= 5) return "MENSTRUAL";
+  if (day <= 13) return "FOLLICULAR";
+  if (day <= 16) return "OVULATION";
+  return "LUTEAL";
 }

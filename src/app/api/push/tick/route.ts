@@ -88,17 +88,18 @@ export async function GET() {
         const when = ev.date === eventDate ? "Сегодня" : "Завтра";
         const kindEmoji = { date: "💞", anniversary: "🎂", appointment: "🩺" }[ev.kind] ?? "📅";
         const text = `${kindEmoji} <b>${when}: ${ev.title}</b>\n\nНе потеряйте этот день.`;
-        void import("@/lib/tg").then(({ sendTg }) => {
-          sendTg(owner, text);
-          sendTg(partner, text);
-        });
         const payload = JSON.stringify({ title: `${kindEmoji} ${when}: ${ev.title}`, body: "Не потеряйте этот день.", url: "/today" });
+        // приоритет: Telegram (основной канал); Web Push — только если TG не подключён
         for (const m of [owner, partner]) {
-          for (const sub of (m.pushSubs as PushSub[] | null) ?? []) {
-            try {
-              await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
-              sent++;
-            } catch {}
+          if (m.tgChatId) {
+            void import("@/lib/tg").then(({ sendTg }) => sendTg(m, text));
+          } else {
+            for (const sub of (m.pushSubs as PushSub[] | null) ?? []) {
+              try {
+                await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
+                sent++;
+              } catch {}
+            }
           }
         }
         await prisma.coupleEvent.update({ where: { id: ev.id }, data: { remindedAt: new Date() } });
@@ -112,6 +113,7 @@ export async function GET() {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const ownerMoodToday =
+      owner.mood !== null &&
       owner.moodUpdatedAt !== null &&
       new Date(owner.moodUpdatedAt).getTime() >= todayStart.getTime();
     if (
@@ -133,18 +135,25 @@ export async function GET() {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
           void import("@/lib/analytics").then(({ track }) => track("push_owner_remind", { userId: owner.id, coupleId: couple.id }));
-          void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(owner, TG_MSGS.ownerRemind));
         } catch {
           ownerFailed = [...ownerFailed, sub.endpoint];
         }
+      }
+      // ТГ — один раз (не в цикле подписок), если он подключён
+      if (owner.tgChatId) {
+        void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(owner, TG_MSGS.ownerRemind));
       }
       if (ownerFailed.length > 0) {
         const alive = ownerSubs.filter((s) => !ownerFailed.includes(s.endpoint));
         await prisma.user.update({
           where: { id: owner.id },
-          data: { pushSubs: alive as unknown as object, lastPushDate: today },
+          data: {
+            pushSubs: alive as unknown as object,
+            // #10: lastPushDate только если хоть одна отправка удалась
+            ...(sent > 0 ? { lastPushDate: today } : {}),
+          },
         });
-      } else {
+      } else if (sent > 0) {
         await prisma.user.update({
           where: { id: owner.id },
           data: { lastPushDate: today },
@@ -166,6 +175,8 @@ export async function GET() {
       owner.cycleDay === owner.expectedCycleDay - 2 &&
       partner.lastStormDate !== today
     ) {
+      // антидубль: помечаем ДО отправки, чтобы параллельный тик не задублировал
+      await prisma.user.update({ where: { id: partner.id }, data: { lastStormDate: today } });
       const care = (owner.careProfile ?? {}) as { food?: string[] };
       const foodId = care.food?.[0];
       const foodLabel = foodId
@@ -186,21 +197,19 @@ export async function GET() {
           await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload);
           sent++;
           void import("@/lib/analytics").then(({ track }) => track("push_storm", { userId: partner.id, coupleId: couple.id }));
-          void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.storm));
         } catch {
           stormFailed = [...stormFailed, sub.endpoint];
         }
+      }
+      // ТГ — один раз, если подключён
+      if (partner.tgChatId) {
+        void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.storm));
       }
       if (stormFailed.length > 0) {
         const alive = subs.filter((s) => !stormFailed.includes(s.endpoint));
         await prisma.user.update({
           where: { id: partner.id },
-          data: { pushSubs: alive as unknown as object, lastStormDate: today },
-        });
-      } else {
-        await prisma.user.update({
-          where: { id: partner.id },
-          data: { lastStormDate: today },
+          data: { pushSubs: alive as unknown as object },
         });
       }
       continue;
@@ -227,19 +236,26 @@ export async function GET() {
         );
         sent++;
         void import("@/lib/analytics").then(({ track }) => track("push_card", { userId: partner.id, coupleId: couple.id }));
-        void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.cardForHim((prompt?.text ?? "").slice(0, 300))));
       } catch {
         failed = [...failed, sub.endpoint];
       }
+    }
+    // ТГ — один раз, если подключён
+    if (partner.tgChatId) {
+      void import("@/lib/tg").then(({ sendTg, TG_MSGS }) => sendTg(partner, TG_MSGS.cardForHim((prompt?.text ?? "").slice(0, 300))));
     }
     // чистим мёртвые подписки
     if (failed.length > 0) {
       const alive = subs.filter((s) => !failed.includes(s.endpoint));
       await prisma.user.update({
         where: { id: partner.id },
-        data: { pushSubs: alive as unknown as object, lastPushDate: today },
+        data: {
+          pushSubs: alive as unknown as object,
+          // #10: lastPushDate только если хоть одна отправка удалась
+          ...(sent > 0 ? { lastPushDate: today } : {}),
+        },
       });
-    } else {
+    } else if (sent > 0) {
       await prisma.user.update({
         where: { id: partner.id },
         data: { lastPushDate: today },

@@ -44,8 +44,14 @@ export function RateModal() {
     const seen = localStorage.getItem(KEY_SEEN);
     if (seen === "never" || seen === "rated") return;
     if (seen?.startsWith("later-") && now - Number(seen.slice(6)) < 7 * 86_400_000) return;
+    // показ не чаще раза в день (даже без ответа) — иначе «вылезает при каждом обновлении»
+    const todayKey = `cm-rate-shown-${new Date().toISOString().slice(0, 10)}`;
+    if (localStorage.getItem(todayKey)) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- отложенный показ модалки
-    if (now - Number(mark) >= 86_400_000) setOpen(true);
+    if (now - Number(mark) >= 86_400_000) {
+      localStorage.setItem(todayKey, String(now));
+      setOpen(true);
+    }
 
     // ручной вызов из Настроек («Оценить приложение»)
     const onOpen = () => setOpen(true);
